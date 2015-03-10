@@ -13,12 +13,37 @@ Two parameters are independent of structures:
 
   ``OIDATA`` structure contains the following fields:
 
+  - ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painteradmm(...)`` can be used to iterate
+  the ADMM algorithm. Default: ``true``.
+  - ``paral``: if true perform some calculus in parallel, useful when
+   julia use several core (``julia -p nprocs``), default: true
+
+
   - ``Folder``: path to the folder containing oifits/fits files. Default: ``src/OIFITS``.
   - ``indfile``: allows to chose the set of oifits/fits files processed in ``Folder``. ``indfile`` is an
     Array of Int containnig the alphabetical order of the files. Default: all files.
   -  ``indwvl``: allowd to restrict the set of processed wavelengths. ``indwvl`` is an  Array of Int containnig the order of the wavelengths.
     Default: all wavelengths.
   - ``nx``: image size in pixels (image of size nx\ :sup:`2`). Default: ``64``.
+  - ``FOV``: Field Of View of the reconstructed image in ArcSecond. Default: ``40e-3``
+  - ``mask3D``: Binary mask defining the support constraint. ``mask3D`` can be
+
+    - a path to a fits file,
+    - an Array,
+    - an empty Array (no constraint).
+    ``mask3D`` can be set by function ``mask(...)``. Default: no constraint.
+
+    -  ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be
+
+    - a path to a fits files containing the object,
+    - an Array containing the object,
+    - and Array containing the complex visibilities
+
+    Default: centered dirac for all wavelengths.
+
+
+  -  ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: 10
+
   - ``Wvlt``: list of wavelets basis. See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_. Default: first 8 Daubechies wavelets and Haar wavelets.
   - ``lambda_spat``: Spatial regularization parameter (weight) (Eqs. 29, 31 in ref. [1]). Default: nx\ :sup:`-2`.
   - ``lambda_spec``: Spectral regularization parameter (weight) (Eqs. 29, 31 in ref. [1]). Default: ``1e-2``.
@@ -32,29 +57,7 @@ Two parameters are independent of structures:
   - ``beta``: weight for phases (closures and differential) data fidelity term (Eqs. 25,31 in ref. [1]). Default: ``1``.
   - ``eps1``: Primal Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
   - ``eps2``: Dual Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
-  - ``FOV``: Field Of View of the reconstructed image in ArcSecond. Default: ``40e-3``
-  - ``mask3D``: Binary mask defining the support constraint. ``mask3D`` can be
 
-    - a path to a fits file,
-    - an Array,
-    - an empty Array (no constraint).
-
-    ``mask3D`` can be set by function ``mask(...)``. Default: no constraint.
-  -  ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be
-
-    - a path to a fits files containing the object,
-    - an Array containing the object,
-    - and Array containing the complex visibilities
-
-    Default: centered dirac for all wavelengths.
-
-
--  ``CountPlot``: draw plot at each ``CountPlot`` iterations, default:
-   10
--  ``admm``: to run admm or not (true or false), false just initialize
-   and give structures to run ``painteradmm(...)``, default: true
--  ``paral``: if true perform some calculus in parallel, useful when
-   julia use several core (``julia -p nprocs``), default: true
 
 Optimization engine Structures
 ------------------------------
