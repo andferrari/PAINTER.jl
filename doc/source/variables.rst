@@ -8,25 +8,24 @@ Two parameters are independent of structures:
    iteration, default 1000
 -  ``aff``: true for plot drawing using ``PyPlot.jl``, default: false
 
-``OIDATA`` structure
---------------------
+Variables in ``OIDATA`` structure
+----------------------------------
 
-  ``OIDATA`` structure contains the following fields:
 
-Exectution parameters:
+Exectution Variables:
 
   - ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used to iterate
     the ADMM algorithm. Default: ``true``.
   - ``paral``: if true perform some calculus in parallel, useful when julia use several core (``julia -p nprocs``), default: true
   -  ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: 10
 
-Data parameters:
+Data related variables:
 
   - ``Folder``: path to the folder containing oifits/fits files. Default: ``src/OIFITS``.
   - ``indfile``: allows to chose the set of oifits/fits files processed in ``Folder``. ``indfile`` is an
     Array of Int containnig the alphabetical order of the files. Default: all files.
   -  ``indwvl``: allowd to restrict the set of processed wavelengths. ``indwvl`` is an  Array of Int containnig the order of the wavelengths.
-    Default: all wavelengths.
+  Default: all wavelengths.
   - ``nx``: image size in pixels (image of size nx\ :sup:`2`). Default: ``64``.
   - ``FOV``: Field Of View of the reconstructed image in ArcSecond. Default: ``40e-3``
   - ``mask3D``: Binary mask defining the support constraint. ``mask3D`` can be
