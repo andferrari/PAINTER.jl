@@ -28,8 +28,8 @@ of wavelength is small, e.g. < 30.  See `PyPlot.jl <https://github.com/stevengj/
 Dependencies
 ------------
 
-PAINTER uses the following registered Julia package. They will be
-automaticaly installed during PAINTER installation.
+``Painter.jl`` uses the following registered Julia package. They will be
+automaticaly installed during ``Painter.jl`` installation.
 
 -  `FITSIO.jl <https://github.com/JuliaAstro/FITSIO.jl>`_: Julia
    support for OI-FITS (optical interferometry data format).
