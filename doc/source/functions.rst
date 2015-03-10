@@ -59,6 +59,7 @@ Auxiliaries functions
   of wavelength is small, e.g. < 30.
 
   The default function computes the number of subplots as a function of the number of wavelength if ``nw<30``.
+  
   - The first figure shows the per-channel estimates projected on the domain support. The axis are defined by the field of view with
   no limitation of the amplitude (colorbars are different for all images).
   - The second figure shows the primal and dual residuals (``crit1`` and ``crit2``) as a function of
