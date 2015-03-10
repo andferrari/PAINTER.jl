@@ -13,21 +13,14 @@ Two parameters are independent of structures:
 
   ``OIDATA`` structure contains the following fields:
 
-  -  ``Folder``: path to the folder containing oifits/fits files. Default: ``src/OIFITS``.
-  -  ``nx``: image size in pixels (image of size nx\ :sup:`2`). Default: ``64``.
-  -  ``Wvlt``: list of wavelets basis. See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_. Default: first 8 Daubechies wavelets and Haar wavelets.
--  ``lambda_spat`` : Spatial Regularization parameter (weight) (Eq.29,31
-   [1]), default: nx^-2
--  ``lambda_spec`` : Spectral Regularization parameter (weight)
-   (Eq.29,31 [1]), default: 1e-2
--  ``lambda_L1`` : L1 constraint, emphasize sparsity of object (as stars
-   field), default: 0
--  ``epsilon`` : Ridge/tikhonov parameter epilson \|X\|^2\_2 (Eq.29,31
-   [1]), default: 1e-6
--  ``rho_y`` :
-   ADMM
-   parameter for data fidelity (convergence rate) (Eq.35,50-52 [1]),
-   default: 1
+  - ``Folder``: path to the folder containing oifits/fits files. Default: ``src/OIFITS``.
+  - ``nx``: image size in pixels (image of size nx\ :sup:`2`). Default: ``64``.
+  - ``Wvlt``: list of wavelets basis. See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_. Default: first 8 Daubechies wavelets and Haar wavelets.
+  - ``lambda_spat`` : Spatial regularization parameter (weight) (Eqs. 29,31 in ref. [1]). Default: nx\ :sup:`-2`.
+  - ``lambda_spec`` : Spectral regularization parameter (weight) (Eqs.29,31 in ref. [1]). Default: ``1e-2``.
+  - ``lambda_L1`` : l1 regularization parameter (weight). l1 constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
+  -  ``epsilon`` : Ridge/tikhonov regularization parameter (Eqs.29, 31 in ref. [1]). Default: ``1e-6``.
+  -  ``rho_y`` : ADMM parameter for data fidelity (convergence rate) (Eq.35,50-52 in ref. [1]). Default: ``1``.
 -  ``rho_spat`` :
    ADMM
    parameter for Spatial Regularization (convergence rate) (Eq.25,31

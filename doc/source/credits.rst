@@ -2,8 +2,7 @@ Credits
 =======
 
 ``Painter.jl`` is a julia implementation of PAINTER: Polychromatic
-opticAl INTErferometric Reconstruction software described in [1]_ and
-[2]_.
+opticAl INTErferometric Reconstruction software described in [1]_ and [2]_.
 
 PAINTER was developped at Laboratoire J.-L. Lagrange, Université de Nice
 Sophia, CNRS, Observatoire de la Côte d'Azur, by `Antony
@@ -34,5 +33,3 @@ License
 -------
 
 ``Painter.jl`` is released under under the MIT "Expat" License.
-
-:ref:`jump-installation`
