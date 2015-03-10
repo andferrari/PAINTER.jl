@@ -14,9 +14,9 @@ Variables in ``OIDATA`` structure
 
 Exectution Variables:
 ~~~~~~~~~~~~~~~~~~
-  - ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used to iterate
-    the ADMM algorithm. Default: ``true``.
   - ``paral``: if true perform some calculus in parallel, useful when julia use several core (``julia -p nprocs``), default: true
+  - ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used after to iterate
+    the ADMM algorithm. Default: ``true``.
   -  ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: 10
 
 Data related variables:
@@ -34,7 +34,7 @@ Data related variables:
 
     ``mask3D`` can be set by function ``mask(...)``. Default: no constraint.
 
-    -  ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be
+  -  ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be:
 
     - a path to a fits files containing the object,
     - an Array containing the object,
