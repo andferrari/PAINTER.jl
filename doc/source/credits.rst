@@ -4,12 +4,13 @@ Credits
 ``Painter.jl`` is a julia implementation of PAINTER: Polychromatic
 opticAl INTErferometric Reconstruction software described in [1]_ and [2]_.
 
-PAINTER was developped at Laboratoire J.-L. Lagrange, Université de Nice
-Sophia, CNRS, Observatoire de la Côte d'Azur, by `Antony
+PAINTER was developped at Laboratoire `J.-L. Lagrange <http://lagrange.oca.eu>`_,
+`Université de Nice Sophia-Antipolis <http://unice.fr>`_, `CNRS <http://cnrs.fr>`_,
+`Observatoire de la Côte d'Azur <http://oca.eu>`_, by `Antony
 Schutz <http://www.antonyschutz.com>`_ and `André
 Ferrari <https://www-n.oca.eu/aferrari>`_.
 
-The development of OptimPack was partially supported by the
+The development of ``Painter.jl`` was partially supported by the
 `POLCA <http://polca.univ-lyon1.fr>`_ project funded by the French
 Agence Nationale pour la Recherche (ref. ANR-10-BLAN-0511).
 
