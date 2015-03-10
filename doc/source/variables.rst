@@ -1,10 +1,6 @@
 Variables and structures
 ========================
 
-
-Variables and structures informations
--------------------------------------
-
 Two parameters are independent of structures:
 
 -  ``nbitermax``: number of
@@ -12,10 +8,10 @@ Two parameters are independent of structures:
    iteration, default 1000
 -  ``aff``: true for plot drawing using ``PyPlot.jl``, default: false
 
-User and data Structures
-------------------------
+``OIDATA`` structure
+--------------------
 
-where the folowing arguments, contained in ``OIDATA`` structure, define:
+``OIDATA`` structure, define:
 
 -  ``Folder``: path to the folder containing oifits/fits files (need
    ``OIFITS.jl``), default: src/OIFITS
