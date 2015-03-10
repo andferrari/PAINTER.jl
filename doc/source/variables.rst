@@ -4,8 +4,8 @@ Variables and structures
 Variables
 ---------
 
-  -  ``nbitermax``: number of ADMM iterations. Default: ``1000``.
-  -  ``aff``: if ``aff=true`` plots are enabled using ``PyPlot.jl``. Default: ``false``.
+  - ``nbitermax``: number of ADMM iterations. Default: ``1000``.
+  - ``aff``: if ``aff=true`` plots are enabled using ``PyPlot.jl``. Default: ``false``.
 
 Variables in ``OIDATA`` structure
 ----------------------------------
