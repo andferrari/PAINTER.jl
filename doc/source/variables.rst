@@ -73,10 +73,8 @@ Variables in ``OPTOPT`` structures
 ``OPTOPT``: contains all OptimPack parameters for the phases proximal operator.
 
 
-  - ``ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx``: related to
-  `OptimPack <https://github.com/emmt/OptimPack>`_.
-
-  Default:
+  - ``ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx``: related to `OptimPack <https://github.com/emmt/OptimPack>`_.
+    Default:
 
   .. code:: julia
 
