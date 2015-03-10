@@ -12,14 +12,14 @@ Variables in ``OIDATA`` structure
 ----------------------------------
 
 
-Exectution Variables:
-~~~~~~~~~~~~~~~~~~
+**Exectution Variables:**
+
   - ``paral``: if true perform some calculus in parallel, useful when julia use several core (``julia -p nprocs``), default: true
   - ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used after to iterate
     the ADMM algorithm. Default: ``true``.
   -  ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: 10
 
-Data related variables:
+**Data related variables:**
 
   - ``Folder``: path to the folder containing oifits/fits files. Default: ``src/OIFITS``.
   - ``indfile``: allows to chose the set of oifits/fits files processed in ``Folder``. ``indfile`` is an Array of Int containnig the alphabetical order of the files. Default: all files.
@@ -43,7 +43,7 @@ Data related variables:
     Default: centered dirac for all wavelengths.
 
 
-ADMM algorithm parameters:
+**ADMM algorithm parameters:**
 
   - ``Wvlt``: list of wavelets basis. See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_. Default: first 8 Daubechies wavelets and Haar wavelets.
   - ``lambda_spat``: Spatial regularization parameter (weight) (Eqs. 29, 31 in ref. [1]). Default: nx\ :sup:`-2`.
