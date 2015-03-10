@@ -1,12 +1,11 @@
 Variables and structures
 ========================
 
-Two parameters are independent of structures:
+Variables
+---------
 
--  ``nbitermax``: number of
-   ADMM
-   iteration, default 1000
--  ``aff``: true for plot drawing using ``PyPlot.jl``, default: false
+  -  ``nbitermax``: number of ADMM iterations. Default ``1000``
+  -  ``aff``: if ``aff=true`` plots are enabled using ``PyPlot.jl``. Default: ``false``.
 
 Variables in ``OIDATA`` structure
 ----------------------------------
@@ -18,6 +17,7 @@ Variables in ``OIDATA`` structure
     In this case ``julia``must be started with
 
     .. code:: bash
+    
       $ julia -p nprocs``
 
     where ``nprocs``denotes the number of processes. Default: true
