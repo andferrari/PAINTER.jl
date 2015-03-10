@@ -14,6 +14,10 @@ Two parameters are independent of structures:
   ``OIDATA`` structure contains the following fields:
 
   - ``Folder``: path to the folder containing oifits/fits files. Default: ``src/OIFITS``.
+  - ``indfile``: allows to chose the set of oifits/fits files processed in ``Folder``. ``indfile`` is an
+    Array of Int containnig the alphabetical order of the files. Default: all files.
+  -  ``indwvl``: allowd to restrict the set of processed wavelengths. ``indwvl`` is an  Array of Int containnig the order of the wavelengths.
+    Default: all wavelengths.
   - ``nx``: image size in pixels (image of size nx\ :sup:`2`). Default: ``64``.
   - ``Wvlt``: list of wavelets basis. See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_. Default: first 8 Daubechies wavelets and Haar wavelets.
   - ``lambda_spat``: Spatial regularization parameter (weight) (Eqs. 29, 31 in ref. [1]). Default: nx\ :sup:`-2`.
@@ -32,19 +36,19 @@ Two parameters are independent of structures:
   - ``mask3D``: Binary mask defining the support constraint. ``mask3D`` can be
 
     - a path to a fits file,
-    - an user Array,
+    - an Array,
     - an empty Array (no constraint).
 
     ``mask3D`` can be set by function ``mask(...)``. Default: no constraint.
   -  ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be
 
-  , as for the mask, this parameter accept a path to a fits files. Can also be an Array, or complexe
-    visibilities. In case of array dimensions are checked and corrected, default: centered dirac att all wavelengths
+    - a path to a fits files containing the object,
+    - an Array containing the object,
+    - and Array containing the complex visibilities
 
--  ``indfile``: allow to reduce the set of file present in the
-   ``Folder``, default: all files
--  ``indwvl``: allow to restrict the set of wavelength used (wavelength
-   index), default: all wavelengths
+    Default: centered dirac for all wavelengths.
+
+
 -  ``CountPlot``: draw plot at each ``CountPlot`` iterations, default:
    10
 -  ``admm``: to run admm or not (true or false), false just initialize
