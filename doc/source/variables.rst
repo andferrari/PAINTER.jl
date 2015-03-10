@@ -38,16 +38,14 @@ Variables in ``OIDATA`` structure
     - a path to a fits file,
     - an Array,
     - an empty Array (no constraint).
+  ``mask3D`` can be set by function ``mask``. Default: no constraint.
 
-    ``mask3D`` can be set by function ``mask``. Default: no constraint.
-
-  -  ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be:
+  - ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be:
 
     - a path to a fits files containing the object,
     - an Array containing the object,
     - and Array containing the complex visibilities
-
-    Default: centered dirac for all wavelengths.
+  Default: centered dirac for all wavelengths.
 
 
 **ADMM algorithm parameters:**
@@ -79,15 +77,15 @@ Variables in ``OPTOPT`` structures
   .. code:: julia
 
 	 ls=OptimPack.MoreThuenteLineSearch(ftol=1e-4,gtol=0.9)
-  	scl=OptimPack.SCALING\_OREN\_SPEDICATO
-  	gat=1E-6
-  	grt=1E-6
-  	vt=false
-  	memsize=100
-  	mxvl=1000
-  	mxtr=1000
-  	stpmn=1E-20
-  	stpmx=1E+20
+   scl=OptimPack.SCALING\_OREN\_SPEDICATO
+   gat=1E-6
+   grt=1E-6
+   vt=false
+   memsize=100
+   mxvl=1000
+   mxtr=1000
+   stpmn=1E-20
+   stpmx=1E+20
 
 
 Useful output variables in ``PDATA`` structure
