@@ -76,6 +76,7 @@ The structure ``OPTOPT``: contains all OptimPack parameters for the phases proxi
 
 
   - ``ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx``: related to `OptimPack <https://github.com/emmt/OptimPack>`_.
+
     Default:
 
   .. code:: julia
@@ -97,7 +98,7 @@ Variables in ``PDATA`` structure
 
 Useful outputs in the structure ``PDATA`` are:
 
-  - ``PDATA.x``: reconstruced 3D images
+  - ``PDATA.x``: the reconstruced 3D images !
   - ``PDATA.w``: positivity and support contraint. These constraints can be applied to ``PDATA.x``
     with ``PDATA.x.*(PDATA.w.>0)``.
   - ``PDATA.Fx``: non uniform Fourier transform of the reconstructed 3D images.
