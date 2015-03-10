@@ -30,11 +30,15 @@ Two parameters are independent of structures:
   - ``eps2``: Dual Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
   - ``FOV``: Field Of View of the reconstructed image in ArcSecond. Default: ``40e-3``
   - ``mask3D``: Binary mask defining the support constraint. ``mask3D`` can be
+
     - a path to a fits file,
     - an user Array,
     - an empty Array (no constraint).
-  ``mask3D`` can be set by function ``mask(...)``. Default: no constraint.
-  -  ``xinit3D``: Initial Estimate, as for the mask, this parameter accept a path to a fits files. Can also be an Array, or complexe
+
+    ``mask3D`` can be set by function ``mask(...)``. Default: no constraint.
+  -  ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be
+
+  , as for the mask, this parameter accept a path to a fits files. Can also be an Array, or complexe
     visibilities. In case of array dimensions are checked and corrected, default: centered dirac att all wavelengths
 
 -  ``indfile``: allow to reduce the set of file present in the
