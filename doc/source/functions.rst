@@ -65,23 +65,11 @@ Main functions
 
 .. function:: painterplotfct(x::SharedArray, w::Array, crit1::Vector, crit2::Vector, eps1::Real, eps2::Real, nx::Int64, nw::Int64, wvl::Vector, FOV::Real)
 
-.. function:: painterplotfct(...)
-
-.. code:: julia
-
-    function painterplotfct(x::SharedArray, w::Array, crit1::Vector, crit2::Vector, eps1::Real, eps2::Real, nx::Int64, nw::Int64, wvl::Vector, FOV::Real)
-
   It is recommended to monitor the iterations of the algorithm when the number
   of wavelength is small, e.g. < 30.
 
-In order to allow user to draw personalized plots ``painterplot.jl`` is
-a separated files of the package located in
-``Painter.jl/src/painterplot.jl``.
-
-The default function compute automatically number of subplot as a function of the number of
-wavelength (if nw<30) and draw on the first figure the per-channel
-estimates projected on the positiv support constraint. The axis are
-defined by the field of view with no limitation of the amplitude
-(colorbars are different for all images). A second figure draw the
-primal and dual residuals (``crit1``\ and ``crit2``) as a function of
-the iteration number and print the verbose of these values.
+  The default function computes the number of subplots as a function of the number of wavelength if ``nw<30``.
+  - The first figure shows the per-channel estimates projected on the domain support. The axis are defined by the field of view with
+  no limitation of the amplitude (colorbars are different for all images).
+  - The second figure shows the primal and dual residuals (``crit1`` and ``crit2``) as a function of
+  the iteration. 
