@@ -90,10 +90,10 @@ Variables in ``OPTOPT`` structure
     stpmx=1E+20
 
 
-Useful output variables in ``PDATA`` structure
-----------------------------------------------
+Variables in ``PDATA`` structure
+--------------------------------
 
-Useful Array in ``PDATA`` are
+Useful outputs in ``PDATA`` are:
 
   - ``PDATA.x``: reconstruced 3D images
   - ``PDATA.w``: positivity and support contraint. These constraints can be applied to ``PDATA.x``

@@ -1,4 +1,4 @@
-examples
+Examples
 ========
 
 If parameters are not set, default values are used.
