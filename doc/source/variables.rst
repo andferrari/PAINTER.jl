@@ -54,12 +54,12 @@ The structure ``OIDATA``: contains all oifits information and user defined param
 
 **ADMM algorithm parameters:**
 
-  - ``Wvlt``: list of wavelets basis. See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_. Default: first 8 Daubechies wavelets and Haar wavelets.
-  - ``lambda_spat``: Spatial regularization parameter (weight), see Eqs. 29, 31 in [1]). Default: nx\ :sup:`-2`.
-  - ``lambda_spec``: Spectral regularization parameter (weight), see Eqs. 29, 31 in [1]. Default: ``1e-2``.
-  - ``lambda_L1``: l1 regularization parameter (weight). l1 constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
-  - ``epsilon``: Ridge/Tikhonov regularization parameter, see Eqs. 29, 31 in [1]). Default: ``1e-6``.
-  - ``rho_y``: ADMM parameter for data fidelity (convergence rate),see  Eqs. 35, 50-52 in [1]. Default: ``1``.
+  - ``Wvlt``: list of wavelets basis, see `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_. Default: first 8 Daubechies wavelets and Haar wavelets.
+  - ``lambda_spat``: Spatial regularization parameter, see Eqs. 29, 31 in [1]. Default: nx\ :sup:`-2`.
+  - ``lambda_spec``: Spectral regularization parameter, see Eqs. 29, 31 in [1]. Default: ``1e-2``.
+  - ``lambda_L1``: l1 regularization parameter. l1 constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
+  - ``epsilon``: Ridge/Tikhonov regularization parameter, see Eqs. 29, 31 in [1]. Default: ``1e-6``.
+  - ``rho_y``: ADMM parameter for data fidelity,see  Eqs. 35, 50-52 in [1]. Default: ``1``.
   - ``rho_spat``: ADMM parameter for Spatial regularization, see Eqs. 25, 31 in [1]. Default: ``1``.
   - ``rho_spec``: ADMM parameter for Spectral regularization, see Eqs. 42, 55 in [1]. Default: ``1``.
   - ``rho_ps``: ADMM parameter for positivity constraint, see Eq. 47, 54 in [1]. Default: ``1``.
