@@ -13,8 +13,8 @@ Two parameters are independent of structures:
 
   ``OIDATA`` structure contains the following fields:
 
-  - ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painteradmm(...)`` can be used to iterate
-  the ADMM algorithm. Default: ``true``.
+  - ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used to iterate
+    the ADMM algorithm. Default: ``true``.
   - ``paral``: if true perform some calculus in parallel, useful when
    julia use several core (``julia -p nprocs``), default: true
 
