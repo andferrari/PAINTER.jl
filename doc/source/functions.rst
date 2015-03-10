@@ -49,28 +49,20 @@ E = mc\ :sup:`2`
 
 
   Save structures ``OIDATA``, ``PADATA`` and ``OPTOPT`` (TBD) into ``*.jld`` (see `HDF5<https://github.com/timholy/HDF5.jl>`_ package)
-  files defined by ``savepath``, its full path consists to call the ``save``\ function:
+  files. The names of the files are defined by ``savepath``. To save the structures in ``file.jld``
 
   .. code:: julia
-
-    function
-
-Thanks to `HDF5<https://github.com/timholy/HDF5.jl>`_ package,
-``save`` and ``load`` functions are provided with ``Painter.jl``.
-
-example:
-^^^^^^^^
-
-to save the structures in ``file.jld``
-
-.. code:: julia
 
     savepath = "../Mypath/file.jld"
     paintersave(savepath,PDATA,OIDATA,OPTOPT)
 
-to load the structures into new structures
 
-.. code:: julia
+.. function:: painterload(savepath::ASCIIString)
+
+
+  To load the structures contained in ``*.jld`` files:
+
+  .. code:: julia
 
     PDATA2,OIDATA2,OPTOPT2 = painterload(savepath)
 
