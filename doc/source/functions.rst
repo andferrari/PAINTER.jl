@@ -4,7 +4,7 @@ functions
 painter functions
 ~~~~~~~~~~~~~~~~~
 
-``PAINTER.jl`` can be used with all parameters defined by ``painter function``
+``Painter.jl`` can be used with all parameters defined by ``painter function``
 and return 3 structures:
 
 ``OIDATA,PDATA,OPTOPT = painter(...)``
@@ -24,7 +24,7 @@ it follows that ``painter`` can be used with two methods:
 
 .. code:: julia
 
-    OIDATA,PDATA,OPTOPT = painter(Folder, nbitermax, nx, lambda_spat, lambda_spec, lambda_L1, epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, Wvlt, beta, eps1, eps2, FOV, mask3D, xinit3D, indfile, indwvl, ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx, aff, CountPlot, admm, paral)  
+    OIDATA,PDATA,OPTOPT = painter(Folder, nbitermax, nx, lambda_spat, lambda_spec, lambda_L1, epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, Wvlt, beta, eps1, eps2, FOV, mask3D, xinit3D, indfile, indwvl, ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx, aff, CountPlot, admm, paral)
 
 -  Given structures to re-run algorithm, for example if the defined
    number of iteration is not enough (nbitermax+=100)
@@ -32,7 +32,7 @@ it follows that ``painter`` can be used with two methods:
 
 .. code:: julia
 
-    OIDATA,PDATA,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)  
+    OIDATA,PDATA,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)
 
 mask function
 ~~~~~~~~~~~~~
@@ -50,7 +50,7 @@ save and load
 ~~~~~~~~~~~~~
 
 Thanks to ```HDF5`` <https://github.com/timholy/HDF5.jl>`__ package,
-``save`` and ``load`` functions are provided with PAINTER.jl. To save
+``save`` and ``load`` functions are provided with Painter.jl. To save
 structures ``OIDATA``, ``PADATA`` and ``OPTOPT`` (TBD) into ``*.jld``
 files defined by ``savepath``, its full path consists to call the
 ``save``\ function:
@@ -75,16 +75,16 @@ to load the structures into new structures
 
     PDATA2,OIDATA2,OPTOPT2 = painterload(savepath)
 
-painterplotfct function (painterplot.jl):  
+painterplotfct function (painterplot.jl):
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: julia
 
-    function painterplotfct(x::SharedArray, w::Array, crit1::Vector, crit2::Vector, eps1::Real, eps2::Real, nx::Int64, nw::Int64, wvl::Vector, FOV::Real)  
+    function painterplotfct(x::SharedArray, w::Array, crit1::Vector, crit2::Vector, eps1::Real, eps2::Real, nx::Int64, nw::Int64, wvl::Vector, FOV::Real)
 
 In order to allow user to draw personalized plots ``painterplot.jl`` is
 a separated files of the package located in
-``PAINTER.jl/src/painterplot.jl``. The default function compute
+``Painter.jl/src/painterplot.jl``. The default function compute
 automatically number of subplot as a function of the number of
 wavelength (if nw<30) and draw on the first figure the per-channel
 estimates projected on the positiv support constraint. The axis are

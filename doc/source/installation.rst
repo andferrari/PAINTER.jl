@@ -1,8 +1,8 @@
 Installation
 ============
 
-``PAINTER.jl`` uses the library
-```OptimPack`` <https://github.com/emmt/OptimPack>`__ for solving the
+``Painter.jl`` uses the library
+`OptimPack <https://github.com/emmt/OptimPack>`_ for solving the
 phases proximal operator. The Julia interface to OptimPack is not a
 registered Julia package. To install
 ```OptimPack.jl`` <https://github.com/emmt/OptimPack.jl>`__ type from a
@@ -17,7 +17,7 @@ Installation of PAINTER is then as simple as typing:
 
 .. code:: julia
 
-    Pkg.clone("https://github.com/andferrari/PAINTER.jl.git")
+    Pkg.clone("https://github.com/andferrari/Painter.jl.git")
 
 It is recommended to install
 ```PyPlot.jl`` <https://github.com/stevengj/PyPlot.jl>`__ to monitor the

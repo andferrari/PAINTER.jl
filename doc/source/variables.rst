@@ -1,7 +1,7 @@
 variables
 =========
 
-``PAINTER.jl`` can be used with all parameters defined by ``painter function``
+``Painter.jl`` can be used with all parameters defined by ``painter function``
 and return 3 structures:
 
 ``OIDATA,PDATA,OPTOPT = painter(...)``
@@ -21,7 +21,7 @@ it follows that ``painter`` can be used with two methods:
 
 .. code:: julia
 
-    OIDATA,PDATA,OPTOPT = painter(Folder, nbitermax, nx, lambda_spat, lambda_spec, lambda_L1, epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, Wvlt, beta, eps1, eps2, FOV, mask3D, xinit3D, indfile, indwvl, ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx, aff, CountPlot, admm, paral)  
+    OIDATA,PDATA,OPTOPT = painter(Folder, nbitermax, nx, lambda_spat, lambda_spec, lambda_L1, epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, Wvlt, beta, eps1, eps2, FOV, mask3D, xinit3D, indfile, indwvl, ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx, aff, CountPlot, admm, paral)
 
 -  Given structures to re-run algorithm, for example if the defined
    number of iteration is not enough (nbitermax+=100)
@@ -29,7 +29,7 @@ it follows that ``painter`` can be used with two methods:
 
 .. code:: julia
 
-    OIDATA,PDATA,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)  
+    OIDATA,PDATA,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)
 
 Variables and structures informations
 -------------------------------------
@@ -131,7 +131,7 @@ Optimization engine Structures
 if parameters are not setted, default value are used. For example,
 calling: ``OIDATA,PDATA,OPTOPT =  painter()`` execute the 3D image
 reconstruction algorithm from data stored in all \*.oifits files from
-folder "OIFITS" located in the ``PAINTER.jl`` source folder
+folder "OIFITS" located in the ``Painter.jl`` source folder
 (``src/OIFITS``). The parameters are setted to default value with no
 support contraint, spatial and spectral regularizations, positivity
 constraint, the original estimate is a centered dirac at all
