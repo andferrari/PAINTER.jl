@@ -10,6 +10,7 @@ Variables
 Variables in ``OIDATA`` structure
 ----------------------------------
 
+``OIDATA``: contains all oifits information and user defined parameters.
 
 **Execution Variables:**
 
@@ -17,8 +18,8 @@ Variables in ``OIDATA`` structure
     In this case ``julia``must be started with
 
     .. code:: bash
-    
-      $ julia -p nprocs``
+
+      $ julia -p nprocs
 
     where ``nprocs``denotes the number of processes. Default: true
   - ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used after to iterate
@@ -66,17 +67,20 @@ Variables in ``OIDATA`` structure
   - ``eps2``: Dual Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
 
 
-Optimization engine Structures
-------------------------------
+Variables in ``OPTOPT`` structures
+----------------------------------
 
-``OPTOPT`` structure contains:
+``OPTOPT``: contains all OptimPack parameters for the phases proximal operator.
 
-- ``ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx``: related to
-  ```OptimPack`` <https://github.com/emmt/OptimPack>`__. default:
 
-.. code:: julia
+  - ``ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx``: related to
+  `OptimPack <https://github.com/emmt/OptimPack>`_.
 
-	ls=OptimPack.MoreThuenteLineSearch(ftol=1e-4,gtol=0.9)
+  Default:
+
+  .. code:: julia
+
+	 ls=OptimPack.MoreThuenteLineSearch(ftol=1e-4,gtol=0.9)
   	scl=OptimPack.SCALING\_OREN\_SPEDICATO
   	gat=1E-6
   	grt=1E-6
@@ -87,26 +91,16 @@ Optimization engine Structures
   	stpmn=1E-20
   	stpmx=1E+20
 
-if parameters are not setted, default value are used. For example,
-calling: ``OIDATA,PDATA,OPTOPT =  painter()`` execute the 3D image
-reconstruction algorithm from data stored in all \*.oifits files from
-folder "OIFITS" located in the ``Painter.jl`` source folder
-(``src/OIFITS``). The parameters are setted to default value with no
-support contraint, spatial and spectral regularizations, positivity
-constraint, the original estimate is a centered dirac at all
-wavelengths.
 
-Useful output data
-------------------
+Useful output variables in ``PDATA`` structure
+----------------------------------------------
 
 Useful Array in ``PDATA`` are
 
--  ``PDATA.x``: reconstruced 3D images
--  ``PDATA.w``: positivity+support contraint, ``PDATA.x.*(PDATA.w.>0)``
-   will project the reconstructed 3D images on positif support
--  ``PDATA.Fx``: non uniform Fourier transform of 3D images
--  ``PDATA.crit1`` and ``PDATA.crit2`` the primal and dual residual
-   values of the
-   ADMM
-   algorithm
--  ``PDATA.ind`` the iteration indice, useful to re-run algorithm
+  - ``PDATA.x``: reconstruced 3D images
+  - ``PDATA.w``: positivity and support contraint. These constraints can be applied to ``PDATA.x``
+    with ``PDATA.x.*(PDATA.w.>0)``.
+  - ``PDATA.Fx``: non uniform Fourier transform of the reconstructed 3D images.
+  - ``PDATA.crit1``: the primal residual of the ADMM algorithm.
+  - ``PDATA.crit2``: the dual residual of the ADMM algorithm.
+  - ``PDATA.ind``: number of iterations, useful to re-run algorithm.

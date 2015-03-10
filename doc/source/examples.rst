@@ -1,6 +1,15 @@
 examples
 ========
 
+If parameters are not set, default values are used.
+For example, calling: ``OIDATA,PDATA,OPTOPT =  painter()`` execute the 3D image
+reconstruction algorithm from data stored in all \*.oifits files from
+folder "OIFITS" located in the ``Painter.jl`` source folder
+(``src/OIFITS``). The parameters are setted to default value with no
+support contraint, spatial and spectral regularizations, positivity
+constraint, the original estimate is a centered dirac at all
+wavelengths.
+
 User parameters and single algorithm execution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -28,7 +37,7 @@ will run the algorithm for 100 iterations.
     Myrho_ss      = 1
     Mylambda_spec = 1e-5
     Myaff         = true
-    Mynbitermax   = 100                 
+    Mynbitermax   = 100
     Mypar         = false
 
 The support constraint is defined by a circle
@@ -40,7 +49,7 @@ executed:
 
 .. code:: julia
 
-    OIDATA,PDATA,OPTOPT = painter(Folder=MyFolder, nbitermax=Mynbitermax, nx=Mynx, lambda_spat=Mylambda_spat=Mylambda_spat, lambda_spec=Mylambda_spec, rho_y= rho_y, rho_spat= rho_spat, rho_spec= rho_spec, rho_ps= rho_ps, alpha= alpha, beta=Mybeta, eps1=Myeps1, eps2=Myeps2, FOV= MyFOV, indfile, indwvl=Myindwvl, paral=Myparal)  
+    OIDATA,PDATA,OPTOPT = painter(Folder=MyFolder, nbitermax=Mynbitermax, nx=Mynx, lambda_spat=Mylambda_spat=Mylambda_spat, lambda_spec=Mylambda_spec, rho_y= rho_y, rho_spat= rho_spat, rho_spec= rho_spec, rho_ps= rho_ps, alpha= alpha, beta=Mybeta, eps1=Myeps1, eps2=Myeps2, FOV= MyFOV, indfile, indwvl=Myindwvl, paral=Myparal)
 
 Algorithm re-run
 ^^^^^^^^^^^^^^^^
@@ -61,7 +70,7 @@ Then re-run the algorithm:
 
 .. code:: julia
 
-    OIDATA,PDATA_new,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)  
+    OIDATA,PDATA_new,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)
 
 Iteration per Iteration reconstruction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -73,7 +82,7 @@ iteration per iteration, consider to make a loop:
 
     for n=1:10
     nbitermax+=1
-    OIDATA,PDATA,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)  
+    OIDATA,PDATA,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)
     saveX[n] = PDATA.x
     saveW[n] = PDATA.w
     end
