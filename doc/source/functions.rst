@@ -25,7 +25,7 @@ Main functions
 
   .. code:: julia
 
-    julia> OIDATA,PDATA,OPTOPT = painter(...)
+    OIDATA,PDATA,OPTOPT = painter(...)
 
   where:
 
@@ -36,14 +36,14 @@ Main functions
 
 .. function:: mask(nx::Int,param::Int,choice::ASCIIString)
 
-Creates a binary mask of size nx:sup:`2`, the support constraint binary mask can be
-generated using the function:
+  Creates a binary mask of size nx:sup:`2`:
 
-``Mymask3D = mask(nx,param,choice)``
+  .. code:: julia Mymask3D = mask(nx,param,choice)
 
-choice can be rectangular constraint (default: choice="rect") or a
-circle (choice="circ"). nx is the side size of the image to reconstruct.
-param is the radius of the circle or the half side of the square.
+  - ``choice`` can be a square (default: ``choice="square"``) or a
+  disk (``choice="disk"``).
+  - ``nx`` is the size of the image.
+  - ``param`` is the radius of the disk or the half size of the square.
 
 save and load
 ~~~~~~~~~~~~~
