@@ -63,7 +63,9 @@ Functions
 
   Creates a binary mask of size nx\ :sup:`2`:
 
-    .. code:: julia Mymask3D = mask(nx,param,choice)
+    .. code:: julia
+
+      Mymask3D = mask(nx,param,choice)
 
   - ``choice`` can be a square (default: ``choice="square"``) or a disk (``choice="disk"``).
   - ``nx`` is the size of the image.
