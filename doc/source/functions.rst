@@ -36,9 +36,9 @@ Main functions
 
 .. function:: mask(nx::Int,param::Int,choice::ASCIIString)
 
-  Creates a binary mask of size nx:sup:`2`:
-E = mc\ :sup:`2`
-  .. code:: julia Mymask3D = mask(nx,param,choice)
+  Creates a binary mask of size nx\ :sup:`2`: ``nx\ :sup:`2```:
+
+    .. code:: julia Mymask3D = mask(nx,param,choice)
 
   - ``choice`` can be a square (default: ``choice="square"``) or a
   disk (``choice="disk"``).
@@ -48,9 +48,8 @@ E = mc\ :sup:`2`
 .. function:: paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
 
 
-  Save structures ``OIDATA``, ``PADATA`` and ``OPTOPT`` (TBD) into ``*.jld`` (see `HDF5<https://github.com/timholy/HDF5.jl>`_ package)
-  files. The names of the files are defined by ``savepath``. To save the structures in ``file.jld``
-
+  Save structures ``OIDATA``, ``PADATA`` and ``OPTOPT`` (TBD) into ``*.jld`` files (see `HDF5 <https://github.com/timholy/HDF5.jl>`_ package).
+  
   .. code:: julia
 
     savepath = "../Mypath/file.jld"
