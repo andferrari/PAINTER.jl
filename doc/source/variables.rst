@@ -67,8 +67,8 @@ Variables in ``OIDATA`` structure
   - ``eps2``: Dual Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
 
 
-Variables in ``OPTOPT`` structures
-----------------------------------
+Variables in ``OPTOPT`` structure
+---------------------------------
 
 ``OPTOPT``: contains all OptimPack parameters for the phases proximal operator.
 
@@ -78,16 +78,16 @@ Variables in ``OPTOPT`` structures
 
   .. code:: julia
 
-	 ls=OptimPack.MoreThuenteLineSearch(ftol=1e-4,gtol=0.9)
-   scl=OptimPack.SCALING\_OREN\_SPEDICATO
-   gat=1E-6
-   grt=1E-6
-   vt=false
-   memsize=100
-   mxvl=1000
-   mxtr=1000
-   stpmn=1E-20
-   stpmx=1E+20
+    ls=OptimPack.MoreThuenteLineSearch(ftol=1e-4,gtol=0.9)
+    scl=OptimPack.SCALING\_OREN\_SPEDICATO
+    gat=1E-6
+    grt=1E-6
+    vt=false
+    memsize=100
+    mxvl=1000
+    mxtr=1000
+    stpmn=1E-20
+    stpmx=1E+20
 
 
 Useful output variables in ``PDATA`` structure
