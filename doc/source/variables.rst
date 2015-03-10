@@ -38,14 +38,16 @@ Variables in ``OIDATA`` structure
     - a path to a fits file,
     - an Array,
     - an empty Array (no constraint).
-  ``mask3D`` can be set by function ``mask``. Default: no constraint.
 
-  - ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be:
+    ``mask3D`` can be set by function ``mask``. Default: no constraint.
+
+  -  ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be:
 
     - a path to a fits files containing the object,
     - an Array containing the object,
     - and Array containing the complex visibilities
-  Default: centered dirac for all wavelengths.
+
+    Default: centered dirac for all wavelengths.
 
 
 **ADMM algorithm parameters:**
@@ -54,7 +56,7 @@ Variables in ``OIDATA`` structure
   - ``lambda_spat``: Spatial regularization parameter (weight) (Eqs. 29, 31 in ref. [1]). Default: nx\ :sup:`-2`.
   - ``lambda_spec``: Spectral regularization parameter (weight) (Eqs. 29, 31 in ref. [1]). Default: ``1e-2``.
   - ``lambda_L1``: l1 regularization parameter (weight). l1 constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
-  - ``epsilon``: Ridge/tikhonov regularization parameter (Eqs. 29, 31 in ref. [1]). Default: ``1e-6``.
+  - ``epsilon``: Ridge/Tikhonov regularization parameter (Eqs. 29, 31 in ref. [1]). Default: ``1e-6``.
   - ``rho_y``: ADMM parameter for data fidelity (convergence rate) (Eq.35, 50-52 in ref. [1]). Default: ``1``.
   - ``rho_spat``: ADMM parameter for Spatial regularization (Eqs. 25, 31 in ref. [1]). Default: ``1``.
   - ``rho_spec``: ADMM parameter for Spectral regularization (Eqs. 42, 55 in ref. [1]). Default: ``1``.
