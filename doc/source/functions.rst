@@ -1,8 +1,6 @@
 Functions
 =========
 
-Main functions
-~~~~~~~~~~~~~~
 
 .. function:: painter(...)
 
@@ -32,19 +30,7 @@ Main functions
     - ``PDATA``: contains all variables and array modified during iterations
     - ``OPTOPT``: contains all OptimPack parameters for the phases minimization process
 
-
-.. function:: mask(nx::Int,param::Int,choice::ASCIIString)
-
-  Creates a binary mask of size nx\ :sup:`2`:
-
-    .. code:: julia Mymask3D = mask(nx,param,choice)
-
-  - ``choice`` can be a square (default: ``choice="square"``) or a disk (``choice="disk"``).
-  - ``nx`` is the size of the image.
-  - ``param`` is the radius of the disk or the half size of the square.
-
 .. function:: paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
-
 
   Save structures ``OIDATA``, ``PADATA`` and ``OPTOPT`` (TBD) into ``*.jld`` files (see `HDF5 <https://github.com/timholy/HDF5.jl>`_ package).
 
@@ -52,7 +38,6 @@ Main functions
 
     savepath = "../Mypath/file.jld"
     paintersave(savepath,PDATA,OIDATA,OPTOPT)
-
 
 .. function:: painterload(savepath::ASCIIString)
 
@@ -72,4 +57,14 @@ Main functions
   - The first figure shows the per-channel estimates projected on the domain support. The axis are defined by the field of view with
   no limitation of the amplitude (colorbars are different for all images).
   - The second figure shows the primal and dual residuals (``crit1`` and ``crit2``) as a function of
-  the iteration. 
+  the iteration.
+
+.. function:: mask(nx::Int,param::Int,choice::ASCIIString)
+
+  Creates a binary mask of size nx\ :sup:`2`:
+
+    .. code:: julia Mymask3D = mask(nx,param,choice)
+
+  - ``choice`` can be a square (default: ``choice="square"``) or a disk (``choice="disk"``).
+  - ``nx`` is the size of the image.
+  - ``param`` is the radius of the disk or the half size of the square.
