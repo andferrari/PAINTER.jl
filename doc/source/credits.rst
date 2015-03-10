@@ -22,10 +22,10 @@ an accelerated version of PAINTER described in [2].
 1. Schutz, A., Ferrari, A., Mary, D. Soulez, F., Thiébaut, E., Vannier,
    M. “PAINTER: a spatio-spectral image reconstruction algorithm for
    optical interferometry”. JOSA A. Vol. 31, Iss. 11, pp. 2356–2361
-   (2014). `arxiv <http://arxiv.org/abs/1407.1885>`__
+   (2014). `arXiv <http://arxiv.org/abs/1407.1885>`_
 2. Schutz, A., Ferrari, A., Mary, D., Thiébaut, E., Soulez, F. “Large
    scale 3D image reconstruction in optical interferometry”. Submitted
-   to EUSIPCO 2015, Nice. `arxiv <http://arxiv.org/abs/1503.01565>`__
+   to EUSIPCO 2015, Nice. `arXiv <http://arxiv.org/abs/1503.01565>`_
 
 Credits
 -------
@@ -38,4 +38,4 @@ Agence Nationale pour la Recherche (ref. ANR-10-BLAN-0511).
 License
 -------
 
-PAINTER is released under under the MIT "Expat" License.
+``Painter.jl`` is released under under the MIT "Expat" License.
