@@ -23,7 +23,7 @@ Main functions
 
   ``painter`` returns 3 structures:
 
-  ..code:: julia
+  .. code:: julia
 
     julia> OIDATA,PDATA,OPTOPT = painter(...)
 
@@ -39,7 +39,7 @@ Main functions
 
 .. function:: mask(nx::Int,param::Int,choice::ASCIIString)
 
-Creates a binary mask of size ``nx:sup:`2```, the support constraint binary mask can be
+Creates a binary mask of size ``nx:sup:2``, the support constraint binary mask can be
 generated using the function:
 
 ``Mymask3D = mask(nx,param,choice)``
