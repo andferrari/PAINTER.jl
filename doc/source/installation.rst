@@ -1,5 +1,8 @@
+Getting Started
+===============
+
 Installation
-============
+------------
 
 ``Painter.jl`` uses the library
 `OptimPack <https://github.com/emmt/OptimPack>`_ for solving the
