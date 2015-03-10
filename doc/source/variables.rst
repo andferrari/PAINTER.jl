@@ -1,35 +1,6 @@
-variables
-=========
+Variables and structures
+========================
 
-``Painter.jl`` can be used with all parameters defined by ``painter function``
-and return 3 structures:
-
-``OIDATA,PDATA,OPTOPT = painter(...)``
-
-where:
-
--  ``OIDATA``: contains all oifits information and user defined
-   parameters
--  ``PDATA``: contains all variables and array modified during
-   iterations
--  ``OPTOPT``: contains all OptimPack parameters for the phases
-   minimization process
-
-it follows that ``painter`` can be used with two methods:
-
--  full parameters definition for first run algorithm:
-
-.. code:: julia
-
-    OIDATA,PDATA,OPTOPT = painter(Folder, nbitermax, nx, lambda_spat, lambda_spec, lambda_L1, epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, Wvlt, beta, eps1, eps2, FOV, mask3D, xinit3D, indfile, indwvl, ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx, aff, CountPlot, admm, paral)
-
--  Given structures to re-run algorithm, for example if the defined
-   number of iteration is not enough (nbitermax+=100)
-
-
-.. code:: julia
-
-    OIDATA,PDATA,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)
 
 Variables and structures informations
 -------------------------------------

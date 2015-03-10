@@ -2,8 +2,8 @@ Credits
 =======
 
 ``Painter.jl`` is a julia implementation of PAINTER: Polychromatic
-opticAl INTErferometric Reconstruction software described in [1] and
-[2].
+opticAl INTErferometric Reconstruction software described in [1]_ and
+[2]_.
 
 PAINTER was developped at Laboratoire J.-L. Lagrange, Université de Nice
 Sophia, CNRS, Observatoire de la Côte d'Azur, by `Antony
@@ -19,13 +19,8 @@ of ``Painter.jl`` is highly recommended.
 `Painter.jl <https://github.com/andferrari/Painter.jl>`_ implements
 an accelerated version of PAINTER described in [2].
 
-1. Schutz, A., Ferrari, A., Mary, D. Soulez, F., Thiébaut, E., Vannier,
-   M. “PAINTER: a spatio-spectral image reconstruction algorithm for
-   optical interferometry”. JOSA A. Vol. 31, Iss. 11, pp. 2356–2361
-   (2014). `arXiv <http://arxiv.org/abs/1407.1885>`_
-2. Schutz, A., Ferrari, A., Mary, D., Thiébaut, E., Soulez, F. “Large
-   scale 3D image reconstruction in optical interferometry”. Submitted
-   to EUSIPCO 2015, Nice. `arXiv <http://arxiv.org/abs/1503.01565>`_
+.. [1] Schutz, A., Ferrari, A., Mary, D. Soulez, F., Thiébaut, E., Vannier, M. “PAINTER: a spatio-spectral image reconstruction algorithm for optical interferometry”. JOSA A. Vol. 31, Iss. 11, pp. 2356–2361, (2014). `arXiv <http://arxiv.org/abs/1407.1885>`_
+.. [2] Schutz, A., Ferrari, A., Mary, D., Thiébaut, E., Soulez, F. “Large scale 3D image reconstruction in optical interferometry”. Submitted to EUSIPCO 2015, Nice. `arXiv <http://arxiv.org/abs/1503.01565>`_
 
 Credits
 -------
@@ -39,3 +34,5 @@ License
 -------
 
 ``Painter.jl`` is released under under the MIT "Expat" License.
+
+:ref:`jump-installation`

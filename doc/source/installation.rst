@@ -22,9 +22,8 @@ Installation of PAINTER is then as simple as typing:
 
     julia> Pkg.clone("https://github.com/andferrari/Painter.jl.git")
 
-It is recommended to install
-``PyPlot.jl`` to monitor the iterations of the algorithm. See
-`PyPlot.jl <https://github.com/stevengj/PyPlot.jl>`_ page.
+It is recommended to install ``PyPlot.jl`` to monitor the iterations of the algorithm when the number
+of wavelength is small, e.g. < 30.  See `PyPlot.jl <https://github.com/stevengj/PyPlot.jl>`_ page.
 
 Dependencies
 ------------
