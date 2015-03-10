@@ -37,7 +37,7 @@ Main functions
 .. function:: mask(nx::Int,param::Int,choice::ASCIIString)
 
   Creates a binary mask of size nx:sup:`2`:
-
+E = mc\ :sup:`2`
   .. code:: julia Mymask3D = mask(nx,param,choice)
 
   - ``choice`` can be a square (default: ``choice="square"``) or a
@@ -45,18 +45,18 @@ Main functions
   - ``nx`` is the size of the image.
   - ``param`` is the radius of the disk or the half size of the square.
 
-save and load
-~~~~~~~~~~~~~
+.. function:: paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
 
-Thanks to ```HDF5`` <https://github.com/timholy/HDF5.jl>`__ package,
-``save`` and ``load`` functions are provided with Painter.jl. To save
-structures ``OIDATA``, ``PADATA`` and ``OPTOPT`` (TBD) into ``*.jld``
-files defined by ``savepath``, its full path consists to call the
-``save``\ function:
 
-.. code:: julia
+  Save structures ``OIDATA``, ``PADATA`` and ``OPTOPT`` (TBD) into ``*.jld`` (see `HDF5<https://github.com/timholy/HDF5.jl>`_ package)
+  files defined by ``savepath``, its full path consists to call the ``save``\ function:
 
-    function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
+  .. code:: julia
+
+    function
+
+Thanks to `HDF5<https://github.com/timholy/HDF5.jl>`_ package,
+``save`` and ``load`` functions are provided with ``Painter.jl``.
 
 example:
 ^^^^^^^^
