@@ -12,11 +12,11 @@ Ferrari <https://www-n.oca.eu/aferrari>`_.
 References
 ----------
 
-The PAINTER algorithm is described in [1]. The original MATLAB code is
+The PAINTER algorithm is described in [1]_. The original MATLAB code is
 available `here <https://www-n.oca.eu/aferrari/painter/>`_ but the use
 of ``Painter.jl`` is highly recommended.
 `Painter.jl <https://github.com/andferrari/Painter.jl>`_ implements
-an accelerated version of PAINTER described in [2].
+an accelerated version of PAINTER described in [2]_.
 
 
 .. [1] Schutz, A., Ferrari, A., Mary, D. Soulez, F., Thiébaut, E., Vannier, M. "PAINTER: a spatio-spectral image reconstruction algorithm for optical interferometry". JOSA A. Vol. 31, Iss. 11, pp. 2356–2361, (2014). `arXiv <http://arxiv.org/abs/1407.1885>`_
