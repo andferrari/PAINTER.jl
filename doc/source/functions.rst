@@ -32,8 +32,8 @@ Main function
     - ``PDATA``: contains all variables and array modified during iterations
     - ``OPTOPT``: contains all OptimPack parameters for the phases proximal operator
 
-Auxiliaries functions
----------------------
+Auxiliary functions
+-------------------
 
 .. function:: paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
 
