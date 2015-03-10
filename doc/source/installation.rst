@@ -5,24 +5,23 @@ Installation
 `OptimPack <https://github.com/emmt/OptimPack>`_ for solving the
 phases proximal operator. The Julia interface to OptimPack is not a
 registered Julia package. To install
-```OptimPack.jl`` <https://github.com/emmt/OptimPack.jl>`__ type from a
+`OptimPack.jl <https://github.com/emmt/OptimPack.jl>`_ type from a
 Julia session the following commands:
 
 .. code:: julia
 
-    Pkg.clone("https://github.com/emmt/OptimPack.jl.git")
-    Pkg.build("OptimPack")
+    julia> Pkg.clone("https://github.com/emmt/OptimPack.jl.git")
+    julia> Pkg.build("OptimPack")
 
 Installation of PAINTER is then as simple as typing:
 
 .. code:: julia
 
-    Pkg.clone("https://github.com/andferrari/Painter.jl.git")
+    julia> Pkg.clone("https://github.com/andferrari/Painter.jl.git")
 
 It is recommended to install
-```PyPlot.jl`` <https://github.com/stevengj/PyPlot.jl>`__ to monitor the
-iterations of the algorithm. See
-```PyPlot.jl`` <https://github.com/stevengj/PyPlot.jl>`__ page.
+``PyPlot.jl`` to monitor the iterations of the algorithm. See
+`PyPlot.jl <https://github.com/stevengj/PyPlot.jl>`_ page.
 
 Dependencies
 ------------
@@ -30,11 +29,11 @@ Dependencies
 PAINTER uses the following registered Julia package. They will be
 automaticaly installed during PAINTER installation.
 
--  ```FITSIO.jl`` <https://github.com/JuliaAstro/FITSIO.jl>`__: Julia
+-  `FITSIO.jl <https://github.com/JuliaAstro/FITSIO.jl>`_: Julia
    support for OI-FITS (optical interferometry data format).
--  ```NFFT.jl`` <https://github.com/tknopp/NFFT.jl>`__: Julia
+-  `NFFT.jl <https://github.com/tknopp/NFFT.jl>`_: Julia
    implementation of the Non-equidistant Fast Fourier Transform (NFFT).
--  ```Wavelets`` <https://github.com/JuliaDSP/Wavelets.jl>`__: A Julia
+-  `Wavelets <https://github.com/JuliaDSP/Wavelets.jl>`_: A Julia
    package for fast wavelet transforms.
--  ```HDF5`` <https://github.com/timholy/HDF5.jl>`__: for writing JLD
+-  `HDF5 <https://github.com/timholy/HDF5.jl>`_: for writing JLD
    ("Julia data") variables.
