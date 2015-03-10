@@ -17,7 +17,7 @@ Variables in ``OIDATA`` structure
   - ``paral``: if ``paral=true`` the ADMM step which reconstructs the object for each wavelength is computed in parallel.
     In this case ``julia``must be started with
 
-    .. code:: shell
+    .. code:: bash
       $ julia -p nprocs``
 
     where ``nprocs``denotes the number of processes. Default: true
@@ -38,7 +38,7 @@ Variables in ``OIDATA`` structure
     - an Array,
     - an empty Array (no constraint).
 
-    ``mask3D`` can be set by function ``mask(...)``. Default: no constraint.
+    ``mask3D`` can be set by function ``mask``. Default: no constraint.
 
   -  ``xinit3D``: Initial Estimate of the object or of the complex visibilities. ``xinit3D`` can be:
 
