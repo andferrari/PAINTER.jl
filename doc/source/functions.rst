@@ -1,11 +1,12 @@
-functions
+Functions
 =========
 
-painter functions
+Main functions
 ~~~~~~~~~~~~~~~~~
 
-``Painter.jl`` can be used with all parameters defined by ``painter function``
-and return 3 structures:
+.. function:: painter(...)
+
+  ``painter`` returns 3 structures:
 
 ``OIDATA,PDATA,OPTOPT = painter(...)``
 
