@@ -11,13 +11,11 @@ Two parameters are independent of structures:
 ``OIDATA`` structure
 --------------------
 
-``OIDATA`` structure, define:
+  ``OIDATA`` structure contains the following fields:
 
--  ``Folder``: path to the folder containing oifits/fits files (need
-   ``OIFITS.jl``), default: src/OIFITS
--  ``nx`` : size in pixels of image (image of size nx\*nx), default: 64
--  ``Wvlt`` : list of wavelets basis, default: 8 Daubechies and haar
-   wavelets
+  -  ``Folder``: path to the folder containing oifits/fits files. Default: ``src/OIFITS``.
+  -  ``nx``: image size in pixels (image of size nx\ :sup:`2`). Default: ``64``.
+  -  ``Wvlt``: list of wavelets basis. See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_. Default: first 8 Daubechies wavelets and Haar wavelets.
 -  ``lambda_spat`` : Spatial Regularization parameter (weight) (Eq.29,31
    [1]), default: nx^-2
 -  ``lambda_spec`` : Spectral Regularization parameter (weight)

@@ -35,7 +35,7 @@ automaticaly installed during PAINTER installation.
    support for OI-FITS (optical interferometry data format).
 -  `NFFT.jl <https://github.com/tknopp/NFFT.jl>`_: Julia
    implementation of the Non-equidistant Fast Fourier Transform (NFFT).
--  `Wavelets <https://github.com/JuliaDSP/Wavelets.jl>`_: A Julia
+-  `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_: A Julia
    package for fast wavelet transforms.
--  `HDF5 <https://github.com/timholy/HDF5.jl>`_: for writing JLD
+-  `HDF5.jl <https://github.com/timholy/HDF5.jl>`_: for writing JLD
    ("Julia data") variables.
