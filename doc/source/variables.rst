@@ -4,7 +4,7 @@ Variables and structures
 Two parameters are independent of structures:
 
 -  ``nbitermax``: number of
-   ```admm`` <http://stanford.edu/~boyd/papers/admm_distr_stats.html>`__
+   ADMM
    iteration, default 1000
 -  ``aff``: true for plot drawing using ``PyPlot.jl``, default: false
 
@@ -27,19 +27,19 @@ Two parameters are independent of structures:
 -  ``epsilon`` : Ridge/tikhonov parameter epilson \|X\|^2\_2 (Eq.29,31
    [1]), default: 1e-6
 -  ``rho_y`` :
-   ```admm`` <http://stanford.edu/~boyd/papers/admm_distr_stats.html>`__
+   ADMM
    parameter for data fidelity (convergence rate) (Eq.35,50-52 [1]),
    default: 1
 -  ``rho_spat`` :
-   ```admm`` <http://stanford.edu/~boyd/papers/admm_distr_stats.html>`__
+   ADMM
    parameter for Spatial Regularization (convergence rate) (Eq.25,31
    [1]), default: 1
 -  ``rho_spec`` :
-   ```admm`` <http://stanford.edu/~boyd/papers/admm_distr_stats.html>`__
+   ADMM
    parameter for Spectral Regularization (convergence rate) (Eq.42,55
    [1]), default: 1
 -  ``rho_ps`` :
-   ```admm`` <http://stanford.edu/~boyd/papers/admm_distr_stats.html>`__
+   ADMM
    parameter for positivity (convergence rate) (Eq.47,54 [1]), default:
    1
 -  ``alpha`` : Weight for Complexe visibility estimation from V2
@@ -48,11 +48,11 @@ Two parameters are independent of structures:
    difference (Eq.25,31 [1]), default: 1
 -  ``eps1`` : Primal Residual stop criterium (3.3 Optimality Conditions
    and Stopping Criterion , see
-   ```admm`` <http://stanford.edu/~boyd/papers/admm_distr_stats.html>`__),
+   ADMM),
    default: 1e-6
 -  ``eps2`` : Dual Residual stop criterium (3.3 Optimality Conditions
    and Stopping Criterion, see
-   ```admm`` <http://stanford.edu/~boyd/papers/admm_distr_stats.html>`__),
+   ADMM),
    default: 1e-6
 -  ``FOV`` : Field Of View User parameter, must be in ArcSecond, default: 40 mas
 -  ``mask3D``: Support constraint, can be a path to a fits file, an user
@@ -115,6 +115,6 @@ Useful Array in ``PDATA`` are
 -  ``PDATA.Fx``: non uniform Fourier transform of 3D images
 -  ``PDATA.crit1`` and ``PDATA.crit2`` the primal and dual residual
    values of the
-   ```admm`` <http://stanford.edu/~boyd/papers/admm_distr_stats.html>`__
+   ADMM
    algorithm
 -  ``PDATA.ind`` the iteration indice, useful to re-run algorithm
