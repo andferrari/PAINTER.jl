@@ -14,14 +14,14 @@ The structure ``OIDATA``: contains all oifits information and user defined param
 
 **Execution Variables:**
 
-  * ``paral``: if ``paral=true`` the ADMM step which reconstructs the object for each wavelength is computed in parallel, see [2]_.
-    In this case ``julia``must be started with
+  * ``paral``: if ``paral=true`` the ADMM step which reconstructs the object for each wavelength is computed in parallel, see [2]_. In this case ``julia``must be started with
 
     .. code:: bash
 
       $ julia -p nprocs
 
     where ``nprocs``denotes the number of processes. Default: ``true``.
+
   * ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used after to iterate
     the ADMM algorithm. Default: ``true``.
   *  ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: ``10``.
@@ -29,10 +29,8 @@ The structure ``OIDATA``: contains all oifits information and user defined param
 **Data related variables:**
 
   * ``Folder``: path to the folder containing OIFITS/FITS files. Default: ``src/OIFITS``.
-  * ``indfile``: allows to chose the set of OIFITS/FITS files ``Folder`` that will be processed. ``indfile`` is an Array of Int containnig the
-  index of thd files in alphabetical order. Default: all files.
-  * ``indwvl``: allows to chose the set of processed wavelengths. ``indwvl`` is an  Array of Int containnig the index of the wavelengths in increasing order.
-  Default: all wavelengths.
+  * ``indfile``: allows to chose the set of OIFITS/FITS files ``Folder`` that will be processed. ``indfile`` is an Array of Int containnig the index of thd files in alphabetical order. Default: all files.
+  * ``indwvl``: allows to chose the set of processed wavelengths. ``indwvl`` is an  Array of Int containnig the index of the wavelengths in increasing order. Default: all wavelengths.
   * ``nx``: image size in pixels (the size of the image is nx\ :sup:`2`). Default: ``64``.
   * ``FOV``: Field Of View of the reconstructed image in ArcSecond. Default: ``40e-3``.
   * ``mask3D``: Binary mask defining the support constraint. ``mask3D`` can be:
@@ -99,8 +97,7 @@ Variables in ``PDATA`` structure
 Useful outputs in the structure ``PDATA`` are:
 
   * ``PDATA.x``: the reconstruced 3D images !
-  * ``PDATA.w``: positivity and support contraint. These constraints can be applied to ``PDATA.x``
-    with ``PDATA.x.*(PDATA.w.>0)``.
+  * ``PDATA.w``: positivity and support contraint. These constraints can be applied to ``PDATA.x`` with ``PDATA.x.*(PDATA.w.>0)``.
   * ``PDATA.Fx``: non uniform Fourier transform of the reconstructed 3D images.
   * ``PDATA.crit1``: the primal residual of the ADMM algorithm.
   * ``PDATA.crit2``: the dual residual of the ADMM algorithm.
