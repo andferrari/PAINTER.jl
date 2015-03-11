@@ -434,7 +434,7 @@ end
 ###################################################################################
 # PAINTER MAIN FUNCTION
 ###################################################################################
-function painter(;Folder="OIFITS",nbitermax=1000,nx=64,lambda_spat=1/nx^2,
+function painter(;Folder="",nbitermax=1000,nx=64,lambda_spat=1/nx^2,
                  lambda_spec=1/100,lambda_L1=0,epsilon=1e-6,
                  rho_y=1,rho_spat=1,rho_spec=1,rho_ps=1,alpha=1,
                  Wvlt  = ["db1","db2","db3","db4","db5","db6","db7","db8","haar"],

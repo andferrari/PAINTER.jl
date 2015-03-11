@@ -300,9 +300,12 @@ eps2 = eps2 + 0.
     xinit3dprint = "3D Init Initialization from default, centered dirac"
   end
 # Check data path
+  if isempty(Folder)
+    tmp   = pwd()
+    Folder= string(tmp,tmp[1],"OIFITS")
+  end
   if typeof(Folder)== ASCIIString
-    cpath = pwd()
-    cpath = string(cpath,cpath[1],Folder)
+    cpath = Folder
   else
     error("data path is not correct")
   end
@@ -310,10 +313,12 @@ eps2 = eps2 + 0.
   if !isdir(cpath)
     pkgfol = Pkg.dir()
     fs     = pkgfol[1] # file separator
+    cptmp  = cpath
     cpath  = string(pkgfol,fs,"Painter",fs,"src",fs,"OIFITS")
-    println("OIFITS files folder does not exists, replaced by default $cpath")
+    println("OIFITS files folder does not exists in $cptmp, replaced by default $cpath")
   end
     pathprint = cpath
+
 # Check Wavelet input
  if typeof(Wvlt)== ASCIIString
   Wvltprint = "$Wvlt"

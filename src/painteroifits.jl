@@ -25,6 +25,10 @@ oifits    = filter(r"\.oifits$", CDir)
 CDir      = vcat(fits,oifits)
 NbFiles   = length(CDir)
 
+if NbFiles ==0
+  error("No fits or oifits files in folder: $Folder")
+end
+
 # files reduction, only files indexed by "indfile" are read
 if isempty(indfile)
   indfile = 1:NbFiles
