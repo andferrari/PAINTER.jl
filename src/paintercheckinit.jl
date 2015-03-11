@@ -135,22 +135,22 @@ end
 
 
 ###################################################################################
-function mask(nx::Int64,side::Int64;choice="rect")
+function mask(nx::Int64,side::Int64;choice="square")
 # create image 2D of mask for mask3D
-# choice = rectangle or circle (circ) default: rect
+# choice = square or disk (disk) default: rect
 # nx: size of the constructed image
-# side: parameter for mask as radius of circle or half side length or square
+# side: parameter for mask as radius of disk or half side length or square
   if side>nx/2
     error("side must be less than nx/2")
   end
-  if choice == "rect"
+  if choice == "square"
     side2 = nx/2-side
     mask3D = ones(nx,nx)
     mask3D[1:1+side2,:]=0
     mask3D[:,1:1+side2]=0
     mask3D[nx-side2:nx,:]=0
     mask3D[:,nx-side2:nx]=0
-  elseif choice == "circ"
+  elseif choice == "disk"
     xg = reshape(repeat([1:nx],outer=[nx]),nx,nx)
     yg = xg'
     rg = sqrt( (xg-.5-nx/2).^2+(yg-.5-nx/2).^2 )
