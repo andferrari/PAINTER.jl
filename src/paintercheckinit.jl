@@ -316,6 +316,7 @@ eps2 = eps2 + 0.
     cptmp  = cpath
     cpath  = string(pkgfol,fs,"Painter",fs,"src",fs,"OIFITS")
     println("OIFITS files folder does not exists in $cptmp, replaced by default $cpath")
+    println("")
   end
     pathprint = cpath
 
