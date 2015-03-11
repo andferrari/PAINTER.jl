@@ -399,9 +399,11 @@ end
 if (ind >= nbitermax)||( (n1<eps1)&&(n2<eps2) )
    loop = false
 end
-@printf("| %02.02f | %02.04e | %02.04e | %d  |\n",toq(),crit1[ind],crit2[ind],ind)
-end
 
+@printf("| %02.02f | %02.04e | %02.04e | %d  |\n",toq(),crit1[ind],crit2[ind],ind)
+
+# println(toc())
+end
 PDATA.x        = x
 PDATA.z        = z
 PDATA.w        = w

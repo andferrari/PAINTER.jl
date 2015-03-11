@@ -24,9 +24,7 @@ fits      = filter(r"\.fits$", CDir)
 oifits    = filter(r"\.oifits$", CDir)
 CDir      = vcat(fits,oifits)
 NbFiles   = length(CDir)
-if NbFiles == 0
-    error("no fits or oifits file in $Folder")
-  end
+
 # files reduction, only files indexed by "indfile" are read
 if isempty(indfile)
   indfile = 1:NbFiles
