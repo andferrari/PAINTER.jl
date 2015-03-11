@@ -34,7 +34,6 @@ The structure ``OIDATA``: contains all oifits information and user defined param
   * ``nx``: image size in pixels (the size of the image is nx\ :sup:`2`). Default: ``64``.
   * ``FOV``: Field Of View of the reconstructed image in ArcSecond. Default: ``40e-3``.
   * ``mask3D``: Binary mask defining the support constraint. ``mask3D`` can be:
-
     * a path to a fits file,
     * an Array,
     * an empty Array (no constraint).
@@ -42,7 +41,6 @@ The structure ``OIDATA``: contains all oifits information and user defined param
     ``mask3D`` can be set by function ``mask``. Default: no constraint.
 
   * ``xinit3D``: Initial estimate of the object or of the complex visibilities. ``xinit3D`` can be:
-
     * a path to a FITS files containing the object,
     * an Array containing the object,
     * and Array containing the complex visibilities.
