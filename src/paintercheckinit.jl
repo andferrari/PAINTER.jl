@@ -306,6 +306,14 @@ eps2 = eps2 + 0.
   else
     error("data path is not correct")
   end
+# if pwd/OIFITS does not exits so, search in user/.julia/vx.x/Painter/src/OIFITS  
+  if !isdir(cpath)
+    pkgfol = Pkg.dir()
+    fs     = pkgfol[1] # file separator
+    cpath  = string(pkgfol,fs,"Painter",fs,"src",fs,"OIFITS")
+    println("OIFITS files folder does not exists, replaced by default $cpath")
+  end
+  
 # Check Wavelet input
  if typeof(Wvlt)== ASCIIString
   Wvltprint = "$Wvlt"
