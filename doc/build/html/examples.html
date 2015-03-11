@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Examples &mdash; Painter.jl 0.6.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.6.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Painter.jl 0.6.3 documentation" href="index.html" />
+    <link rel="next" title="Credits" href="credits.html" />
+    <link rel="prev" title="Variables and structures" href="variables.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="credits.html" title="Credits"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="variables.html" title="Variables and structures"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Painter.jl 0.6.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="user-parameters-and-single-algorithm-execution">
+<h2>User parameters and single algorithm execution<a class="headerlink" href="#user-parameters-and-single-algorithm-execution" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">The folowing parameters are set by the user:</p>
+<div class="code julia highlight-python"><div class="highlight"><pre>Mypath        = &#39;../MyOifitsFolder&#39;
+MyFOV         = 0.01
+Myindwvl      = 1:29
+Mynx          = 64
+Myeps1        = 1e-4
+Myeps2        = 1e-4
+Myrho_y       = 10
+Myalpha       = 1e4
+Mybeta        = 1e5
+Myrho_spat    = 4
+Myrho_ps      = Myrho_spat
+Mylambda_spat = 1e-5
+Myrho_spec    = 1/2
+Mylambda_spec = 1e-5
+Myaff         = true      # plot is enabled
+Mynbitermax   = 100
+Mypar         = false     # parallel computing is disabled
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">Painter.jl</span></tt> will extract OIFITS informations from all files in <tt class="docutils literal"><span class="pre">Mypath</span></tt> and will restrict the analysis to the first 29 wavelengths.</p>
+</li>
+<li><p class="first">The initial estimate is the default.   admm is enabled by default and will run the algorithm for 100 iterations.</p>
+</li>
+<li><p class="first">The support constraint is defined by a disk:</p>
+<div class="code julia highlight-python"><div class="highlight"><pre><span class="n">Mymask3D</span> <span class="o">=</span> <span class="n">mask</span><span class="p">(</span><span class="n">Mynx</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">Mynx</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span><span class="mi">3</span><span class="p">),</span> <span class="s">&quot;disk&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Other parameters take the default values.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">Painter.jl</span></tt> is then executed:</p>
+<div class="code julia highlight-python"><div class="highlight"><pre>OIDATA, PDATA, OPTOPT = painter(Folder=MyFolder, nbitermax=Mynbitermax, nx=Mynx, lambda_spat=Mylambda_spat=Mylambda_spat, lambda_spec=Mylambda_spec, rho_y= rho_y, rho_spat= rho_spat, rho_spec= rho_spec, rho_ps= rho_ps, alpha= alpha, beta=Mybeta, eps1=Myeps1, eps2=Myeps2, FOV= MyFOV, indfile, indwvl=Myindwvl, paral=Myparal)
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="algorithm-warmstart">
+<h2>Algorithm warmstart<a class="headerlink" href="#algorithm-warmstart" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">PDATA</span></tt> contains all variables and array modified during iterations, including the Lagrange
+multipliers. This allows a warmstart of the ADMM algorithm. This is usefull for example when
+the iterations have been stopped by <tt class="docutils literal"><span class="pre">nbitermax</span></tt> but the algorithm has not converged.</p>
+<p>In this example the user wants 1000 aditional iterations with disabled plots:</p>
+<div class="code julia highlight-python"><div class="highlight"><pre><span class="n">nbitermax</span> <span class="o">+=</span> <span class="mi">1000</span>
+<span class="n">aff</span> <span class="o">=</span> <span class="n">false</span>
+<span class="n">OIDATA</span><span class="p">,</span> <span class="n">PDATA_new</span><span class="p">,</span> <span class="n">OPTOPT</span> <span class="o">=</span> <span class="n">painter</span><span class="p">(</span><span class="n">OIDATA</span><span class="p">,</span><span class="n">PDATA</span><span class="p">,</span><span class="n">OPTOPT</span><span class="p">,</span> <span class="n">nbitermax</span><span class="p">,</span> <span class="n">aff</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">PDATA_new</span></tt> is used to store the new auxiliary variables.</p>
+</div>
+<div class="section" id="outer-iterations-mode">
+<h2>Outer iterations mode<a class="headerlink" href="#outer-iterations-mode" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to save the estimates (or other variables) at each iteration
+using single iterations in a loop:</p>
+<div class="code julia highlight-python"><div class="highlight"><pre>for n = 1:10
+  nbitermax += 1
+  OIDATA, PDATA, OPTOPT = painter(OIDATA, PDATA, OPTOPT, nbitermax, aff)
+  saveX[n] = PDATA.x
+  saveW[n] = PDATA.w
+end
+</pre></div>
+</div>
+<p>Note that this is a very time consuming process.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Examples</a><ul>
+<li><a class="reference internal" href="#user-parameters-and-single-algorithm-execution">User parameters and single algorithm execution</a></li>
+<li><a class="reference internal" href="#algorithm-warmstart">Algorithm warmstart</a></li>
+<li><a class="reference internal" href="#outer-iterations-mode">Outer iterations mode</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="variables.html"
+                        title="previous chapter">Variables and structures</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="credits.html"
+                        title="next chapter">Credits</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/examples.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="credits.html" title="Credits"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="variables.html" title="Variables and structures"
+             >previous</a> |</li>
+        <li><a href="index.html">Painter.jl 0.6.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

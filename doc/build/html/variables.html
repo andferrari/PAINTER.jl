@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Variables and structures &mdash; Painter.jl 0.6.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.6.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Painter.jl 0.6.3 documentation" href="index.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Functions" href="functions.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="examples.html" title="Examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="functions.html" title="Functions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Painter.jl 0.6.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="variables-and-structures">
+<h1>Variables and structures<a class="headerlink" href="#variables-and-structures" title="Permalink to this headline">¶</a></h1>
+<p>If parameters are not set, default values are used. For example</p>
+<div class="code julia highlight-python"><div class="highlight"><pre><span class="n">OIDATA</span><span class="p">,</span><span class="n">PDATA</span><span class="p">,</span><span class="n">OPTOPT</span> <span class="o">=</span>  <span class="n">painter</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>calls <tt class="docutils literal"><span class="pre">painter</span></tt> with all defaults values.</p>
+<div class="section" id="variables">
+<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">nbitermax</span></tt>: number of ADMM iterations. Default: <tt class="docutils literal"><span class="pre">1000</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">aff</span></tt>: if <tt class="docutils literal"><span class="pre">aff=true</span></tt> plots are enabled using <tt class="docutils literal"><span class="pre">PyPlot.jl</span></tt>. Default: <tt class="docutils literal"><span class="pre">false</span></tt>.</li>
+</ul>
+</div>
+<div class="section" id="variables-in-oidata-structure">
+<h2>Variables in <tt class="docutils literal"><span class="pre">OIDATA</span></tt> structure<a class="headerlink" href="#variables-in-oidata-structure" title="Permalink to this headline">¶</a></h2>
+<p>The structure <tt class="docutils literal"><span class="pre">OIDATA</span></tt>: contains all oifits information and user defined parameters.</p>
+<p><strong>Execution Variables:</strong></p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">paral</span></tt>: if <tt class="docutils literal"><span class="pre">paral=true</span></tt> the ADMM step which reconstructs the object for each wavelength is computed in parallel, see <a class="footnote-reference" href="#id15" id="id1">[2]</a>. In this case <a href="#id2"><span class="problematic" id="id3">``</span></a>julia``must be started with</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ julia -p nprocs
+</pre></div>
+</div>
+<p>where <tt class="docutils literal"><span class="pre">nprocs</span></tt> denotes the number of processes. Default: <tt class="docutils literal"><span class="pre">true</span></tt>.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">admm</span></tt>: if <tt class="docutils literal"><span class="pre">admm=false</span></tt> the function only initializes the structures. The function <tt class="docutils literal"><span class="pre">painter</span></tt> can be used after to iterate the ADMM algorithm. Default: <tt class="docutils literal"><span class="pre">true</span></tt>.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">CountPlot</span></tt>: draw plot at each <tt class="docutils literal"><span class="pre">CountPlot</span></tt> iterations. Default: <tt class="docutils literal"><span class="pre">10</span></tt>.</p>
+</li>
+</ul>
+<p><strong>Data and image related variables:</strong></p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">Folder</span></tt>: path to the folder containing OIFITS/FITS files. Default: <tt class="docutils literal"><span class="pre">./OIFITS</span></tt>. If <tt class="docutils literal"><span class="pre">./OIFITS</span></tt> does not exists <tt class="docutils literal"><span class="pre">src/OIFITS</span></tt> in <tt class="docutils literal"><span class="pre">Painter.jl/</span></tt> default installation folder, containing FITS for the demo, is used.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">indfile</span></tt>: allows to chose the set of OIFITS/FITS files <tt class="docutils literal"><span class="pre">Folder</span></tt> that will be processed. <tt class="docutils literal"><span class="pre">indfile</span></tt> is an Array of Int containnig the index of thd files in alphabetical order. Default: all files.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">indwvl</span></tt>: allows to chose the set of processed wavelengths. <tt class="docutils literal"><span class="pre">indwvl</span></tt> is an  Array of Int containnig the index of the wavelengths in increasing order. Default: all wavelengths.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">nx</span></tt>: image size in pixels (the size of the image is nx<sup>2</sup>). Default: <tt class="docutils literal"><span class="pre">64</span></tt>.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">FOV</span></tt>: Field Of View of the reconstructed image in ArcSecond. Default: <tt class="docutils literal"><span class="pre">40e-3</span></tt>.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">mask3D</span></tt>: Binary mask defining the support constraint. <tt class="docutils literal"><span class="pre">mask3D</span></tt> can be:</p>
+<ul class="simple">
+<li>a path to a fits file,</li>
+<li>an Array,</li>
+<li>an empty Array (no constraint).</li>
+</ul>
+<p><tt class="docutils literal"><span class="pre">mask3D</span></tt> can be set by function <tt class="docutils literal"><span class="pre">mask</span></tt>. Default: no constraint.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">xinit3D</span></tt>: Initial estimate of the object or of the complex visibilities. <tt class="docutils literal"><span class="pre">xinit3D</span></tt> can be:</p>
+<ul class="simple">
+<li>a path to a FITS files containing the object,</li>
+<li>an Array containing the object,</li>
+<li>and Array containing the complex visibilities.</li>
+</ul>
+<p>Default: centered dirac for all wavelengths.</p>
+</li>
+</ul>
+<p><strong>ADMM algorithm parameters:</strong></p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">Wvlt</span></tt>: list of wavelets basis for spatial regularisation, see <a class="footnote-reference" href="#id15" id="id4">[2]</a>.  See <a class="reference external" href="https://github.com/JuliaDSP/Wavelets.jl">Wavelets.jl</a> for definitions. Default: first 8 Daubechies wavelets and Haar wavelets.</li>
+<li><tt class="docutils literal"><span class="pre">lambda_spat</span></tt>: Spatial regularization parameter, see Eqs. 29, 31 in <a class="footnote-reference" href="#id14" id="id5">[1]</a>. Default: nx<sup>-2</sup>.</li>
+<li><tt class="docutils literal"><span class="pre">lambda_spec</span></tt>: Spectral regularization parameter, see Eqs. 29, 31 in <a class="footnote-reference" href="#id14" id="id6">[1]</a>. Default: <tt class="docutils literal"><span class="pre">1e-2</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">lambda_L1</span></tt>: l<sub>1</sub> regularization parameter. l<sub>1</sub> constraint emphasizes sparsity of objects (e.g. stars field). Default: <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">epsilon</span></tt>: Ridge/Tikhonov regularization parameter, see Eqs. 29, 31 in <a class="footnote-reference" href="#id14" id="id7">[1]</a>. Default: <tt class="docutils literal"><span class="pre">1e-6</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">rho_y</span></tt>: ADMM parameter for data fidelity,see  Eqs. 35, 50-52 in <a class="footnote-reference" href="#id14" id="id8">[1]</a>. Default: <tt class="docutils literal"><span class="pre">1</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">rho_spat</span></tt>: ADMM parameter for Spatial regularization, see Eqs. 25, 31 in <a class="footnote-reference" href="#id14" id="id9">[1]</a>. Default: <tt class="docutils literal"><span class="pre">1</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">rho_spec</span></tt>: ADMM parameter for Spectral regularization, see Eqs. 42, 55 in <a class="footnote-reference" href="#id14" id="id10">[1]</a>. Default: <tt class="docutils literal"><span class="pre">1</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">rho_ps</span></tt>: ADMM parameter for positivity constraint, see Eq. 47, 54 in <a class="footnote-reference" href="#id14" id="id11">[1]</a>. Default: <tt class="docutils literal"><span class="pre">1</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">alpha</span></tt>: weight of absolute squared visibilities data fidelity term, see Eqs. 25, 31 in <a class="footnote-reference" href="#id14" id="id12">[1]</a>. Default: <tt class="docutils literal"><span class="pre">1</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">beta</span></tt>: weight for phases (closures and differential) data fidelity term, see Eqs. 25,31 in <a class="footnote-reference" href="#id14" id="id13">[1]</a>. Default: <tt class="docutils literal"><span class="pre">1</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">eps1</span></tt>: Primal Residual stopping criterium in ADMM algorithm. Default: <tt class="docutils literal"><span class="pre">1e-6</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">eps2</span></tt>: Dual Residual stopping criterium in ADMM algorithm. Default: <tt class="docutils literal"><span class="pre">1e-6</span></tt>.</li>
+</ul>
+</div>
+<div class="section" id="variables-in-optopt-structure">
+<h2>Variables in <tt class="docutils literal"><span class="pre">OPTOPT</span></tt> structure<a class="headerlink" href="#variables-in-optopt-structure" title="Permalink to this headline">¶</a></h2>
+<p>The structure <tt class="docutils literal"><span class="pre">OPTOPT</span></tt>: contains all OptimPack parameters for the phases proximal operator.</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx</span></tt>: related to <a class="reference external" href="https://github.com/emmt/OptimPack">OptimPack</a>.</p>
+<p>Default:</p>
+<div class="code julia highlight-python"><div class="highlight"><pre>ls=OptimPack.MoreThuenteLineSearch(ftol=1e-4,gtol=0.9)
+scl=OptimPack.SCALING\_OREN\_SPEDICATO
+gat=1E-6
+grt=1E-6
+vt=false
+memsize=100
+mxvl=1000
+mxtr=1000
+stpmn=1E-20
+stpmx=1E+20
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="variables-in-pdata-structure">
+<h2>Variables in <tt class="docutils literal"><span class="pre">PDATA</span></tt> structure<a class="headerlink" href="#variables-in-pdata-structure" title="Permalink to this headline">¶</a></h2>
+<p>Useful outputs in the structure <tt class="docutils literal"><span class="pre">PDATA</span></tt> are:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">PDATA.x</span></tt>: the reconstruced 3D images !</li>
+<li><tt class="docutils literal"><span class="pre">PDATA.w</span></tt>: positivity and support contraint. These constraints can be applied to <tt class="docutils literal"><span class="pre">PDATA.x</span></tt> with <tt class="docutils literal"><span class="pre">PDATA.x.*(PDATA.w.&gt;0)</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">PDATA.Fx</span></tt>: non uniform Fourier transform of the reconstructed 3D images.</li>
+<li><tt class="docutils literal"><span class="pre">PDATA.crit1</span></tt>: the primal residual of the ADMM algorithm.</li>
+<li><tt class="docutils literal"><span class="pre">PDATA.crit2</span></tt>: the dual residual of the ADMM algorithm.</li>
+<li><tt class="docutils literal"><span class="pre">PDATA.ind</span></tt>: number of iterations, useful to re-run algorithm.</li>
+</ul>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<table class="docutils footnote" frame="void" id="id14" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id5">1</a>, <a class="fn-backref" href="#id6">2</a>, <a class="fn-backref" href="#id7">3</a>, <a class="fn-backref" href="#id8">4</a>, <a class="fn-backref" href="#id9">5</a>, <a class="fn-backref" href="#id10">6</a>, <a class="fn-backref" href="#id11">7</a>, <a class="fn-backref" href="#id12">8</a>, <a class="fn-backref" href="#id13">9</a>)</em> Schutz, A., Ferrari, A., Mary, D. Soulez, F., Thiébaut, E., Vannier, M. &#8220;PAINTER: a spatio-spectral image reconstruction algorithm for optical interferometry&#8221;. JOSA A. Vol. 31, Iss. 11, pp. 2356–2361, (2014). <a class="reference external" href="http://arxiv.org/abs/1407.1885">arXiv</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id15" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[2]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> Schutz, A., Ferrari, A., Mary, D., Thiébaut, E., Soulez, F. &#8220;Large scale 3D image reconstruction in optical interferometry&#8221;. Submitted to EUSIPCO 2015, Nice. <a class="reference external" href="http://arxiv.org/abs/1503.01565">arXiv</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Variables and structures</a><ul>
+<li><a class="reference internal" href="#variables">Variables</a></li>
+<li><a class="reference internal" href="#variables-in-oidata-structure">Variables in <tt class="docutils literal"><span class="pre">OIDATA</span></tt> structure</a></li>
+<li><a class="reference internal" href="#variables-in-optopt-structure">Variables in <tt class="docutils literal"><span class="pre">OPTOPT</span></tt> structure</a></li>
+<li><a class="reference internal" href="#variables-in-pdata-structure">Variables in <tt class="docutils literal"><span class="pre">PDATA</span></tt> structure</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="functions.html"
+                        title="previous chapter">Functions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="examples.html"
+                        title="next chapter">Examples</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/variables.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="examples.html" title="Examples"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="functions.html" title="Functions"
+             >previous</a> |</li>
+        <li><a href="index.html">Painter.jl 0.6.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

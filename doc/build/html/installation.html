@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started &mdash; Painter.jl 0.6.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.6.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Painter.jl 0.6.3 documentation" href="index.html" />
+    <link rel="next" title="Functions" href="functions.html" />
+    <link rel="prev" title="Painter.jl" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="functions.html" title="Functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Painter.jl"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Painter.jl 0.6.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">Painter.jl</span></tt> uses the library
+<a class="reference external" href="https://github.com/emmt/OptimPack">OptimPack</a> for solving the
+phases proximal operator. The Julia interface to OptimPack is not a
+registered Julia package. To install
+<a class="reference external" href="https://github.com/emmt/OptimPack.jl">OptimPack.jl</a> type from a
+Julia session the following commands:</p>
+<div class="code julia highlight-python"><div class="highlight"><pre><span class="n">julia</span><span class="o">&gt;</span> <span class="n">Pkg</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="s">&quot;https://github.com/emmt/OptimPack.jl.git&quot;</span><span class="p">)</span>
+<span class="n">julia</span><span class="o">&gt;</span> <span class="n">Pkg</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s">&quot;OptimPack&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Installation of PAINTER is then as simple as typing:</p>
+<div class="code julia highlight-python"><div class="highlight"><pre><span class="n">julia</span><span class="o">&gt;</span> <span class="n">Pkg</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="s">&quot;https://github.com/andferrari/Painter.jl.git&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is recommended to install <tt class="docutils literal"><span class="pre">PyPlot.jl</span></tt> to monitor the iterations of the algorithm when the number
+of wavelength is small, e.g. &lt; 30.  See <a class="reference external" href="https://github.com/stevengj/PyPlot.jl">PyPlot.jl</a> page.</p>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">Painter.jl</span></tt> uses the following registered Julia package. They will be
+automaticaly installed during <tt class="docutils literal"><span class="pre">Painter.jl</span></tt> installation.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/JuliaAstro/FITSIO.jl">FITSIO.jl</a>: Julia support for OI-FITS (optical interferometry data format).</li>
+<li><a class="reference external" href="https://github.com/tknopp/NFFT.jl">NFFT.jl</a>: Julia implementation of the Non-equidistant Fast Fourier Transform (NFFT).</li>
+<li><a class="reference external" href="https://github.com/JuliaDSP/Wavelets.jl">Wavelets.jl</a>: A Julia package for fast wavelet transforms.</li>
+<li><a class="reference external" href="https://github.com/timholy/HDF5.jl">HDF5.jl</a>: for writing JLD (&#8220;Julia data&#8221;) variables.</li>
+<li><a class="reference external" href="https://github.com/emmt/OptimPack.jl">OptimPack.jl</a> : a Julia wrapper to <a class="reference external" href="https://github.com/emmt/OptimPack">OptimPack</a>.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Painter.jl</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="functions.html"
+                        title="next chapter">Functions</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/installation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="functions.html" title="Functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Painter.jl"
+             >previous</a> |</li>
+        <li><a href="index.html">Painter.jl 0.6.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
