@@ -6,21 +6,21 @@ Main function
 
 .. function:: painter(...)
 
-  - ``painter`` is defined with two methods:
+  * ``painter`` is defined with two methods:
 
-    - full parameters definition. This method is generally used to initialize the algorithm:
+    * full parameters definition. This method is generally used to initialize the algorithm:
 
       .. code:: julia
 
         OIDATA,PDATA,OPTOPT = painter(Folder, nbitermax, nx, lambda_spat, lambda_spec, lambda_L1, epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, Wvlt, beta, eps1, eps2, FOV, mask3D, xinit3D, indfile, indwvl, ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx, aff, CountPlot, admm, paral)
 
-    - Specific structures. This method allows to restart the algorithm, for example if the number of iterations is not sufficient (see variable ``nbitermax+=100``).
+    * Specific structures. This method allows to restart the algorithm, for example if the number of iterations is not sufficient (see variable ``nbitermax+=100``).
 
       .. code:: julia
 
           OIDATA,PDATA,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)
 
-  - ``painter`` returns 3 structures:
+  * ``painter`` returns 3 structures:
 
     .. code:: julia
 
@@ -28,9 +28,9 @@ Main function
 
     where:
 
-    - ``OIDATA``: contains all oifits information and user defined parameters
-    - ``PDATA``: contains all variables and array modified during iterations
-    - ``OPTOPT``: contains all OptimPack parameters for the phases proximal operator
+    * ``OIDATA``: contains all oifits information and user defined parameters
+    * ``PDATA``: contains all variables and array modified during iterations
+    * ``OPTOPT``: contains all OptimPack parameters for the phases proximal operator
 
 Auxiliary functions
 -------------------
@@ -60,10 +60,8 @@ Auxiliary functions
 
   The default function computes the number of subplots as a function of the number of wavelength if ``nw<30``.
 
-  - The first figure shows the per-channel estimates projected on the domain support. The axis are defined by the field of view with
-    no limitation of the amplitude (colorbars are different for all images).
-  - The second figure shows the primal and dual residuals (``crit1`` and ``crit2``) as a function of
-    the iteration.
+  * The first figure shows the per-channel estimates projected on the domain support. The axis are defined by the field of view with no limitation of the amplitude (colorbars are different for all images).
+  * The second figure shows the primal and dual residuals (``crit1`` and ``crit2``) as a function of the iteration.
 
 .. function:: mask(nx::Int,param::Int,choice::ASCIIString)
 
@@ -73,6 +71,6 @@ Auxiliary functions
 
       Mymask3D = mask(nx,param,choice)
 
-  - ``choice`` can be a square (default: ``choice="square"``) or a disk (``choice="disk"``).
-  - ``nx`` is the size of the image.
-  - ``param`` is the radius of the disk or the half size of the square.
+  * ``choice`` can be a square (default: ``choice="square"``) or a disk (``choice="disk"``).
+  * ``nx`` is the size of the image.
+  * ``param`` is the radius of the disk or the half size of the square.
