@@ -11,7 +11,7 @@
 # Copyright (C) 2015, Antony Schutz, Andre Ferrari.
 #
 #------------------------------------------------------------------------------
-module PAINTER
+module Painter
   export painter, mask, paintersave, painterload
   include("paintertype.jl")
   include("paintertools.jl")
