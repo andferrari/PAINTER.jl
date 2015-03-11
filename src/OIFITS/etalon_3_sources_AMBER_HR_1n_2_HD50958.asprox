@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<a:observationSetting xmlns:tm="http://www.jmmc.fr/jmcs/models/0.1" xmlns:a="http://www.jmmc.fr/aspro-oi/0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <schemaVersion>2012.02</schemaVersion>
+    <name>default</name>
+    <when>
+        <date>2014-02-12</date>
+        <nightRestriction>false</nightRestriction>
+        <atmosphereQuality>Excellent</atmosphereQuality>
+    </when>
+    <interferometerConfiguration>
+        <name>VLTI Period 93</name>
+        <minElevation>20.0</minElevation>
+    </interferometerConfiguration>
+    <instrumentConfiguration>
+        <name>AMBER</name>
+        <stations>UT1 UT3 UT4</stations>
+        <pops></pops>
+        <instrumentMode>High_K_1_2.172</instrumentMode>
+        <samplingPeriod>60.0</samplingPeriod>
+        <acquisitionTime>300.0</acquisitionTime>
+    </instrumentConfiguration>
+    <target id="HD_50958">
+        <name>HD 50958</name>
+        <RA>06:54:47.1715</RA>
+        <DEC>-14:09:17.145</DEC>
+        <EQUINOX>2000.0</EQUINOX>
+        <VELTYP></VELTYP>
+        <PMRA>-11.6</PMRA>
+        <PMDEC>4.1</PMDEC>
+        <IDS>2MASS J06544716-1409172,BD-13 1722,GSC 05392-00602,HD 50958,IRAS 06524-1405,PPM 217856,SAO 152087,SKY# 12280,TYC 5392-602-1,YZ 0 5286,YZ 104 2328</IDS>
+        <OBJTYP>*,IR</OBJTYP>
+        <SPECTYP>K5III</SPECTYP>
+        <FLUX_V>7.71</FLUX_V>
+        <FLUX_J>4.65</FLUX_J>
+        <FLUX_H>3.627</FLUX_H>
+        <FLUX_K>3.334</FLUX_K>
+        <useAnalyticalModel>true</useAnalyticalModel>
+        <tm:model name="disk1" type="disk">
+            <desc>Returns the Fourier transform of a normalized uniform disk of diameter DIAMETER 
+(milliarcsecond) and centered at coordinates (X,Y) (milliarcsecond). 
+
+FLUX_WEIGHT is the intensity coefficient. FLUX_WEIGHT=1 means total energy is 1. 
+
+The function returns an error if DIAMETER is negative.</desc>
+            <tm:parameter name="flux_weight1" type="flux_weight">
+                <value>0.4166666666666667</value>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="x1" type="x">
+                <units>mas</units>
+                <value>0.0</value>
+                <hasFixedValue>true</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="y1" type="y">
+                <units>mas</units>
+                <value>0.0</value>
+                <hasFixedValue>true</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="diameter1" type="diameter">
+                <units>mas</units>
+                <value>1.0</value>
+                <minValue>0.0</minValue>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+        </tm:model>
+        <tm:model name="disk2" type="disk">
+            <desc>Returns the Fourier transform of a normalized uniform disk of diameter DIAMETER 
+(milliarcsecond) and centered at coordinates (X,Y) (milliarcsecond). 
+
+FLUX_WEIGHT is the intensity coefficient. FLUX_WEIGHT=1 means total energy is 1. 
+
+The function returns an error if DIAMETER is negative.</desc>
+            <tm:parameter name="flux_weight2" type="flux_weight">
+                <value>0.2916666666666667</value>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="x2" type="x">
+                <units>mas</units>
+                <value>-3.0</value>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="y2" type="y">
+                <units>mas</units>
+                <value>1.5</value>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="diameter2" type="diameter">
+                <units>mas</units>
+                <value>0.4</value>
+                <minValue>0.0</minValue>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+        </tm:model>
+        <tm:model name="elong_disk3" type="elong_disk">
+            <desc>Returns the Fourier transform of a normalized ellipse centered at coordinates (X,Y) 
+(milliarcsecond) with a ratio ELONG_RATIO between the major diameter and the minor one 
+MINOR_AXIS_DIAMETER, turned from the positive vertical semi-axis (i.e. North direction) 
+with angle MAJOR_AXIS_POS_ANGLE, in degrees, towards to the positive horizontal semi-axis 
+(i.e. East direction). (the elongation is along the major_axis) 
+
+For avoiding degenerescence, the domain of variation of MAJOR_AXIS_POS_ANGLE is 180 
+degrees, for ex. from 0 to 180 degrees. 
+
+ELONG_RATIO = major_axis / minor_axis 
+FLUX_WEIGHT is the intensity coefficient. FLUX_WEIGHT=1 means total energy is 1. 
+
+The function returns an error if MINOR_AXIS_DIAMETER is negative or if ELONG_RATIO is 
+smaller than 1.</desc>
+            <tm:parameter name="flux_weight3" type="flux_weight">
+                <value>0.2916666666666667</value>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="x3" type="x">
+                <units>mas</units>
+                <value>0.0</value>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="y3" type="y">
+                <units>mas</units>
+                <value>1.5</value>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="minor_axis_diameter3" type="minor_axis_diameter">
+                <units>mas</units>
+                <value>0.3</value>
+                <minValue>0.0</minValue>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="elong_ratio3" type="elong_ratio">
+                <value>3.0</value>
+                <minValue>1.0</minValue>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+            <tm:parameter name="major_axis_pos_angle3" type="major_axis_pos_angle">
+                <units>degrees</units>
+                <value>0.0</value>
+                <minValue>0.0</minValue>
+                <maxValue>180.0</maxValue>
+                <hasFixedValue>false</hasFixedValue>
+            </tm:parameter>
+        </tm:model>
+        <userModel>
+            <name>model_alpha_col.fits</name>
+            <file>/home/mvannier/RI/Data/Image_library/chromatic/model_alpha_col.fits</file>
+            <checksum>2694510977</checksum>
+        </userModel>
+        <configuration>
+            <HAMin>-12.0</HAMin>
+            <HAMax>12.0</HAMax>
+            <fringeTrackerMode>FringeTrack</fringeTrackerMode>
+        </configuration>
+    </target>
+    <variant>
+        <stations>UT1 UT3 UT4</stations>
+    </variant>
+    <variant>
+        <stations>A1 G1 J3</stations>
+    </variant>
+    <variant>
+        <stations>A1 G1 I1</stations>
+    </variant>
+    <variant>
+        <stations>A1 C1 D0</stations>
+    </variant>
+</a:observationSetting>
