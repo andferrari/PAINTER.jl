@@ -14,7 +14,7 @@ The structure ``OIDATA``: contains all oifits information and user defined param
 
 **Execution Variables:**
 
-  - ``paral``: if ``paral=true`` the ADMM step which reconstructs the object for each wavelength is computed in parallel.
+  - ``paral``: if ``paral=true`` the ADMM step which reconstructs the object for each wavelength is computed in parallel, see [2]_.
     In this case ``julia``must be started with
 
     .. code:: bash
@@ -54,17 +54,17 @@ The structure ``OIDATA``: contains all oifits information and user defined param
 
 **ADMM algorithm parameters:**
 
-  - ``Wvlt``: list of wavelets basis, see `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_. Default: first 8 Daubechies wavelets and Haar wavelets.
-  - ``lambda_spat``: Spatial regularization parameter, see Eqs. 29, 31 in [1]. Default: nx\ :sup:`-2`.
-  - ``lambda_spec``: Spectral regularization parameter, see Eqs. 29, 31 in [1]. Default: ``1e-2``.
+  - ``Wvlt``: list of wavelets basis for spatial regularisation, see [2]_.  See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_ for definitions. Default: first 8 Daubechies wavelets and Haar wavelets.
+  - ``lambda_spat``: Spatial regularization parameter, see Eqs. 29, 31 in [1]_. Default: nx\ :sup:`-2`.
+  - ``lambda_spec``: Spectral regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-2``.
   - ``lambda_L1``: l1 regularization parameter. l1 constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
-  - ``epsilon``: Ridge/Tikhonov regularization parameter, see Eqs. 29, 31 in [1]. Default: ``1e-6``.
-  - ``rho_y``: ADMM parameter for data fidelity,see  Eqs. 35, 50-52 in [1]. Default: ``1``.
-  - ``rho_spat``: ADMM parameter for Spatial regularization, see Eqs. 25, 31 in [1]. Default: ``1``.
-  - ``rho_spec``: ADMM parameter for Spectral regularization, see Eqs. 42, 55 in [1]. Default: ``1``.
-  - ``rho_ps``: ADMM parameter for positivity constraint, see Eq. 47, 54 in [1]. Default: ``1``.
-  - ``alpha``: weight of absolute squared visibilities data fidelity term, see Eqs. 25, 31 in [1]. Default: ``1``.
-  - ``beta``: weight for phases (closures and differential) data fidelity term, see Eqs. 25,31 in [1]. Default: ``1``.
+  - ``epsilon``: Ridge/Tikhonov regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-6``.
+  - ``rho_y``: ADMM parameter for data fidelity,see  Eqs. 35, 50-52 in [1]_. Default: ``1``.
+  - ``rho_spat``: ADMM parameter for Spatial regularization, see Eqs. 25, 31 in [1]_. Default: ``1``.
+  - ``rho_spec``: ADMM parameter for Spectral regularization, see Eqs. 42, 55 in [1]_. Default: ``1``.
+  - ``rho_ps``: ADMM parameter for positivity constraint, see Eq. 47, 54 in [1]_. Default: ``1``.
+  - ``alpha``: weight of absolute squared visibilities data fidelity term, see Eqs. 25, 31 in [1]_. Default: ``1``.
+  - ``beta``: weight for phases (closures and differential) data fidelity term, see Eqs. 25,31 in [1]_. Default: ``1``.
   - ``eps1``: Primal Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
   - ``eps2``: Dual Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
 
@@ -105,3 +105,9 @@ Useful outputs in the structure ``PDATA`` are:
   - ``PDATA.crit1``: the primal residual of the ADMM algorithm.
   - ``PDATA.crit2``: the dual residual of the ADMM algorithm.
   - ``PDATA.ind``: number of iterations, useful to re-run algorithm.
+
+References
+----------
+
+.. [1] Schutz, A., Ferrari, A., Mary, D. Soulez, F., Thiébaut, E., Vannier, M. "PAINTER: a spatio-spectral image reconstruction algorithm for optical interferometry". JOSA A. Vol. 31, Iss. 11, pp. 2356–2361, (2014). `arXiv <http://arxiv.org/abs/1407.1885>`_
+.. [2] Schutz, A., Ferrari, A., Mary, D., Thiébaut, E., Soulez, F. "Large scale 3D image reconstruction in optical interferometry". Submitted to EUSIPCO 2015, Nice. `arXiv <http://arxiv.org/abs/1503.01565>`_
