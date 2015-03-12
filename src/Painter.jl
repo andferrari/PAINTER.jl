@@ -24,10 +24,14 @@ module Painter
 
   export painter, mask, paintersave, painterload
   include("paintertype.jl")
+  export PAINTER_Input, PAINTER_Data
   include("paintertools.jl")
   include("painterio.jl")
   include("painteroifits.jl")
   include("painterconstmat.jl")
   include("paintercheckinit.jl")
   include("painterplot.jl")
+
+
+
 end

@@ -285,28 +285,21 @@ const M = PDATA.M
 const NWvlt = length(Wvlt)
 # ----------------------------------
 # Check if Pyplot is used to graphics
-# if aff
-# # check if Pyplot is installed
-# if(Pkg.installed("PyPlot") == nothing)
-#   println("")
-#   println("PyPlot is not installed: Pkg.add(''PyPlot''), aff=false ")
-#   aff = false
-# else # PyPlot is installed, check if Painter know where is PyPlot
-#   PyPlotusing = true # check if : using PyPlot
-#   try
-#     PyPlot.pygui(true)
-#   catch e
-#     PyPlotusing = false
-#     println("")
-#     println("PyPlot not used: using PyPlot, try to load it otherwise aff=false")
-#   end # If PyPlot is known so we can use it
-#   if !PyPlotusing  # otherwise load PyPlot
-#     println("")
-#     println("PyPlot require")
-#     require("PyPlot")
-# #         import PyPlot
-#   end
-# end
+if aff
+# check if Pyplot is installed
+if(Pkg.installed("PyPlot") == nothing)
+  println("")
+  println("PyPlot is not installed: Pkg.add(''PyPlot''), aff=false ")
+  aff = false
+else # PyPlot is installed, check if Painter know where is PyPlot
+  try
+    PyPlot.pygui(true)
+  catch e
+    println("")
+    println("PyPlot not used: using PyPlot, try to load it otherwise aff=false")
+    aff = false
+  end # If PyPlot is known so we can use it
+end
 
 
 end

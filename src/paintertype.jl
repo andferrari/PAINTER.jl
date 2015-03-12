@@ -8,25 +8,28 @@
 # Structure containing all user data and oifits data
 # OIDATA::PAINTER_Input
 #
+###################################################################################
+# Initialise structure with nothing
+###################################################################################
 type PAINTER_Input
-  PlotFct::Function
-  Folder::ASCIIString
-  FilesName::Array{ASCIIString}
-  indfile::Array{Int,1}
-  indwvl::Array{Int,1}
-  wvl::Array{Float64}
-  U::Array{Float64}
-  V::Array{Float64}
-  P::Array{Float64}
-  W::Array{Float64}
-  Xi::Array{Float64}
-  K::Array{Float64}
-  Closure_index::Array{Int}
-  nb::Int
-  nw::Int
-  nx::Int
-  FOV::Real
-  lambda_spat::Real
+  PlotFct::Function               # user defined plot function
+  Folder::ASCIIString             # Folder of OIFITS/FITS Files
+  FilesName::Array{ASCIIString}   # name of the files present in Folder
+  indfile::Array{Int,1}           # index of file used
+  indwvl::Array{Int,1}            # index of wavelength used
+  wvl::Array{Float64}             # mean value of anayzed wavelength
+  U::Array{Float64}               # U spatial frequencies
+  V::Array{Float64}               # V spatial frequencies
+  P::Array{Float64}               # Matrix of V2
+  W::Array{Float64}               # Matrix of V2err
+  Xi::Array{Float64}              # Vector of phases difference
+  K::Array{Float64}               # Vector of phases difference error
+  Closure_index::Array{Int}       # index of phases closure
+  nb::Int                         # number of bases (spatiale frequencies per wavelength)
+  nw::Int                         # number of wavelength
+  nx::Int                         # side size of image in pixels
+  FOV::Real                       # Field Of View in arcsecond
+  lambda_spat::Real               # From here to end: admm variables
   lambda_spec::Real
   lambda_L1::Real
   rho_y::Real
@@ -38,14 +41,14 @@ type PAINTER_Input
   eps1::Real
   eps2::Real
   epsilon::Real
-  mask3D::Array
-  xinit3D::Array
-  Wvlt::Array
-  paral::Bool
-  T3::Array{Float64}
-  T3err::Array{Float64}
-  DP::Array{Float64}
-  DPerr::Array{Float64}
+  mask3D::Array                   # support constraint array
+  xinit3D::Array                  # initial estimate array
+  Wvlt::Array                     # list of wavelets basis
+  paral::Bool                     # parallel computing or not
+  T3::Array{Float64}              # Matrix of phases closure
+  T3err::Array{Float64}           # Matrix of phases closure error
+  DP::Array{Float64}              # Matrix of Differential phases
+  DPerr::Array{Float64}           # Matrix of Differential phases error
 end
 # Structure containing all data which are modified during admm
 # PDATA::PAINTER_Data
@@ -55,8 +58,7 @@ type PAINTER_Data
   F3D::Array
   H::SparseMatrixCSC
   M::Array
-  #Wvlt::Array
-  x::SharedArray{Float64}#Array
+  x::SharedArray{Float64}
   vHt::Array
   z::Array
   Hx::Array
@@ -72,8 +74,6 @@ type PAINTER_Data
   tau_xc::Array
   tau_pwc::Array
   tau_xic::Array
-#   ys::Array
-#   y_tampon::Array
   yc::Array
   y_v2::Array
   y_phi::Array
@@ -99,9 +99,6 @@ type OptOptions
   stpmx
 end
 
-###################################################################################
-# Initialise structure with nothing
-###################################################################################
 function optiminit(ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx)
 return OptOptions(ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx)
 end
@@ -110,5 +107,4 @@ function painterinputinit()
 end
 function painterdatainit()
   return PAINTER_Data(0.,[],[],speye(0),[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],Float64[],Float64[],0,0,0,0)
-#   return PAINTER_Data(0.,[],[],speye(0),[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],Float64[],Float64[],0,0,0,0)
 end

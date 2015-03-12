@@ -1,5 +1,23 @@
-Functions
-=========
+Package and Functions
+=====================
+
+Painter Package
+---------------
+
+To use the Painter package on julia, call
+
+    .. code:: julia
+	
+	julia> using Painter
+	
+To use parallelized calculus, run julia with several process and make the painter package known for all process: 
+
+	
+    .. code:: julia
+	
+	$ julia -p nprocs
+	julia> @everywhere using Painter
+	
 
 Main function
 -------------

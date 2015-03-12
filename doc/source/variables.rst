@@ -32,7 +32,7 @@ The structure ``OIDATA``: contains all oifits information and user defined param
 
 * ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used after to iterate the ADMM algorithm. Default: ``true``.
 * ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: ``10``.
-* ``PlotFct``: is a function defined by user which runs at each ``CountPlot`` iterations. This function must respect the argument of ``painterplotfct``	and must be included in julia. Default: ``painterplotfct``.
+* ``PlotFct``: is a function defined by the user which runs at each ``CountPlot`` iteration. This function must respect the argument of ``painterplotfct``	and must call ``PyPlot``, see ``Examples`` section. Default: ``painterplotfct``.
 
 **Data and image related variables:**
 
@@ -74,6 +74,25 @@ The structure ``OIDATA``: contains all oifits information and user defined param
 * ``eps1``: Primal Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
 * ``eps2``: Dual Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
 
+Constant in ``OIDATA`` structure
+--------------------------------
+
+The structure ``OIDATA``: contains also constants related to OIFITS data extracted from files.
+
+* ``nb``: number of bases
+* ``nw``: number of wavelength
+* ``U``: the U spatial frequencies matrix 
+* ``V``: the V spatial frequencies matrix 
+* ``P``: squared visibilities Matrix 
+* ``W``: squared visibilities variance Matrix 
+* ``T3``: phases closure matrix
+* ``T3err``: phases closure variance matrix
+* ``DP``: differential phases vector
+* ``DPerr``: differential phases variance vector
+* ``Xi``: phases difference Vector
+* ``K``: phases difference variance Vector
+
+For matrices, the column index is associated to the wavelength index.
 
 Variables in ``OPTOPT`` structure
 ---------------------------------
