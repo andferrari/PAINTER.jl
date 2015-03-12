@@ -16,6 +16,9 @@ Julia session the following commands:
     julia> Pkg.clone("https://github.com/emmt/OptimPack.jl.git")
     julia> Pkg.build("OptimPack")
 
+``Pkg.build`` requires developpement tools included for OSX in ``command line tools`` and		
+for ubuntu in the ``build-essential``package.		
+
 Installation of PAINTER is then as simple as typing:
 
 .. code:: julia
