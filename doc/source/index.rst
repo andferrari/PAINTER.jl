@@ -1,9 +1,10 @@
 Painter.jl
 ==========
 
-``Painter.jl`` is a julia implementation of PAINTER: Polychromatic
-opticAl INTErferometric Reconstruction software. See
-`Credits <http://painterjl.readthedocs.org/en/latest/credits.html>`_
+``Painter.jl`` is a `Julia <http://julialang.org>`_ implementation of PAINTER: Polychromatic
+opticAl INTErferometric Reconstruction software.
+
+See `Credits <http://painterjl.readthedocs.org/en/latest/credits.html>`_
 for references.
 
 **Contents:**

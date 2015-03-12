@@ -6,27 +6,48 @@ Installation
 
 ``Painter.jl`` uses the library
 `OptimPack <https://github.com/emmt/OptimPack>`_ for solving the
-phases proximal operator. The Julia interface to OptimPack is not a
+phases proximal operator. The Julia interface to OptimPack is not yet a
 registered Julia package. To install
 `OptimPack.jl <https://github.com/emmt/OptimPack.jl>`_ type from a
 Julia session the following commands:
 
 .. code:: julia
 
-    julia> Pkg.clone("https://github.com/emmt/OptimPack.jl.git")
-    julia> Pkg.build("OptimPack")
+    Pkg.clone("https://github.com/emmt/OptimPack.jl.git")
+    Pkg.build("OptimPack")
 
-``Pkg.build`` requires developpement tools included for OSX in ``command line tools`` and		
-for ubuntu in the ``build-essential``package.		
+``Pkg.build`` requires developpement tools included for example for
+OSX in ``Command Line Tools`` and for ubuntu in the ``build-essential`` package.
 
 Installation of PAINTER is then as simple as typing:
 
 .. code:: julia
 
-    julia> Pkg.clone("https://github.com/andferrari/Painter.jl.git")
+    Pkg.clone("https://github.com/andferrari/Painter.jl.git")
 
 It is recommended to install ``PyPlot.jl`` to monitor the iterations of the algorithm when the number
 of wavelength is small, e.g. < 30.  See `PyPlot.jl <https://github.com/stevengj/PyPlot.jl>`_ page.
+
+Usage
+-----
+
+To load the ``Painter.jl`` module, type from a Julia session:
+
+.. code:: julia
+
+    using Painter
+
+If ``PyPlot`` is installed, it will be automatically loaded.
+
+Some iteration steps of ``Painter.jl`` are parallelized.
+To use parallel computing, start Julia with ``nprocs`` local process
+and load the module on all process:
+
+.. code:: julia
+
+    $ julia -p nprocs
+    julia> @everywhere using Painter
+
 
 Dependencies
 ------------
@@ -38,4 +59,3 @@ automaticaly installed during ``Painter.jl`` installation.
 * `NFFT.jl <https://github.com/tknopp/NFFT.jl>`_: Julia implementation of the Non-equidistant Fast Fourier Transform (NFFT).
 * `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_: A Julia package for fast wavelet transforms.
 * `HDF5.jl <https://github.com/timholy/HDF5.jl>`_: for writing JLD ("Julia data") variables.
-* `OptimPack.jl <https://github.com/emmt/OptimPack.jl>`_ : a Julia wrapper to `OptimPack <https://github.com/emmt/OptimPack>`_.

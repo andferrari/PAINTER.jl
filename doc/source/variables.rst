@@ -7,10 +7,12 @@ If parameters are not set, default values are used. For example
 
   OIDATA,PDATA,OPTOPT =  painter()
 
-calls ``painter`` with all defaults values.
+calls ``painter`` with all default values.
 
 Variables
 ---------
+
+These two variables cannot be included in ``OIDATA`` structure.
 
 * ``nbitermax``: number of ADMM iterations. Default: ``1000``.
 * ``aff``: if ``aff=true`` plots are enabled using ``PyPlot.jl``. Default: ``false``.
@@ -18,36 +20,37 @@ Variables
 Variables in ``OIDATA`` structure
 ----------------------------------
 
-The structure ``OIDATA``: contains all oifits information and user defined parameters.
+The structure ``OIDATA`` contains all OIFITS information and user defined parameters.
 
 **Execution Variables:**
 
-* ``paral``: if ``paral=true`` the ADMM step which reconstructs the object for each wavelength is computed in parallel, see [2]_. In this case ``julia``must be started with
+* ``paral``: if ``paral=true`` the ADMM step which reconstructs the object for each wavelength is computed in parallel, see [2]_. In this case ``julia``must be started with ``nprocs`` process and the module must be loaded on all process:
 
   .. code:: bash
 
     $ julia -p nprocs
+    julia> @everywhere using Painter
 
-  where ``nprocs`` denotes the number of processes. Default: ``true``.
+  Default: ``true``.
 
 * ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used after to iterate the ADMM algorithm. Default: ``true``.
 * ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: ``10``.
-* ``PlotFct``: is a function defined by the user which runs at each ``CountPlot`` iteration. This function must respect the argument of ``painterplotfct``	and must call ``PyPlot``, see ``Examples`` section. Default: ``painterplotfct``.
+* ``PlotFct``: is a user defined function which is called at each ``CountPlot`` iterations. This function must respect the input argument of ``painterplotfct`` function and must call ``PyPlot``, see :ref:`examples-label`  section. Default: ``painterplotfct``.
 
 **Data and image related variables:**
 
-* ``Folder``: path to the folder containing OIFITS/FITS files. Default: ``./OIFITS``. If ``./OIFITS`` does not exists ``src/OIFITS`` in ``Painter.jl/`` default installation folder, containing FITS for the demo, is used.
-* ``indfile``: allows to chose the set of OIFITS/FITS files ``Folder`` that will be processed. ``indfile`` is an Array of Int containnig the index of thd files in alphabetical order. Default: all files.
-* ``indwvl``: allows to chose the set of processed wavelengths. ``indwvl`` is an  Array of Int containnig the index of the wavelengths in increasing order. Default: all wavelengths.
+* ``Folder``: path to the folder containing OIFITS/FITS files. Default: ``./OIFITS``. If ``./OIFITS`` does not exists ``src/OIFITS`` in ``Painter.jl/`` default installation folder, containing FITS files for the demo, is used.
+* ``indfile``: allows to chose the set of OIFITS/FITS files in ``Folder`` that will be processed. ``indfile`` is an ``Array{Int64,1}`` containnig the indexes of the files in alphabetical order. Default: all files.
+* ``indwvl``: allows to chose the set of processed wavelengths. ``indwvl`` is an ``Array{Int64,1}`` containnig the indexes of the wavelengths in increasing order. Default: all wavelengths.
 * ``nx``: image size in pixels (the size of the image is nx\ :sup:`2`). Default: ``64``.
 * ``FOV``: Field Of View of the reconstructed image in ArcSecond. Default: ``40e-3``.
 * ``mask3D``: Binary mask defining the support constraint. ``mask3D`` can be:
 
-  * a path to a fits file,
+  * a path to a FITS file,
   * an Array,
   * an empty Array (no constraint).
 
-  ``mask3D`` can be set by function ``mask``. Default: no constraint.
+  ``mask3D`` can be set by the function ``mask``. Default: no constraint.
 
 * ``xinit3D``: Initial estimate of the object or of the complex visibilities. ``xinit3D`` can be:
 
@@ -55,7 +58,7 @@ The structure ``OIDATA``: contains all oifits information and user defined param
   * an Array containing the object,
   * and Array containing the complex visibilities.
 
-  Default: centered dirac for all wavelengths.
+  Default: centered Dirac functions at all wavelengths.
 
 
 **ADMM algorithm parameters:**
@@ -63,34 +66,35 @@ The structure ``OIDATA``: contains all oifits information and user defined param
 * ``Wvlt``: list of wavelets basis for spatial regularisation, see [2]_.  See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_ for definitions. Default: first 8 Daubechies wavelets and Haar wavelets.
 * ``lambda_spat``: Spatial regularization parameter, see Eqs. 29, 31 in [1]_. Default: nx\ :sup:`-2`.
 * ``lambda_spec``: Spectral regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-2``.
-* ``lambda_L1``: l\ :sub:`1` regularization parameter. l\ :sub:`1` constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
+* ``lambda_L1``: regularization parameter for an l\ :sub:`1` constraint on the image. l\ :sub:`1` constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
 * ``epsilon``: Ridge/Tikhonov regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-6``.
 * ``rho_y``: ADMM parameter for data fidelity,see  Eqs. 35, 50-52 in [1]_. Default: ``1``.
 * ``rho_spat``: ADMM parameter for Spatial regularization, see Eqs. 25, 31 in [1]_. Default: ``1``.
 * ``rho_spec``: ADMM parameter for Spectral regularization, see Eqs. 42, 55 in [1]_. Default: ``1``.
 * ``rho_ps``: ADMM parameter for positivity constraint, see Eq. 47, 54 in [1]_. Default: ``1``.
-* ``alpha``: weight of absolute squared visibilities data fidelity term, see Eqs. 25, 31 in [1]_. Default: ``1``.
+* ``alpha``: weight for squared visibilities modulus data fidelity term, see Eqs. 25, 31 in [1]_. Default: ``1``.
 * ``beta``: weight for phases (closures and differential) data fidelity term, see Eqs. 25,31 in [1]_. Default: ``1``.
-* ``eps1``: Primal Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
-* ``eps2``: Dual Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
+* ``eps1``: stopping criterium  for primal residual  in ADMM algorithm. Default: ``1e-6``.
+* ``eps2``: stopping criterium for dual residual in ADMM algorithm. Default: ``1e-6``.
 
 Constant in ``OIDATA`` structure
 --------------------------------
 
-The structure ``OIDATA``: contains also constants related to OIFITS data extracted from files.
+The structure ``OIDATA``: contains also constants related to the data and
+extracted from OIFITS files.
 
-* ``nb``: number of bases
-* ``nw``: number of wavelength
-* ``U``: the U spatial frequencies matrix 
-* ``V``: the V spatial frequencies matrix 
-* ``P``: squared visibilities Matrix 
-* ``W``: squared visibilities variance Matrix 
-* ``T3``: phases closure matrix
-* ``T3err``: phases closure variance matrix
-* ``DP``: differential phases vector
-* ``DPerr``: differential phases variance vector
-* ``Xi``: phases difference Vector
-* ``K``: phases difference variance Vector
+* ``nb``: number of bases.
+* ``nw``: number of wavelength.
+* ``U``: the U spatial frequencies matrix.
+* ``V``: the V spatial frequencies matrix.
+* ``P``: squared visibilities Matrix.
+* ``W``: squared visibilities variance Matrix.
+* ``T3``: phases closure matrix.
+* ``T3err``: phases closure variance matrix.
+* ``DP``: differential phases vector.
+* ``DPerr``: differential phases variance vector.
+* ``Xi``: phases difference Vector.
+* ``K``: phases difference variance vector.
 
 For matrices, the column index is associated to the wavelength index.
 
@@ -99,10 +103,9 @@ Variables in ``OPTOPT`` structure
 
 The structure ``OPTOPT``: contains all OptimPack parameters for the phases proximal operator.
 
+* ``ls``, ``scl``, ``gat``, ``grt``, ``vt``, ``memsize``, ``mxvl``, ``mxtr``, ``stpmn``, ``stpmx``. See  `OptimPack <https://github.com/emmt/OptimPack>`_ for details.
 
-* ``ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx``: related to `OptimPack <https://github.com/emmt/OptimPack>`_.
-
-  Default:
+  Default values are:
 
   .. code:: julia
 

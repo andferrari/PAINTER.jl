@@ -1,23 +1,5 @@
-Package and Functions
-=====================
-
-Painter Package
----------------
-
-To use the Painter package on julia, call
-
-    .. code:: julia
-	
-	julia> using Painter
-	
-To use parallelized calculus, run julia with several process and make the painter package known for all process: 
-
-	
-    .. code:: julia
-	
-	$ julia -p nprocs
-	julia> @everywhere using Painter
-	
+Functions
+=========
 
 Main function
 -------------
@@ -26,7 +8,7 @@ Main function
 
 * ``painter`` is defined with two methods:
 
-  * full parameters definition. This method is generally used to initialize the algorithm:
+  * Full parameters definition. This method is generally used to initialize the algorithm:
 
     .. code:: julia
 
@@ -46,16 +28,16 @@ Main function
 
   where:
 
-  * ``OIDATA``: contains all oifits information and user defined parameters
-  * ``PDATA``: contains all variables and array modified during iterations
-  * ``OPTOPT``: contains all OptimPack parameters for the phases proximal operator
+  * ``OIDATA``: contains all OIFITS information and user defined parameters.
+  * ``PDATA``: contains all the variables and arrays modified during iterations.
+  * ``OPTOPT``: contains all OptimPack parameters for the phases proximal operator.
 
 Auxiliary functions
 -------------------
 
 .. function:: paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
 
-  Save structures ``OIDATA``, ``PADATA`` and ``OPTOPT`` (TBD) into ``*.jld`` julia data files. See `HDF5 <https://github.com/timholy/HDF5.jl>`_ package.
+  Saves the structures ``OIDATA``, ``PADATA`` and ``OPTOPT`` (TBD) into ``*.jld`` julia data files. See `HDF5 <https://github.com/timholy/HDF5.jl>`_ package.
 
   .. code:: julia
 
@@ -65,7 +47,7 @@ Auxiliary functions
 .. function:: painterload(savepath::ASCIIString)
 
 
-  To load the structures contained in ``*.jld`` files:
+  Loads the structures contained in ``*.jld`` files:
 
   .. code:: julia
 
@@ -77,11 +59,12 @@ Auxiliary functions
   of wavelength is small, e.g. < 30.
 
   The default function computes the number of subplots as a function of the number of wavelength if ``nw<30``.
+  Its is automatically called if ``PyPlot`` is installed and ``aff=true``.
 
 * The first figure shows the per-channel estimates projected on the domain support. The axis are defined by the field of view with no limitation of the amplitude (colorbars are different for all images).
 * The second figure shows the primal and dual residuals (``crit1`` and ``crit2``) as a function of the iteration.
 
-
+  
 .. function:: mask(nx::Int,param::Int,choice::ASCIIString)
 
   Creates a binary mask of size nx\ :sup:`2`:
