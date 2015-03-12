@@ -31,7 +31,8 @@ The structure ``OIDATA``: contains all oifits information and user defined param
   where ``nprocs`` denotes the number of processes. Default: ``true``.
 
 * ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used after to iterate the ADMM algorithm. Default: ``true``.
-*  ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: ``10``.
+* ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: ``10``.
+* ``PlotFct``: is a function defined by user which runs at each ``CountPlot`` iterations. This function must respect the argument of ``painterplotfct``	and must be included in julia. Default: ``painterplotfct``.
 
 **Data and image related variables:**
 

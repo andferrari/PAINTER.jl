@@ -9,6 +9,7 @@
 # OIDATA::PAINTER_Input
 #
 type PAINTER_Input
+  PlotFct::Function
   Folder::ASCIIString
   FilesName::Array{ASCIIString}
   indfile::Array{Int,1}
@@ -71,8 +72,8 @@ type PAINTER_Data
   tau_xc::Array
   tau_pwc::Array
   tau_xic::Array
-  ys::Array
-  y_tampon::Array
+#   ys::Array
+#   y_tampon::Array
   yc::Array
   y_v2::Array
   y_phi::Array
@@ -105,8 +106,9 @@ function optiminit(ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx)
 return OptOptions(ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx)
 end
 function painterinputinit()
-  return PAINTER_Input("",[],[],[],[],[],[],[],[],[],[],[],0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,[],[],[],true,[],[],[],[])
+  return PAINTER_Input(painterplotfct,"",[],[],[],[],[],[],[],[],[],[],[],0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,[],[],[],true,[],[],[],[])
 end
 function painterdatainit()
-  return PAINTER_Data(0.,[],[],speye(0),[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],Float64[],Float64[],0,0,0,0)
+  return PAINTER_Data(0.,[],[],speye(0),[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],Float64[],Float64[],0,0,0,0)
+#   return PAINTER_Data(0.,[],[],speye(0),[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],Float64[],Float64[],0,0,0,0)
 end

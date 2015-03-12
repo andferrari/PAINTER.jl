@@ -12,7 +12,7 @@ Main function
 
     .. code:: julia
 
-      OIDATA,PDATA,OPTOPT = painter(Folder, nbitermax, nx, lambda_spat, lambda_spec, lambda_L1, epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, Wvlt, beta, eps1, eps2, FOV, mask3D, xinit3D, indfile, indwvl, ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx, aff, CountPlot, admm, paral)
+      OIDATA,PDATA,OPTOPT = painter(Folder, nbitermax, nx, lambda_spat, lambda_spec, lambda_L1, epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, Wvlt, beta, eps1, eps2, FOV, mask3D, xinit3D, indfile, indwvl, ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx, aff, CountPlot,PlotFct, admm, paral)
 
   * Specific structures. This method allows to restart the algorithm, for example if the number of iterations is not sufficient (see variable ``nbitermax+=100``).
 
@@ -53,7 +53,7 @@ Auxiliary functions
 
     PDATA2,OIDATA2,OPTOPT2 = painterload(savepath)
 
-.. function:: painterplotfct(x::SharedArray, w::Array, crit1::Vector, crit2::Vector, eps1::Real, eps2::Real, nx::Int64, nw::Int64, wvl::Vector, FOV::Real)
+.. function:: painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 
   It is recommended to monitor the iterations of the algorithm when the number
   of wavelength is small, e.g. < 30.
@@ -62,6 +62,7 @@ Auxiliary functions
 
 * The first figure shows the per-channel estimates projected on the domain support. The axis are defined by the field of view with no limitation of the amplitude (colorbars are different for all images).
 * The second figure shows the primal and dual residuals (``crit1`` and ``crit2``) as a function of the iteration.
+
 
 .. function:: mask(nx::Int,param::Int,choice::ASCIIString)
 

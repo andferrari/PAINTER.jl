@@ -183,7 +183,7 @@ end
 # mask3D	      : Support constraint: can be a path to a fits file, or to data image (2D or 3D in both case)
 # xinit3D       : Initial Estimate: can be a path to a fits file, or to data image (2D or 3D in both case)
 ###################################################################################
-function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lambda_L1,epsilon,rho_y,rho_spat,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,paral)
+function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lambda_L1,epsilon,rho_y,rho_spat,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,paral,PlotFct)
 # check if user parameters are valid parameters, correct them if type is not good or replace by default if parameter are not valid
 if(FOV<0)
   println("FOV must be non negative (default: 0.04 arcsecond)")
@@ -281,9 +281,11 @@ eps2 = eps2 + 0.
     f            = FITS(mask3D)
     mask3D       = read(f[1])
   elseif typeof(mask3D)== Array{Float64,2}
-    mask3dprint = "3D Mask Initialization from 2D data of size $size(mask3D)"
+    Sz = size(mask3D)
+    mask3dprint = "3D Mask Initialization from 2D data of size $Sz"
   elseif typeof(mask3D)== Array{Float64,3}
-    mask3dprint = "3D Mask Initialization from 3D data of size $size(mask3D)"
+    Sz = size(mask3D)
+    mask3dprint = "3D Mask Initialization from 3D data of size $Sz"
   elseif isempty(mask3D)== true
     mask3dprint = "3D Mask Initialization from default, no constraint"
   end
@@ -293,9 +295,11 @@ eps2 = eps2 + 0.
     f            = FITS(xinit3D)
     xinit3D      = read(f[1])
   elseif typeof(xinit3D)== Array{Float64,2}
-    xinit3dprint = "3D Init Initialization from 2D data of size $size(xinit3D)"
+    Sx = size(xinit3D)
+    xinit3dprint = "3D Init Initialization from 2D data of size $Sx"
   elseif typeof(xinit3D)== Array{Float64,3}
-    xinit3dprint = "3D Init Initialization from 3D data of size $size(xinit3D)"
+    Sx = size(xinit3D)
+    xinit3dprint = "3D Init Initialization from 3D data of size $Sx"
   elseif isempty(xinit3D)== true
     xinit3dprint = "3D Init Initialization from default, centered dirac"
   end
@@ -329,6 +333,11 @@ eps2 = eps2 + 0.
     error("Wavelets list must be a ASCIIString or Array{ASCIIString,1 ")
  end
 
+if typeof(PlotFct) != Function
+    error("PlotFct must a Function, default plot function: painterplotfct() will be used")
+    PlotFct = painterplotfct
+end
+
 println("OIFits path = $pathprint")
 println("lambda_spat = $lambda_spat ")
 println("lambda_spec = $lambda_spec ")
@@ -347,7 +356,9 @@ println("nx          = $nx pixels")
 println("mask3D      = $mask3dprint")
 println("xinit3d     = $xinit3dprint")
 println("Wavelets    = $Wvltprint")
+println("Plot Func   = $PlotFct")
 
+OIDATA.PlotFct     = PlotFct
 OIDATA.Folder      = cpath
 OIDATA.lambda_spat = lambda_spat
 OIDATA.lambda_spec = lambda_spec
@@ -402,8 +413,8 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
   PDATA.tau_xc   = zeros(Complex128,nb,nw)
   PDATA.tau_pwc  = zeros(Complex128,nb,nw)
   PDATA.tau_xic  = zeros(Complex128,nb,nw)
-  PDATA.ys       = zeros(Complex128,nb,nw)
-  PDATA.y_tampon = zeros(Complex128,nb,nw)
+#   PDATA.ys       = zeros(Complex128,nb,nw)
+#   PDATA.y_tampon = zeros(Complex128,nb,nw)
   PDATA.y_v2     = zeros(Complex128,nb,nw)
   PDATA.y_phi    = zeros(Complex128,nb,nw)
   yctmp,xtmp     = checkinit(OIDATA.xinit3D,OIDATA.nb,OIDATA.nx,OIDATA.nw,PDATA.plan)
