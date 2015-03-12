@@ -35,7 +35,7 @@ function checkmask(mask3D::Array,nx::Int,nw::Int)
 # if mask3D is a string it must be the path to a fits file the conversion from fits to data is done in painterinit(...)
 #
 # case: no mask given
-  if isempty(mask3D)==true
+  if isempty(mask3D)
     mask3D = ones(Float64,nx,nx,nw)
   end
 dims =  ndims(mask3D)
@@ -98,7 +98,7 @@ function checkinit(xinit::Array,nb::Int,nx::Int,nw::Int,plan::Array)
 # nx: side size of images in pixels
 # nw: number of wavelength
 # plan: non uniform fft plan
-  if isempty(xinit)==true
+  if isempty(xinit)
     xinit = zeros(nx,nx)
     xinit[int(nx/2 +1),int(nx/2 +1)]=1
   end
@@ -191,7 +191,7 @@ if(FOV<0)
   FOV = .04
 end
 FOV = FOV + 0.
-if(isinteger(nx)==false)
+if !isinteger(nx)
   println("nx must an integer")
   println("Converted to integer")
 end
@@ -286,7 +286,7 @@ eps2 = eps2 + 0.
   elseif typeof(mask3D)== Array{Float64,3}
     Sz = size(mask3D)
     mask3dprint = "3D Mask Initialization from 3D data of size $Sz"
-  elseif isempty(mask3D)== true
+  elseif isempty(mask3D)
     mask3dprint = "3D Mask Initialization from default, no constraint"
   end
 # Check xinit3d type
@@ -300,7 +300,7 @@ eps2 = eps2 + 0.
   elseif typeof(xinit3D)== Array{Float64,3}
     Sx = size(xinit3D)
     xinit3dprint = "3D Init Initialization from 3D data of size $Sx"
-  elseif isempty(xinit3D)== true
+  elseif isempty(xinit3D)
     xinit3dprint = "3D Init Initialization from default, centered dirac"
   end
 # Check data path

@@ -285,24 +285,36 @@ const M = PDATA.M
 const NWvlt = length(Wvlt)
 # ----------------------------------
 # Check if Pyplot is used to graphics
-if aff==true
-# check if Pyplot is installed
-if(Pkg.installed("PyPlot") == nothing)
-println("PyPlot is not installed: Pkg.add(...), aff=false ")
-aff = false
-end
-# check if : using PyPlot
-try
-PyPlot.pygui(true)
-catch e
-aff = false
-println("PyPlot not used: using PyPlot, aff=false")
-end
+# if aff
+# # check if Pyplot is installed
+# if(Pkg.installed("PyPlot") == nothing)
+#   println("")
+#   println("PyPlot is not installed: Pkg.add(''PyPlot''), aff=false ")
+#   aff = false
+# else # PyPlot is installed, check if Painter know where is PyPlot
+#   PyPlotusing = true # check if : using PyPlot
+#   try
+#     PyPlot.pygui(true)
+#   catch e
+#     PyPlotusing = false
+#     println("")
+#     println("PyPlot not used: using PyPlot, try to load it otherwise aff=false")
+#   end # If PyPlot is known so we can use it
+#   if !PyPlotusing  # otherwise load PyPlot
+#     println("")
+#     println("PyPlot require")
+#     require("PyPlot")
+# #         import PyPlot
+#   end
+# end
+
+
 end
 # ----------------------------------
-println("---------------------------------------")
-println("| time | primal | dual | It |")
-println("---------------------------------------")
+println("")
+println("-----------------------------------------")
+println("| time |   primal   |    dual    |  It  |")
+println("-----------------------------------------")
 loop = true
 # println("ADMM Loop")
 TiMe = zeros(nbitermax)
@@ -358,16 +370,14 @@ n2 = norm(vec(PDATA.yc-y_tmp))
 push!(PDATA.crit1,n1)
 push!(PDATA.crit2,n2)
 # Plot and verbose
-if aff
-if (PDATA.ind-1)==(PDATA.count*PDATA.CountPlot)
+if aff&&(PDATA.ind-1)==(PDATA.count*PDATA.CountPlot)
 OIDATA.PlotFct(PDATA,OIDATA)
 PDATA.count+=1
-end
 end
 if (PDATA.ind >= nbitermax)||( (n1<eps1)&&(n2<eps2) )
 loop = false
 end
-@printf("| %02.02f | %02.04e | %02.04e | %d |\n",toq(),PDATA.crit1[PDATA.ind],PDATA.crit2[PDATA.ind],PDATA.ind)
+@printf("| %02.02f | %02.04e | %02.04e | %04d |\n",toq(),PDATA.crit1[PDATA.ind],PDATA.crit2[PDATA.ind],PDATA.ind)
 end
 return PDATA
 end
@@ -391,8 +401,10 @@ OPTOPT = optiminit(ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx)
 # PAINTER User parameter validation
 OIDATA = painterinit(OIDATA,Folder,nx,lambda_spat,lambda_spec,lambda_L1,epsilon,rho_y,rho_spat,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,paral,PlotFct)
 # OIFITS-FITS Data Read
+println("")
 OIDATA = readoifits(OIDATA,indfile,indwvl)
 ## PAINTER Matrices creation, Array Initialization
+println("")
 PDATA,OIDATA  = painterarrayinit(PDATA,OIDATA)
 # Check, Create PAINTER object and mask initialisation from data or fits
 OIDATA.mask3D   = checkmask(OIDATA.mask3D,OIDATA.nx,OIDATA.nw)
