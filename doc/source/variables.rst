@@ -74,8 +74,8 @@ The structure ``OIDATA``: contains all oifits information and user defined param
 * ``eps1``: Primal Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
 * ``eps2``: Dual Residual stopping criterium in ADMM algorithm. Default: ``1e-6``.
 
-**Constant in ``OIDATA`` structure**
-
+Constant in ``OIDATA`` structure
+--------------------------------
 
 The structure ``OIDATA``: contains also constants related to OIFITS data extracted from files.
 
