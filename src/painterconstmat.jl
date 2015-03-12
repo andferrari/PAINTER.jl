@@ -28,7 +28,7 @@ M        = pmap(toinv,mat2inv)
 end
 # ---------------------------------------------------------------------------------
 # for parallel calculus of inverse
-@everywhere function toinv(mat2inv)
+function toinv(mat2inv)
 inv(mat2inv[2]*mat2inv[1]*mat2inv[1]' + speye(size(mat2inv[1],1)))
 end
 
@@ -96,7 +96,7 @@ return pmap(toplan,Mtmp)
 end
 # ---------------------------------------------------------------------------------
 # for parallel calculus
-@everywhere function toplan(Mtmp)
+function toplan(Mtmp)
 NFFTPlan(Mtmp[1],(Mtmp[2],Mtmp[2]))
 end
 ###################################################################################
@@ -143,7 +143,7 @@ end
   end
 end
 # ---------------------------------------------------------------------------------
-@everywhere function non_uniform_dft_par(UVMAT)
+function non_uniform_dft_par(UVMAT)
 # Non Uniform DFT Matrix:
 # UVMAT [u,v,nx]
 # for a nx*nx pixels image

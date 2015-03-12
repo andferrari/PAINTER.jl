@@ -3,8 +3,7 @@
 ###################################################################################
 # OIFITS RELATED - Read files, create quantities of interest
 ###################################################################################
-using FITSIO
-using OIFITS
+
 # path: read OIFITS data from files included in folder OIDATA.Folder
 # OIDATA: structure containing all OIDATA and users informations
 # indfile: restrict the number of files (as listed by dir() or ls() )

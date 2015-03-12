@@ -1,7 +1,6 @@
 ###################################################################################
 # Antony Schutz 2015, ANR - POLCA
 ###################################################################################
-using HDF5
 ## Painter Save and Load utilities
 function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
 

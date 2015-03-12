@@ -8,8 +8,8 @@
 # PAINTER Outpt
 #
 ###################################################################################
-# using PyPlot
 # verb
+using PyPlot
 function painterplotfct(x::SharedArray,w::Array,crit1::Vector,crit2::Vector,eps1::Real,eps2::Real,nx::Int64,nw::Int64,wvl::Vector,FOV::Real)
 #   ::Array{Float64,3}, ::Array{Float64,3}, ::Array{Float64,1}, ::Array{Float64,1}, ::Float64, ::Float64, ::Int64, ::Int64, ::Array{Float64,2}
 SubColumn,SubRow=  createsubplotindex(nw)

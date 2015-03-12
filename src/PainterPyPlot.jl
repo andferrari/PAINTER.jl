@@ -11,19 +11,22 @@
 # Copyright (C) 2015, Antony Schutz, Andre Ferrari.
 #
 #------------------------------------------------------------------------------
-module Painter
+module PainterPyPlot
 
   using HDF5
   using OIFITS
   using OptimPack
   using NFFT
   using Wavelets
+  using PyPlot
 
-  export painter, mask, paintersave, painterload
+  export painter, mask, paintersave, painterload, painterplotfct
   include("paintertype.jl")
   include("paintertools.jl")
   include("painterio.jl")
   include("painteroifits.jl")
   include("painterconstmat.jl")
   include("paintercheckinit.jl")
+  include("painterplot.jl")
+
 end

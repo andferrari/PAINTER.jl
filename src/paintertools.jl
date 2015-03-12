@@ -19,11 +19,8 @@
 # via the alternating direction method of multipliers,”
 # Found. Trends Mach. Learn., 3(1):1–122, January 2011.
 ###################################################################################
-# librairy
-using OptimPack
-###################################################################################
-@everywhere using NFFT
-@everywhere using Wavelets
+
+
 ###################################################################################
 # # Operation involved in PAINTER
 # ---------------------------------------------------------------------------------
@@ -83,7 +80,7 @@ end
 end
 # ---------------------------------------------------------------------------------
 # for parallel calculus of inverse wavelet basis
-@everywhere function myidwt(M)
+function myidwt(M)
 idwt(M[1],M[2])
 end
 ###################################################################################
@@ -468,4 +465,3 @@ function painter(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions,nb
 PDATA = painteradmm(PDATA,OIDATA,OPTOPT,nbitermax,aff)
 return OIDATA,PDATA,OPTOPT
 end
-
