@@ -18,6 +18,9 @@ module Painter
   using OptimPack
   using NFFT
   using Wavelets
+  if(Pkg.installed("PyPlot") != nothing)
+   using PyPlot
+  end
 
   export painter, mask, paintersave, painterload
   include("paintertype.jl")
@@ -26,4 +29,5 @@ module Painter
   include("painteroifits.jl")
   include("painterconstmat.jl")
   include("paintercheckinit.jl")
+  include("painterplot.jl")
 end
