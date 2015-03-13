@@ -42,17 +42,17 @@ end
     Mynx = 64
     Myeps1 = 1e-4
     Myeps2 = 1e-4
-    Myrho_y = 10
+    Myrho_y = 10.
     Myalpha = 1e4
     Mybeta = 1e5
-    Myrho_spat = 4
+    Myrho_spat = 4.
     Myrho_ps = Myrho_spat
     Mylambda_spat = 1e-5
     Myrho_spec = 0.5
     Mylambda_spec = 1e-5
     Myaff = true     # plot is enabled
     Mynbitermax = 1
-    Mypar = true     # parallel computing is disabled
+    Mypar = true     # parallel computing is enabled
     savepath = "mydata.jld"
 
 # initialize algorithm and run admm

@@ -3,6 +3,19 @@
 Examples and demo
 =================
 
+Demo for impatients
+-------------------
+
+``Painter.jl`` contains a demo file ``painterdemo.jl``
+with an OIFITS folder in the default installation folder.
+To run the demo type:
+
+.. code:: julia
+
+  demo = string(Pkg.dir("Painter"),"/src/painterdemo.jl")
+  include(demo);
+
+The demo includes warm start, save and load of structures, a custom plot function, ...
 
 User parameters and single execution
 ------------------------------------
@@ -102,19 +115,3 @@ For example, to plot at each iteration the sum over all wavelengths of an estima
 	end
 
 	OIDATA,PDATA,OPTOPT = painter(..., PlotFct = myPlotfunction)
-
-
-Demo for impatients
--------------------
-
-``Painter.jl`` contains a demo file ``painterdemo.jl``
-with an OIFITS folder in the default installation folder.
-To run the demo type:
-
-.. code:: julia
-
-  demo = string(Pkg.dir("Painter"),"/src/painterdemo.jl")
-  include(demo)
-
-The demo includes warm start, custom plot function, save and load of
-structures...
