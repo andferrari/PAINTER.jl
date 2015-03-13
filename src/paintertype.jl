@@ -82,7 +82,6 @@ type PAINTER_Data
     ind::Int
     CountPlot::Int
     count::Int
-    nbitermax::Int
 end
 # Structure for OptimPack, see OptimPack.jl
 # https://github.com/emmt/OptimPack.jl
@@ -111,5 +110,5 @@ end
 function painterdatainit()
     return PAINTER_Data(0., [], [], speye(0), [], [], [], [], [], [], []
                         , [], [], [], [], [], [], [], [], [], [], [], []
-                        , [], Float64[], Float64[], 0, 0, 0, 0)
+                        , [], Float64[], Float64[], 0, 0, 0)
 end

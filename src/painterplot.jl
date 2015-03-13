@@ -22,6 +22,7 @@ function painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     nw = OIDATA.nw
     FOV = OIDATA.FOV
     SubColumn,SubRow = createsubplotindex(nw)
+  println((SubColumn,SubRow))
     indpix = linspace(-(FOV / 2), (FOV / 2), nx)
     @printf("stop crit, primal: %e (%e) \t dual %e (%e)\n", crit1[end], eps1, crit2[end], eps2)
 ###################################################################################
@@ -32,9 +33,9 @@ function painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     pos     = int([1, round(nx / 4), round(nx / 2), round(nx * 3 / 4), nx])
     count_y = 0
     count_x = 0
-    for n = 1 in nw
+    for n in 1:nw
         subplot(SubColumn, SubRow, n)
-        imshow(x[:, :, n] .* max(0, w[:, :, n]), origin ="lower")
+        imshow(x[:, :, n] .* max(0., w[:, :, n]), origin ="lower")
         titlestring = @sprintf("%2.4f µm", wvl[n] * 1e6)
         title(titlestring)
         xticks([])

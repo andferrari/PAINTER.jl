@@ -10,21 +10,21 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         OIDATA.lambda_spec, "lambda_L1", OIDATA.lambda_L1, "rho_y", OIDATA.rho_y, "rho_spat", OIDATA.rho_spat, "rho_spec",
         OIDATA.rho_spec, "rho_ps", OIDATA.rho_ps, "alpha", OIDATA.alpha, "beta", OIDATA.beta, "eps1", OIDATA.eps1, "eps2",
         OIDATA.eps2, "epsilon", OIDATA.epsilon, "mask3D", OIDATA.mask3D, "xinit3D", OIDATA.xinit3D, "Wvlt", OIDATA.Wvlt, "paral",
-        OIDATA.paral, "PlotFct", OIDATA.PlotFct, "T3", OIDATA.T3, "T3err", OIDATA.T3err, "DP", OIDATA.DP, "DPerr", OIDATA.DPerr)
+        OIDATA.paral, "T3", OIDATA.T3, "T3err", OIDATA.T3err, "DP", OIDATA.DP, "DPerr", OIDATA.DPerr)#, "PlotFct", OIDATA.PlotFct)
 
     JLD.save(string("PDATA_",savepath),
         "eta", PDATA.eta,"plan", PDATA.plan, "F3D", PDATA.F3D, "H", PDATA.H, "M", PDATA.M, "x", PDATA.x, "vHt",
         PDATA.vHt,"z", PDATA.z, "Hx", PDATA.Hx, "tau_s", PDATA.tau_s, "w", PDATA.w, "v", PDATA.v, "r", PDATA.r, "tau_w",
         PDATA.tau_w, "tau_v", PDATA.tau_v, "tau_r", PDATA.tau_r, "Spcdct", PDATA.Spcdct, "Fx", PDATA.Fx, "tau_xc",
         PDATA.tau_xc, "tau_pwc", PDATA.tau_pwc, "tau_xic", PDATA.tau_xic,
-        PDATA.y_tampon, "yc", PDATA.yc, "y_v2", PDATA.y_v2, "y_phi", PDATA.y_phi, "crit1", PDATA.crit1, "crit2",
-        PDATA.crit2, "ind", PDATA.ind, "CountPlot", PDATA.CountPlot, "count", PDATA.count, "nbitermax", PDATA.nbitermax)
+        "yc", PDATA.yc, "y_v2", PDATA.y_v2, "y_phi", PDATA.y_phi, "crit1", PDATA.crit1, "crit2",
+        PDATA.crit2, "ind", PDATA.ind, "CountPlot", PDATA.CountPlot, "count", PDATA.count)#, "nbitermax", PDATA.nbitermax)
 end
 function painterload(loadpath::ASCIIString)
 # OIDATA
     OIDATA = painterinputinit()
     tmp = JLD.load(string("OIDATA_",loadpath))
-    OIDATA.PlotFct = tmp["PlotFct"]
+#    OIDATA.PlotFct = tmp["PlotFct"]
     OIDATA.T3 = tmp["T3"]
     OIDATA.DP = tmp["DP"]
     OIDATA.T3err = tmp["T3err"]
@@ -61,6 +61,7 @@ function painterload(loadpath::ASCIIString)
     OIDATA.xinit3D = tmp["xinit3D"]
     OIDATA.Wvlt = tmp["Wvlt"]
     OIDATA.paral = tmp["paral"]
+
 # PDATA
     PDATA  = painterdatainit()
     tmp = JLD.load(string("PDATA_",loadpath))
@@ -93,7 +94,6 @@ function painterload(loadpath::ASCIIString)
     PDATA.ind = tmp["ind"]
     PDATA.CountPlot = tmp["CountPlot"]
     PDATA.count = tmp["count"]
-    PDATA.nbitermax = tmp["nbitermax"]
 # OPTOPT
 #   tmp = JLD.load(string("OPTOPT_",loadpath))
 #   ls  = tmp["ls"]
@@ -107,5 +107,5 @@ function painterload(loadpath::ASCIIString)
 #   stpmn  = tmp["stpmn"]
 #   stpmx  = tmp["stpmx"]
 #   OPTOPT = optiminit(ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx)
-    return OIDATA, PDATA#, OPTOPT
+    return PDATA, OIDATA
 end

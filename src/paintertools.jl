@@ -387,7 +387,7 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
                  ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-4, gtol = 0.9),
                  scl = OptimPack.SCALING_OREN_SPEDICATO, gat = 1e-6, grt = 1e-6,
                  vt = false, memsize = 100, mxvl = 1000, mxtr = 1000, stpmn = 1e-20,
-                 stpmx = 1e+20, PlotFct=painterplotfct, aff = false, CountPlot = 10, admm = true, paral = true)
+                 stpmx = 1e+20, PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, paral = true)
 
 # Check if mandatory package are installed
     checkPack()
@@ -415,7 +415,8 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
     return OIDATA, PDATA, OPTOPT
 end
 #########################################
-function painter(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions,nbitermax::Int64,aff::Bool)
+function painter(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions,nbitermax::Int64,aff::Bool;PlotFct = painterplotfct)
+    OIDATA.PlotFct = PlotFct
     PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
     return OIDATA, PDATA, OPTOPT
 end

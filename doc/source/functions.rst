@@ -18,7 +18,7 @@ Main function
 
     .. code:: julia
 
-        OIDATA,PDATA,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff)
+        OIDATA,PDATA,OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff; plotfunction)
 
 * ``painter`` returns 3 structures:
 
@@ -51,8 +51,10 @@ Auxiliary functions
 
   .. code:: julia
 
-    PDATA2,OIDATA2,OPTOPT2 = painterload(savepath)
+    PDATA2,OIDATA2 = painterload(savepath)
 
+  The current version of the save function cannot save, and so load, the Optim structure OPTOPT and the pointer to the user defined plot function. To warmstart the algorithm, the user must redefine an OPTOPT structure and call the ``painter(...)`` with the personalized plot function as argument otherwise the default plot function is used.	
+	
 .. function:: painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 
   It is recommended to monitor the iterations of the algorithm when the number

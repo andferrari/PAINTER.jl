@@ -12,7 +12,7 @@
 #
 #------------------------------------------------------------------------------
 module Painter
-    using HDF5
+    using HDF5, JLD
     using OIFITS
     using OptimPack
     using NFFT
@@ -21,7 +21,7 @@ module Painter
     if(Pkg.installed("PyPlot") != nothing)
         using PyPlot
     end
-    export painter, mask, paintersave, painterload
+    export painter, mask, paintersave, painterload, painterplotfct
 
     include("paintertype.jl")
 
