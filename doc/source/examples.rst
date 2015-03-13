@@ -29,7 +29,7 @@ User parameters and single execution
     Mynbitermax   = 100
     Mypar         = false     # parallel computing is disabled
 
-  ``Painter.jl`` will extract OIFITS informations from all files in ``Mypath`` and will restrict the analysis to the first 29 wavelengths.
+  ``Painter.jl`` will extract OIFITS informations from all files in the folder ``../MyOifitsFolder`` and will restrict the analysis to the first 29 wavelengths.
 
 * The initial estimate is the default.  ADMM is enabled by default and will run the algorithm for 100 iterations.
 * The support constraint is defined by a disk:
@@ -104,8 +104,8 @@ For example, to plot at each iteration the sum over all wavelengths of an estima
 	OIDATA,PDATA,OPTOPT = painter(..., PlotFct = myPlotfunction)
 
 
-Demo source code
-----------------
+Demo code for impatients
+------------------------
 
 The following code can be used to test all the functionalities of the algorithm. This demo will reconstruct a nx\ :sup:`2` pixels gray object. The data are stored in 4 OIFITS files. They result from 102 bases at 227 wavelength and 34 phases closure per wavelength. As on the first example, the analysis is done on the first 29 wavelengths using all files, the field of view is 0.01 arc second. The execution will be parallelized and at each 10 iterations the 29 estimates of the object will be plot is ``PyPlot`` is installed.
 
@@ -170,12 +170,12 @@ The following code can be used to test all the functionalities of the algorithm.
     savepath = "mydata.jld"
 
     # initialize algorithm and run admm
-    OIDATA, PDATA, OPTOPT = painter(nbitermax = Mynbitermax, nx = Mynx, lambda_spat = Mylambda_spat, 
-                                lambda_spec = Mylambda_spec, rho_y = Myrho_y, rho_spat = Myrho_spat, 
-                                rho_spec = Myrho_spec, rho_ps = Myrho_ps, alpha = Myalpha, beta = Mybeta, 
-                                eps1 = Myeps1, eps2 = Myeps2, FOV = MyFOV, indwvl = Myindwvl, 
-                                ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95), 
-                                scl = OptimPack.SCALING_OREN_SPEDICATO, gat = 0, grt = 1e-3, 
+    OIDATA, PDATA, OPTOPT = painter(nbitermax = Mynbitermax, nx = Mynx, lambda_spat = Mylambda_spat,
+                                lambda_spec = Mylambda_spec, rho_y = Myrho_y, rho_spat = Myrho_spat,
+                                rho_spec = Myrho_spec, rho_ps = Myrho_ps, alpha = Myalpha, beta = Mybeta,
+                                eps1 = Myeps1, eps2 = Myeps2, FOV = MyFOV, indwvl = Myindwvl,
+                                ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95),
+                                scl = OptimPack.SCALING_OREN_SPEDICATO, gat = 0, grt = 1e-3,
                                 vt = false, memsize = 100, mxvl = 1000, mxtr = 1000, stpmn = 1e-20,
                                 stpmx = 1e+20, PlotFct = MyPlotFct, aff = Myaff)
 
