@@ -48,7 +48,7 @@ end
     Myrho_spat = 4
     Myrho_ps = Myrho_spat
     Mylambda_spat = 1e-5
-    Myrho_spec = .5
+    Myrho_spec = 0.5
     Mylambda_spec = 1e-5
     Myaff = true     # plot is enabled
     Mynbitermax = 1
