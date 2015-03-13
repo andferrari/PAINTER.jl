@@ -1,3 +1,5 @@
+using Painter
+using Base.Test
 
 MyFOV = 0.01
 Myindwvl = 1:30
