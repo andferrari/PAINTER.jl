@@ -9,7 +9,6 @@ notifications:
 env:
   matrix:
     - JULIAVERSION="juliareleases"
-    - JULIAVERSION="julianightlies"
 before_install:
     - if [ `uname` = "Linux" ]; then
         sudo add-apt-repository ppa:staticfloat/julia-deps -y;
@@ -31,5 +30,4 @@ before_install:
     - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 script:
     - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.test("Painter")'
-    - if [ $JULIAVERSION = "julianightlies" ]; then julia --code-coverage test/runtests.jl; fi
     - if [ $JULIAVERSION = "juliareleases" ]; then julia test/runtests.jl; fi
