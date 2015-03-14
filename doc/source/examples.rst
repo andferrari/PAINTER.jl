@@ -12,6 +12,7 @@ To run the demo type:
 
 .. code:: julia
 
+  using Painter
   demo = string(Pkg.dir("Painter"),"/src/painterdemo.jl")
   include(demo);
 
