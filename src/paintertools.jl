@@ -30,7 +30,7 @@ function estimx_par(x::SharedArray{Float64,3},Fx::SharedArray{Complex{Float64},2
     yc::Array{Complex{Float64},2},z::Array{Float64,4},v::Array{Float64,3},w::Array{Float64,3},
     tau_xc::Array{Complex{Float64},2},tau_s::Array{Float64,4},tau_v::Array{Float64,3},tau_w::Array{Float64,3},
     nb::Int64,nw::Int64,nx::Int64,NWvlt::Int64,
-    plan::Array{Any,1},Wvlt::Array{ASCIIString,1},M::Array{Any,1},paral::Bool)
+    plan::Array{Any,1},Wvlt::Array{Any,1},M::Array{Any,1},paral::Bool)
 # Estimate the constrained, regularized 3D images from complexe visibilities
 # step IV of PAINTER [0]
 #
@@ -48,7 +48,7 @@ function estimx_par(x::SharedArray{Float64,3},Fx::SharedArray{Complex{Float64},2
 
 # parallel sum of wavelet basis
     if paral
-        MAP = { ([matz[:, :, n, b] ], wavelet(Wvlt[b]) ) for n in 1:nw, b in 1:NWvlt}
+        MAP = { ([matz[:, :, n, b] ], Wvlt[b] ) for n in 1:nw, b in 1:NWvlt}
         wvd = sum(reshape(pmap(myidwt,MAP), nw, NWvlt ), 2)
 
 # parallel image reconstruction
@@ -64,7 +64,7 @@ function estimx_par(x::SharedArray{Float64,3},Fx::SharedArray{Complex{Float64},2
 # # SERIAL
         wavdec = zeros(nx, nx, nw, nb)
         for b in 1:NWvlt, n in 1:nw
-            wavdec[:, :, n, b] = idwt(matz[:, :, n, b], wavelet(Wvlt[b]))
+            wavdec[:, :, n, b] = idwt(matz[:, :, n, b], Wvlt[b])
         end
         wvd = sum(wavdec, 4)
         for n in 1:nw
@@ -269,11 +269,11 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
     const F3D = PDATA.F3D
     const H = PDATA.H
     const M = PDATA.M
-    const NWvlt = length(Wvlt)
 # minor debug for Wavelets Package update  
-    Wvlttmp = {DiscreteWavelet{} for i in 1:Nwav}
-    for n = 1:Nwav
-        Wvlttmp[n] = wavelet(eval(parse(string("WT.",OIDATA.Wvlt[n]))))
+    const NWvlt = length(OIDATA.Wvlt)
+    Wvlttmp = {DiscreteWavelet{} for i in 1:NWvlt}
+    for b in 1:NWvlt
+        Wvlttmp[b] = wavelet(eval(parse(string("WT.", OIDATA.Wvlt[b]))))
     end
     const Wvlt = Wvlttmp     
 # ----------------------------------
@@ -325,7 +325,7 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
 
 # update of auxiliary variables
         for n in 1:nw, b in 1:NWvlt
-            PDATA.Hx[:, :, n, b] = dwt(PDATA.x[:, :, n], wavelet(Wvlt[b]))
+            PDATA.Hx[:, :, n, b] = dwt(PDATA.x[:, :, n], Wvlt[b])
         end
 
 # update of z
