@@ -258,7 +258,6 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
     const beta = OIDATA.beta
     const eps1 = OIDATA.eps1
     const eps2 = OIDATA.eps2
-    const Wvlt = OIDATA.Wvlt
     const mask3D = OIDATA.mask3D
     const P = OIDATA.P
     const W = OIDATA.W
@@ -271,6 +270,12 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
     const H = PDATA.H
     const M = PDATA.M
     const NWvlt = length(Wvlt)
+# minor debug for Wavelets Package update  
+    Wvlttmp = {DiscreteWavelet{} for i in 1:Nwav}
+    for n = 1:Nwav
+        Wvlttmp[n] = wavelet(eval(parse(string("WT.",OIDATA.Wvlt[n]))))
+    end
+    const Wvlt = Wvlttmp     
 # ----------------------------------
 # Check if Pyplot is used to graphics
     if aff
