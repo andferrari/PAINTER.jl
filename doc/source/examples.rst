@@ -16,7 +16,7 @@ To run the demo type:
   demo = string(Pkg.dir("Painter"),"/src/painterdemo.jl")
   include(demo);
 
-The demo includes warm start, save and load of structures, a custom plot function, ...
+The demo includes warm start, save and load of structures, a custom plot function (require PyPLot), ...
 
 User parameters and single execution
 ------------------------------------
@@ -41,7 +41,7 @@ User parameters and single execution
     Mylambda_spec = 1e-5
     Myaff         = true      # plot is enabled
     Mynbitermax   = 100
-    Mypar         = false     # parallel computing is disabled
+    Myparal       = false     # parallel computing is disabled
 
   ``Painter.jl`` will extract OIFITS informations from all files in the folder ``../MyOifitsFolder`` and will restrict the analysis to the first 29 wavelengths.
 
