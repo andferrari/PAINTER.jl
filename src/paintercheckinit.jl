@@ -387,14 +387,10 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     pathprint = cpath
 
 # Check Wavelet input
-    if typeof(Wvlt) == ASCIIString
+    if (typeof(Wvlt) <: Array) & all({typeof(wlt) <: WT.OrthoWaveletClass for wlt in Wvlt})
         Wvltprint = "$Wvlt"
-
-    elseif typeof(Wvlt) == Array{ASCIIString, 1}
-        Wvltprint = "$Wvlt"
-
     else
-        error("Wavelets list must be a ASCIIString or Array{ASCIIString,1 ")
+        error("Wavelets list must be a vector of orthogonal wavelets")
     end
 
     if typeof(PlotFct) != Function

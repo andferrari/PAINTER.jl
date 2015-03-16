@@ -63,7 +63,8 @@ end
                                 ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95),
                                 scl = OptimPack.SCALING_OREN_SPEDICATO, gat = 0, grt = 1e-3,
                                 vt = false, memsize = 100, mxvl = 1000, mxtr = 1000, stpmn = 1e-20,
-                                stpmx = 1e+20, PlotFct = MyPlotFct, aff = Myaff)
+                                stpmx = 1e+20, PlotFct = MyPlotFct, aff = Myaff,
+                                Wvlt  = [WT.db1])
 
 # save data struture in .jld files
     paintersave(savepath,PDATA,OIDATA,OPTOPT)
@@ -72,4 +73,4 @@ end
     PDATA, OIDATA = painterload(savepath)
 
 # Warm start of the algorithm
-    OIDATA, PDATA, OPTOPT = painter(PDATA,OIDATA,OPTOPT,100,true, PlotFct = MyPlotFct)
+    OIDATA, PDATA, OPTOPT = painter(OIDATA,PDATA,OPTOPT,100,true, PlotFct = MyPlotFct)
