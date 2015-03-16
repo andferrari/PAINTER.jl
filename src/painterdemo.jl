@@ -72,4 +72,4 @@ end
     PDATA, OIDATA = painterload(savepath)
 
 # Warm start of the algorithm
-    OIDATA, PDATA, OPTOPT = painter(PDATA,OIDATA,OPTOPT,100,true, PlotFct = MyPlotFct)
+    OIDATA, PDATA, OPTOPT = painter(OIDATA,PDATA,OPTOPT,100,true, PlotFct = MyPlotFct)

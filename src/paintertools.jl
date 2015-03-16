@@ -415,7 +415,7 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
     return OIDATA, PDATA, OPTOPT
 end
 #########################################
-function painter(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions,nbitermax::Int64,aff::Bool;PlotFct = painterplotfct)
+function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,OPTOPT::OptOptions,nbitermax::Int64,aff::Bool;PlotFct = painterplotfct)
     OIDATA.PlotFct = PlotFct
     PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
     return OIDATA, PDATA, OPTOPT
