@@ -50,7 +50,7 @@ User parameters and single execution
 
   .. code:: julia
 
-    Mymask3D = mask(Mynx, int(Mynx/2 -3), "disk")
+    Mymask3D = mask(Mynx, int(Mynx/2 -3), choice="disk")
 
 * Other parameters take the default values.
 
