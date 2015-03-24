@@ -57,7 +57,7 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
                 OIDATA.indwvl = 1:nw
             end
 # Initialisation of "empty" array
-            OIDATA.Closure_index = Array(Int64, 0, 3)
+            OIDATA.Closure_index = Array(Int, 0, 3)
             OIDATA.U = Array(Float64, 0, nw)
             OIDATA.V = Array(Float64, 0, nw)
             OIDATA.P = Array(Float64, 0, nw)
