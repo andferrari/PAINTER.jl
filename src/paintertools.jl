@@ -30,7 +30,11 @@ function estimx_par{Tw<:WT.OrthoWaveletClass}(x::SharedArray{Float64,3},Fx::Shar
     yc::Array{Complex{Float64},2},z::Array{Float64,4},v::Array{Float64,3},w::Array{Float64,3},
     tau_xc::Array{Complex{Float64},2},tau_s::Array{Float64,4},tau_v::Array{Float64,3},tau_w::Array{Float64,3},
     nb::Int,nw::Int,nx::Int,NWvlt::Int,
+<<<<<<< HEAD
     plan::Array{Any,1},Wvlt::Array{Tw,1},M::Array{Any,1},paral::Bool)
+=======
+    plan::Array{Any,1},Wvlt::Array{ASCIIString,1},M::Array{Any,1},paral::Bool)
+>>>>>>> master
 # Estimate the constrained, regularized 3D images from complexe visibilities
 # step IV of PAINTER [0]
 #

@@ -156,7 +156,7 @@ function checkinit(xinit::ASCIIString,nb::Int,nx::Int,nw::Int,plan::Array)
     return checkinit(xfits, nb, nx, nw, plan)
 end
 ###################################################################################
-function mask(nx::Int64,side::Int64;choice="square")
+function mask(nx::Int,side::Int;choice="square")
 # create image 2D of mask for mask3D
 # choice = square or disk (disk) default: rect
 # nx: size of the constructed image
