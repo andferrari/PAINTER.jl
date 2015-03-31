@@ -63,7 +63,7 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 
 **ADMM algorithm parameters:**
 
-* ``Wvlt``: list of wavelets basis for spatial regularisation, see [2]_.  See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_ for definitions. Default: first 8 Daubechies wavelets and Haar wavelets.
+* ``Wvlt``: array of wavelets basis for spatial regularisation, see [2]_.  See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_ for definitions. Default: first 8 Daubechies wavelets and Haar wavelets. ``Wvlt = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar]``.
 * ``lambda_spat``: Spatial regularization parameter, see Eqs. 29, 31 in [1]_. Default: nx\ :sup:`-2`.
 * ``lambda_spec``: Spectral regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-2``.
 * ``lambda_L1``: regularization parameter for an l\ :sub:`1` constraint on the image. l\ :sub:`1` constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.

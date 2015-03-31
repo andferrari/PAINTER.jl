@@ -25,12 +25,16 @@
 # ---------------------------------------------------------------------------------
 # Object Estimation - Orthognal matrix - wavelet
 # ---------------------------------------------------------------------------------
-function estimx_par(x::SharedArray{Float64,3},Fx::SharedArray{Complex{Float64},2},
+function estimx_par{Tw<:WT.OrthoWaveletClass}(x::SharedArray{Float64,3},Fx::SharedArray{Complex{Float64},2},
     rho_y::Float64,rho_spat::Float64,rho_spec::Float64,rho_ps::Float64,eta::Float64,
     yc::Array{Complex{Float64},2},z::Array{Float64,4},v::Array{Float64,3},w::Array{Float64,3},
     tau_xc::Array{Complex{Float64},2},tau_s::Array{Float64,4},tau_v::Array{Float64,3},tau_w::Array{Float64,3},
     nb::Int,nw::Int,nx::Int,NWvlt::Int,
+<<<<<<< HEAD
+    plan::Array{Any,1},Wvlt::Array{Tw,1},M::Array{Any,1},paral::Bool)
+=======
     plan::Array{Any,1},Wvlt::Array{ASCIIString,1},M::Array{Any,1},paral::Bool)
+>>>>>>> master
 # Estimate the constrained, regularized 3D images from complexe visibilities
 # step IV of PAINTER [0]
 #
@@ -382,7 +386,7 @@ end
 function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
                  lambda_spec = 1/100, lambda_L1 = 0, epsilon = 1e-6,
                  rho_y = 1, rho_spat = 1, rho_spec = 1, rho_ps = 1, alpha = 1,
-                 Wvlt  = ["db1", "db2", "db3", "db4", "db5", "db6", "db7", "db8", "haar"],
+                 Wvlt  = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar],
                  beta = 1, eps1 = 1e-6, eps2 = 1e-6, FOV = 4e-2, mask3D = [], xinit3D = [], indfile = [], indwvl = [],
                  ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-4, gtol = 0.9),
                  scl = OptimPack.SCALING_OREN_SPEDICATO, gat = 1e-6, grt = 1e-6,

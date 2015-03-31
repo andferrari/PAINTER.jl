@@ -21,7 +21,7 @@ module Painter
     if(Pkg.installed("PyPlot") != nothing)
         using PyPlot
     end
-    export painter, mask, paintersave, painterload, painterplotfct
+    export painter, mask, paintersave, painterload, painterplotfct, WT
 
     include("paintertype.jl")
 
