@@ -29,7 +29,7 @@ function estimx_par{Tw<:WT.OrthoWaveletClass}(x::SharedArray{Float64,3},Fx::Shar
     rho_y::Float64,rho_spat::Float64,rho_spec::Float64,rho_ps::Float64,eta::Float64,
     yc::Array{Complex{Float64},2},z::Array{Float64,4},v::Array{Float64,3},w::Array{Float64,3},
     tau_xc::Array{Complex{Float64},2},tau_s::Array{Float64,4},tau_v::Array{Float64,3},tau_w::Array{Float64,3},
-    nb::Int64,nw::Int64,nx::Int64,NWvlt::Int64,
+    nb::Int,nw::Int,nx::Int,NWvlt::Int,
     plan::Array{Any,1},Wvlt::Array{Tw,1},M::Array{Any,1},paral::Bool)
 # Estimate the constrained, regularized 3D images from complexe visibilities
 # step IV of PAINTER [0]
@@ -237,11 +237,11 @@ end
 ###################################################################################
 # method 1, the algorithm is already initialized, structures are created and filed
 # the admm can work with this informations
-# function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions,nbitermax::Int64,aff::Bool)
+# function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions,nbitermax::Int,aff::Bool)
 #     painteradmm(PDATA,OIDATA,OPTOPT,nbitermax,aff)
 # end
 # for information about parameters read PAINTER [1] and admm [2]
-function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions,nbitermax::Int64,aff::Bool)
+function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions,nbitermax::Int,aff::Bool)
     const nx = OIDATA.nx
     const nb = OIDATA.nb
     const nw = OIDATA.nw
@@ -415,7 +415,7 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
     return OIDATA, PDATA, OPTOPT
 end
 #########################################
-function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,OPTOPT::OptOptions,nbitermax::Int64,aff::Bool;PlotFct = painterplotfct)
+function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,OPTOPT::OptOptions,nbitermax::Int,aff::Bool;PlotFct = painterplotfct)
     OIDATA.PlotFct = PlotFct
     PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
     return OIDATA, PDATA, OPTOPT
