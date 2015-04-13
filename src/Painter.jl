@@ -17,11 +17,12 @@ module Painter
     using OptimPack
     using NFFT
     using Wavelets
+    using FITSIO
 
     if(Pkg.installed("PyPlot") != nothing)
         using PyPlot
     end
-    export painter, mask, paintersave, painterload, painterplotfct, WT
+    export painter, mask, paintersave, painterload, painterfitsexport, painterplotfct, WT
 
     include("paintertype.jl")
 
