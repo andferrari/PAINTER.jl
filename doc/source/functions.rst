@@ -37,7 +37,7 @@ Auxiliary functions
 
 .. function:: paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
 
-  Saves the structures ``OIDATA``, ``PADATA`` and ``OPTOPT`` (TBD) into ``*.jld`` julia data files. See `HDF5 <https://github.com/timholy/HDF5.jl>`_ package.
+  Saves the structures ``OIDATA``, ``PDATA`` and ``OPTOPT`` (TBD) into ``*.jld`` julia data files. See `HDF5 <https://github.com/timholy/HDF5.jl>`_ package.
 
   .. code:: julia
 
@@ -54,6 +54,16 @@ Auxiliary functions
     PDATA2,OIDATA2 = painterload(savepath)
 
   The current version of the save function cannot save, and so load, the Optim structure OPTOPT and the pointer to the user defined plot function. To warmstart the algorithm, the user must redefine an OPTOPT structure and call the ``painter(...)`` with the personalized plot function as argument otherwise the default plot function is used.	
+
+.. function:: painterfitsexport(savepath::ASCIIString,PDATA::PAINTER_Data, OIDATA::PAINTER_Input; forceWvlExt=false)
+
+  Saves the relevant information from  ``PDATA`` (ouput data cube and associated criteria) and from  ``OIDATA`` (wavelengths, input reconstruction parameters,...) into a FITS file. The wavelengths are either implicitely defined in the main header (as for x and y axes) if they have a regular spacing, or explicitely given in a dedicated binary table, if they are irregular or if keyword parameter forceWvlExt=true.
+
+  .. code:: julia
+
+    savepath = "../Mypath/myfitsFile.fits"
+    painterfitsexport(savepath,PDATA,OIDATA)
+
 	
 .. function:: painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 
