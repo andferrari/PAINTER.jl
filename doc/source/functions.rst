@@ -35,34 +35,35 @@ Main function
 Auxiliary functions
 -------------------
 
-.. function:: paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
+.. function:: paintersave(filename::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
 
-  Saves the structures ``OIDATA``, ``PDATA`` and ``OPTOPT`` (TBD) into ``*.jld`` julia data files. See `HDF5 <https://github.com/timholy/HDF5.jl>`_ package.
-
-  .. code:: julia
-
-    savepath = "../Mypath/file.jld"
-    paintersave(savepath,PDATA,OIDATA,OPTOPT)
-
-.. function:: painterload(savepath::ASCIIString)
-
-
-  Loads the structures contained in ``*.jld`` files:
+  Saves the structures ``OIDATA``, ``PDATA`` and ``OPTOPT`` (TBD) into ``*.jld`` julia data files. The prefix of these structures is added before the "filename" base when writing the output files. See `HDF5 <https://github.com/timholy/HDF5.jl>`_ package for details on the format. The current version of the save function cannot save the Optim structure OPTOPT.
 
   .. code:: julia
 
-    PDATA2,OIDATA2 = painterload(savepath)
+    filename= "datafile.jld"
+    cd("~/path/to/saved/data") # move to a different directory if necessary
+    paintersave(filename,PDATA,OIDATA,OPTOPT)
+
+.. function:: painterload(filename::ASCIIString)
+
+
+  Loads the structures from ``*.jld`` files. The files to be loaded must start with OIDATA_ and PDATA_ prefixes, but the filename entered as an argument should not have a prefix, since they are internally added by this function. Therefore, the filename of ``painterload`` is compatible with the one of ``paintersave``.
+
+  .. code:: julia
+
+    PDATA2,OIDATA2 = painterload(filename)
 
   The current version of the save function cannot save, and so load, the Optim structure OPTOPT and the pointer to the user defined plot function. To warmstart the algorithm, the user must redefine an OPTOPT structure and call the ``painter(...)`` with the personalized plot function as argument otherwise the default plot function is used.	
 
-.. function:: painterfitsexport(savepath::ASCIIString,PDATA::PAINTER_Data, OIDATA::PAINTER_Input; forceWvlExt=false)
+.. function:: painterfitsexport(filename::ASCIIString,PDATA::PAINTER_Data, OIDATA::PAINTER_Input; forceWvlExt=false)
 
-  Saves the relevant information from  ``PDATA`` (ouput data cube and associated criteria) and from  ``OIDATA`` (wavelengths, input reconstruction parameters,...) into a FITS file. The wavelengths are either implicitely defined in the main header (as for x and y axes) if they have a regular spacing, or explicitely given in a dedicated binary table, if they are irregular or if keyword parameter forceWvlExt=true.
+  Saves the relevant information from  ``PDATA`` (ouput data cube and associated criteria) and from  ``OIDATA`` (wavelengths, input reconstruction parameters,...) into a FITS file "filename", which possibly includes a full path. The wavelengths are either implicitely defined in the main header (as for x and y axes) if they have a regular spacing, or explicitely given in a dedicated binary table, if they are irregular or if keyword parameter forceWvlExt=true.
 
   .. code:: julia
 
-    savepath = "../Mypath/myfitsFile.fits"
-    painterfitsexport(savepath,PDATA,OIDATA)
+    filename = "~/path/to/saved/data/myfitsdata.fits"
+    painterfitsexport(filename,PDATA,OIDATA)
 
 	
 .. function:: painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
