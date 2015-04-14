@@ -109,3 +109,70 @@ function painterload(loadpath::ASCIIString)
 #   OPTOPT = optiminit(ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx)
     return PDATA, OIDATA
 end
+
+# ######################################
+# Added by M. Vannier, 10 Apr. 2015
+# ######################################
+
+function painterfitsexport(savepath::ASCIIString, PDATA::PAINTER_Data, OIDATA::PAINTER_Input; forceWvlExt = false)
+    # savepath : path + name of ouput file, including ".fits" extension
+    # OIDATA :  structure which contains all OIFITS information and user defined parameters.
+    # PDATA :  structure which contains output results and diagnostics
+    # optional : forceWvlExt (default = false) : boolean to force the writing of a specific "WAVELENGTH" extension.
+    #            If "false", that extension is produced only if wavelengths have irregular spacing (within 1% precision).
+    # EX:
+    #  painterfitsexport("~/my_Painter/my_file.fits", PDATA, OIDATA)
+    #  painterfitsexport("~/my_Painter/my_file.fits", PDATA, OIDATA; forceWvlExt = true)
+
+    # test: write specific wavelength extension or not ?
+    # Yes if irregular spacing between wvl or if forceWvlExt = true
+    # otherwise: only specify the first wvl and increment in main header
+    tol = 0.01    # tolerance = +- 1% on diff(wavelength):
+    w = OIDATA.wvl
+    write_wvl_ext =  !all( ( diff(w) .< mean(diff(w) * (1.0 + tol)) ) & ( diff(w) .> mean(diff(w)* (1.0 - tol) )) ) | (forceWvlExt)
+
+    f = FITS(savepath, "w")
+    write(f, sdata(PDATA.x)) # sdata : SharedArray -> Array
+
+    # to be added in main header:
+    fits = f.fitsfile
+    in_header = [ [ "CRPIX1", 1, "X ref pixel (R.A.)"],
+                [ "CRPIX2", 1, "Y ref pixel (dec)"],
+                [ "CRPIX3", 1, "wavelength ref pixel (R.A.)"],
+                [ "CDELT1", OIDATA.FOV/OIDATA.nx, "X increment (rad)"],
+                [ "CDELT2", OIDATA.FOV/OIDATA.nx, "Y increment (rad)"],
+                [ "CDELT3", mean(diff(w)), "wavelength increment (m)"],
+                [ "CRVAL1", 0, "X minimum (rad): unknown"],
+                [ "CRVAL2", 0, "Y minimum (rad): unknown"],
+                [ "CRVAL3", minimum(w), "wavelength minimum (m)"]];
+    for i in 1:3:size(in_header)[1]
+        # print(bytestring(in_header[i]), " ", float(in_header[i + 1]), " ", bytestring(in_header[i + 2]), "\n")
+        fits_write_key(fits, bytestring(in_header[i]), float(in_header[i + 1]), bytestring(in_header[i + 2]))
+        # ! Warning comes from  float argument, which should be accepted by fits_write_key method ?!
+    end
+
+    # make specific wavelength extension :
+    if (write_wvl_ext)
+      print(" ...Writing wavelength vector in main header")
+      coldefs = [("WAVELENGTH", "1D", "m")];
+      fits_create_binary_tbl(fits, size(w)[1], coldefs, "WAVELENGTHS")
+      fits_write_col(fits::FITSFile, Float64, 1::Integer, 1::Integer, 1::Integer, w)
+    end
+
+    # make "INFO" extension (actual content to be discussed)
+    coldefs = [ ("mu_spat", "1D", ""), # PDATA.lambda_spat
+                ("mu_spec", "1D", ""), # PDATA.lambda_spec
+                ("epsilon", "1D", ""), # PDATA.epsilon
+                ("crit1", "1D", ""),   # PDATA.crit1
+                ("crit2", "1D", "") ]; # PDATA.crit1
+    fits_create_binary_tbl(fits, 1, coldefs, "INFO")
+
+    # vector of scalar values for successive columns of "INFO". Should match the description in coldefs
+    info_values = [OIDATA.lambda_spat, OIDATA.lambda_spec, OIDATA.epsilon, PDATA.crit1, PDATA.crit2]
+
+    for i in 1:size(info_values)[1]
+        fits_write_col(fits::FITSFile, Float64, i::Integer, 1::Integer, 1::Integer, [info_values[i]])
+    end
+
+    close(f)
+end
