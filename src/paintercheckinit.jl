@@ -165,6 +165,7 @@ function mask(nx::Int,side::Int;choice="square")
         error("side must be less than nx/2")
     end
 
+
     if(choice == "square")
         side2 = (nx / 2) - side
         mask3D = ones(nx, nx)
@@ -177,7 +178,7 @@ function mask(nx::Int,side::Int;choice="square")
         xg = reshape(repeat([1:nx], outer=[nx]), nx, nx)
         yg = xg'
         rg = sqrt( (xg - .5 - (nx / 2)).^2 + (yg - .5 - (nx / 2)).^2 )
-        mask3D = abs(rg) .< (side + .5)
+        mask3D = float(abs(rg) .< (side + .5))
     end
 
     return mask3D
