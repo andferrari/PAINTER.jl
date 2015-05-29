@@ -45,11 +45,11 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
     for n in indfile
         name = string(Folder, "/", CDir[n])
         println(name)
-        master = OIFITS.oifits_load(name)
+        master = OIFITS.load(name)
 # # # OI wavelength
         nw = 0
-        for db in OIFITS.oifits_select(master, "OI_WAVELENGTH")
-            nw = length(oifits_get_eff_wave(db))
+        for db in OIFITS.select(master, "OI_WAVELENGTH")
+            nw = length(OIFITS.get_eff_wave(db))
         end
 # Variables initialization
         if n == minimum(indfile)
@@ -70,51 +70,51 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
         end
 
 # # # OI wavelength
-        for db in OIFITS.oifits_select(master, "OI_WAVELENGTH")
-            OIDATA.wvl = vcat(OIDATA.wvl,oifits_get_eff_wave(db)')
+        for db in OIFITS.select(master, "OI_WAVELENGTH")
+            OIDATA.wvl = vcat(OIDATA.wvl,OIFITS.get_eff_wave(db)')
         end
 # # # OI VIS
-        if isempty(OIFITS.oifits_select(master, "OI_VIS"))
+        if isempty(OIFITS.select(master, "OI_VIS"))
             error("OI_VIS field is missing, PAINTER needs differential visibilities")
         else
 
-            for dbvis1 in OIFITS.oifits_select(master, "OI_VIS")
-                OIDATA.DP = vcat(OIDATA.DP, oifits_get_visphi(dbvis1)')
-                OIDATA.DPerr = vcat(OIDATA.DPerr, oifits_get_visphierr(dbvis1)')
+            for dbvis1 in OIFITS.select(master, "OI_VIS")
+                OIDATA.DP = vcat(OIDATA.DP, OIFITS.get_visphi(dbvis1)')
+                OIDATA.DPerr = vcat(OIDATA.DPerr, OIFITS.get_visphierr(dbvis1)')
             end
 
         end
 
 # # OI VIS 2
-        if isempty(OIFITS.oifits_select(master, "OI_VIS2"))
+        if isempty(OIFITS.select(master, "OI_VIS2"))
             error("OI_VIS2 field is missing, PAINTER needs squared visibilities")
 
         else
             U_v21 = Array(Float64, 0)
 
-            for dbvis2 in OIFITS.oifits_select(master,  "OI_VIS2")
-                U,V  = spatialfrequencies(oifits_get_ucoord(dbvis2), oifits_get_vcoord(dbvis2), oifits_get_eff_wave(dbvis2))
-                U_v21 = vcat(U_v21, oifits_get_ucoord(dbvis2)) # for closure index
+            for dbvis2 in OIFITS.select(master,  "OI_VIS2")
+                U,V  = spatialfrequencies(OIFITS.get_ucoord(dbvis2), OIFITS.get_vcoord(dbvis2), OIFITS.get_eff_wave(dbvis2))
+                U_v21 = vcat(U_v21, OIFITS.get_ucoord(dbvis2)) # for closure index
                 OIDATA.U = vcat(OIDATA.U, U)
                 OIDATA.V = vcat(OIDATA.V, V)
-                OIDATA.P = vcat(OIDATA.P, oifits_get_vis2data(dbvis2)')
-                OIDATA.W = vcat(OIDATA.W, oifits_get_vis2err(dbvis2)')
+                OIDATA.P = vcat(OIDATA.P, OIFITS.get_vis2data(dbvis2)')
+                OIDATA.W = vcat(OIDATA.W, OIFITS.get_vis2err(dbvis2)')
             end
         end
 
 # # OI T3
-        if isempty(OIFITS.oifits_select(master, "OI_T3"))
+        if isempty(OIFITS.select(master, "OI_T3"))
             error("OI_T3 field is missing, PAINTER needs closure phases")
 
         else
             U_t31 = Array(Float64, 0)
             U_t32 = Array(Float64, 0)
-            for dbvis3 in OIFITS.oifits_select(master, "OI_T3")
-                OIDATA.T3 = vcat(OIDATA.T3, oifits_get_t3phi(dbvis3)')
-                OIDATA.T3err = vcat(OIDATA.T3err, oifits_get_t3phierr(dbvis3)')
+            for dbvis3 in OIFITS.select(master, "OI_T3")
+                OIDATA.T3 = vcat(OIDATA.T3, OIFITS.get_t3phi(dbvis3)')
+                OIDATA.T3err = vcat(OIDATA.T3err, OIFITS.get_t3phierr(dbvis3)')
 # Closure index
-                U_t31 = oifits_get_u1coord(dbvis3)
-                U_t32 = oifits_get_u2coord(dbvis3)
+                U_t31 = OIFITS.get_u1coord(dbvis3)
+                U_t32 = OIFITS.get_u2coord(dbvis3)
                 (OIDATA.Closure_index, LT3, LFil) = findclosureindex(U_v21, U_t31, U_t32, OIDATA.Closure_index, LT3, LFil)
             end
         end
