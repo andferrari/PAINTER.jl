@@ -6,14 +6,14 @@ Examples and demo
 Demo for impatients
 -------------------
 
-``Painter.jl`` contains a demo file ``painterdemo.jl``
+``PAINTER.jl`` contains a demo file ``painterdemo.jl``
 with an OIFITS folder in the default installation folder.
 To run the demo type:
 
 .. code:: julia
 
-  using Painter
-  demo = string(Pkg.dir("Painter"),"/src/painterdemo.jl")
+  using PAINTER
+  demo = string(Pkg.dir("PAINTER"),"/src/painterdemo.jl")
   include(demo);
 
 The demo includes warm start, save and load of structures, a custom plot function (require PyPLot), ...
@@ -43,7 +43,7 @@ User parameters and single execution
     Mynbitermax   = 100
     Myparal       = false     # parallel computing is disabled
 
-  ``Painter.jl`` will extract OIFITS informations from all files in the folder ``../MyOifitsFolder`` and will restrict the analysis to the first 29 wavelengths.
+  ``PAINTER.jl`` will extract OIFITS informations from all files in the folder ``../MyOifitsFolder`` and will restrict the analysis to the first 29 wavelengths.
 
 * The initial estimate is the default.  ADMM is enabled by default and will run the algorithm for 100 iterations.
 * The support constraint is defined by a disk:
@@ -54,7 +54,7 @@ User parameters and single execution
 
 * Other parameters take the default values.
 
-``Painter.jl`` is then executed:
+``PAINTER.jl`` is then executed:
 
 .. code:: julia
 

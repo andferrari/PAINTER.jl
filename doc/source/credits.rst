@@ -1,10 +1,10 @@
 Credits
 =======
 
-``Painter.jl`` is a julia implementation of *PAINTER: Polychromatic
+``PAINTER.jl`` is a julia implementation of *PAINTER: Polychromatic
 opticAl INTErferometric Reconstruction* algorithm described in [1]_ and [2]_.
 
-``Painter.jl`` was developped at:
+``PAINTER.jl`` was developped at:
 
   | Laboratoire `J.-L. Lagrange <http://lagrange.oca.eu>`_
   | `Université de Nice Sophia-Antipolis <http://unice.fr>`_, `CNRS <http://cnrs.fr>`_,
@@ -13,14 +13,14 @@ opticAl INTErferometric Reconstruction* algorithm described in [1]_ and [2]_.
 by `Antony Schutz <http://www.antonyschutz.com>`_ and `André
 Ferrari <https://www-n.oca.eu/aferrari>`_.
 
-The development of ``Painter.jl`` was partially supported by the
+The development of ``PAINTER.jl`` was partially supported by the
 `POLCA <http://polca.univ-lyon1.fr>`_ project funded by the French
 Agence Nationale pour la Recherche (ref. ANR-10-BLAN-0511).
 
 License
 -------
 
-``Painter.jl`` is released under under the MIT "Expat" License.
+``PAINTER.jl`` is released under under the MIT "Expat" License.
 
 
 References
@@ -28,8 +28,8 @@ References
 
 The PAINTER algorithm is described in [1]_. The original MATLAB code is
 available `here <https://www-n.oca.eu/aferrari/painter/>`_ but the use
-of ``Painter.jl`` is highly recommended.
-`Painter.jl <https://github.com/andferrari/Painter.jl>`_ implements
+of ``PAINTER.jl`` is highly recommended.
+`PAINTER.jl <https://github.com/andferrari/PAINTER.jl>`_ implements
 an accelerated version of PAINTER described in [2]_.
 
 

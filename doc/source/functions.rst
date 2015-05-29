@@ -54,7 +54,7 @@ Auxiliary functions
 
     PDATA2,OIDATA2 = painterload(filename)
 
-  The current version of the save function cannot save, and so load, the Optim structure OPTOPT and the pointer to the user defined plot function. To warmstart the algorithm, the user must redefine an OPTOPT structure and call the ``painter(...)`` with the personalized plot function as argument otherwise the default plot function is used.	
+  The current version of the save function cannot save, and so load, the Optim structure OPTOPT and the pointer to the user defined plot function. To warmstart the algorithm, the user must redefine an OPTOPT structure and call the ``painter(...)`` with the personalized plot function as argument otherwise the default plot function is used.
 
 .. function:: painterfitsexport(filename::ASCIIString,PDATA::PAINTER_Data, OIDATA::PAINTER_Input; forceWvlExt=false)
 
@@ -65,7 +65,7 @@ Auxiliary functions
     filename = "~/path/to/saved/data/myfitsdata.fits"
     painterfitsexport(filename,PDATA,OIDATA)
 
-	
+
 .. function:: painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 
   It is recommended to monitor the iterations of the algorithm when the number
@@ -77,7 +77,7 @@ Auxiliary functions
 * The first figure shows the per-channel estimates projected on the domain support. The axis are defined by the field of view with no limitation of the amplitude (colorbars are different for all images).
 * The second figure shows the primal and dual residuals (``crit1`` and ``crit2``) as a function of the iteration.
 
-  
+
 .. function:: mask(nx::Int,param::Int,choice::ASCIIString)
 
   Creates a binary mask of size nx\ :sup:`2`:

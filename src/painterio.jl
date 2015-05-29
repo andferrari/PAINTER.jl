@@ -1,7 +1,7 @@
 ###################################################################################
 # Antony Schutz 2015, ANR - POLCA
 ###################################################################################
-## Painter Save and Load utilities
+## PAINTER Save and Load utilities
 function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
     JLD.save(string("OIDATA_",savepath),
         "Folder", OIDATA.Folder, "FilesName", OIDATA.FilesName, "indfile", OIDATA.indfile, "indwvl", OIDATA.indwvl, "wvl", OIDATA.wvl, "U",
@@ -121,8 +121,8 @@ function painterfitsexport(savepath::ASCIIString, PDATA::PAINTER_Data, OIDATA::P
     # optional : forceWvlExt (default = false) : boolean to force the writing of a specific "WAVELENGTH" extension.
     #            If "false", that extension is produced only if wavelengths have irregular spacing (within 1% precision).
     # EX:
-    #  painterfitsexport("~/my_Painter/my_file.fits", PDATA, OIDATA)
-    #  painterfitsexport("~/my_Painter/my_file.fits", PDATA, OIDATA; forceWvlExt = true)
+    #  painterfitsexport("~/my_PAINTER/my_file.fits", PDATA, OIDATA)
+    #  painterfitsexport("~/my_PAINTER/my_file.fits", PDATA, OIDATA; forceWvlExt = true)
 
     # test: write specific wavelength extension or not ?
     # Yes if irregular spacing between wvl or if forceWvlExt = true

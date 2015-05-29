@@ -184,7 +184,7 @@ function mask(nx::Int,side::Int;choice="square")
     return mask3D
 end
 ###################################################################################
-# Painter Config
+# PAINTER Config
 ###################################################################################
 # Folder        : Folder of fits files
 # nx            : size in pixels of image (image of size nx*nx)
@@ -375,12 +375,12 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
         error("data path is not correct")
     end
 
-# if pwd/OIFITS does not exits so, search in user/.julia/vx.x/Painter/src/OIFITS
+# if pwd/OIFITS does not exits so, search in user/.julia/vx.x/PAINTER/src/OIFITS
     if !isdir(cpath)
         pkgfol = Pkg.dir()
         fs = pkgfol[1] # file separator
         cptmp = cpath
-        cpath = string(pkgfol, fs, "Painter", fs, "src", fs,"OIFITS")
+        cpath = string(pkgfol, fs, "PAINTER", fs, "src", fs,"OIFITS")
         println("OIFITS files folder does not exists in $cptmp, replaced by default $cpath")
         println("")
     end

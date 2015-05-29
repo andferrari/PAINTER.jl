@@ -1,4 +1,4 @@
-using Painter
+using PAINTER
 using Base.Test
 
 MyFOV = 0.01

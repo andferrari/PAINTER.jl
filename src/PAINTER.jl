@@ -11,7 +11,7 @@
 # Copyright (C) 2015, Antony Schutz, Andre Ferrari.
 #
 #------------------------------------------------------------------------------
-module Painter
+module PAINTER
     using HDF5, JLD
     using OIFITS
     using OptimPack

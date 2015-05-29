@@ -4,7 +4,7 @@ Getting Started
 Installation
 ------------
 
-``Painter.jl`` uses the following registered Julia packages:
+``PAINTER.jl`` uses the following registered Julia packages:
 
 * `OptimPack.jl <https://github.com/emmt/OptimPack.jl>`_: the Julia interface to `OptimPack <https://github.com/emmt/OptimPack>`_ for solving the phases proximal operator.
 * `OIFITS.jl <https://github.com/emmt/OIFITS.jl>`_: Julia support for OI-FITS (optical interferometry data format).
@@ -12,16 +12,16 @@ Installation
 * `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_: A Julia package for fast wavelet transforms.
 * `HDF5.jl <https://github.com/timholy/HDF5.jl>`_: for writing JLD ("Julia data") variables.
 
-They will be *automaticaly* installed during ``Painter.jl`` installation.
+They will be *automaticaly* installed during ``PAINTER.jl`` installation.
 Note that they require developpement tools included for example for
 OSX in ``Command Line Tools`` and for ubuntu in the ``build-essential`` package.
 
-To install ``Painter.jl``, type from a Julia session the following commands:
+To install ``PAINTER.jl``, type from a Julia session the following commands:
 
 .. code:: julia
 
   Pkg.update()
-  Pkg.clone("https://github.com/andferrari/Painter.jl.git")
+  Pkg.clone("https://github.com/andferrari/PAINTER.jl.git")
 
 and relax!
 
@@ -31,19 +31,19 @@ of wavelengths is small, e.g. < 30.  See `PyPlot.jl <https://github.com/stevengj
 Usage
 -----
 
-To load the ``Painter.jl`` module, type from a Julia session:
+To load the ``PAINTER.jl`` module, type from a Julia session:
 
 .. code:: julia
 
-    using Painter
+    using PAINTER
 
 If ``PyPlot`` is installed, it will be automatically loaded.
 
-Some iteration steps of ``Painter.jl`` are parallelized.
+Some iteration steps of ``PAINTER.jl`` are parallelized.
 To use parallel computing, start Julia with ``nprocs`` local process
 and load the module on all process:
 
 .. code:: julia
 
     $ julia -p nprocs
-    julia> @everywhere using Painter
+    julia> @everywhere using PAINTER

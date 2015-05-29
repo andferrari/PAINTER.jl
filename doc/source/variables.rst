@@ -29,7 +29,7 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
   .. code:: bash
 
     $ julia -p nprocs
-    julia> @everywhere using Painter
+    julia> @everywhere using PAINTER
 
   Default: ``true``.
 
@@ -39,7 +39,7 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 
 **Data and image related variables:**
 
-* ``Folder``: path to the folder containing OIFITS/FITS files. Default: ``./OIFITS``. If ``./OIFITS`` does not exists ``src/OIFITS`` in ``Painter.jl/`` default installation folder, containing FITS files for the demo, is used.
+* ``Folder``: path to the folder containing OIFITS/FITS files. Default: ``./OIFITS``. If ``./OIFITS`` does not exists ``src/OIFITS`` in ``PAINTER.jl/`` default installation folder, containing FITS files for the demo, is used.
 * ``indfile``: allows to chose the set of OIFITS/FITS files in ``Folder`` that will be processed. ``indfile`` is an ``Array{Int64,1}`` containnig the indexes of the files in alphabetical order. Default: all files.
 * ``indwvl``: allows to chose the set of processed wavelengths. ``indwvl`` is an ``Array{Int64,1}`` containnig the indexes of the wavelengths in increasing order. Default: all wavelengths.
 * ``nx``: image size in pixels (the size of the image is nx\ :sup:`2`). Default: ``64``.

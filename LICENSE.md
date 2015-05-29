@@ -1,4 +1,4 @@
-The Painter.jl package is licensed under the MIT "Expat" License:
+The PAINTER.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2015: André Ferrari.
 >

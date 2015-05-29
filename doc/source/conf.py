@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Painter.jl documentation build configuration file, created by
+# PAINTER.jl documentation build configuration file, created by
 # sphinx-quickstart on Wed Jul 31 21:03:24 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Painter.jl'
-copyright = u'2015, Painter.jl'
+project = u'PAINTER.jl'
+copyright = u'2015, PAINTER.jl'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -183,7 +183,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Painterjl.tex', u'Painter.jl Documentation',
+  ('index', 'Painterjl.tex', u'PAINTER.jl Documentation',
    u'JuliaPAINTER', 'manual'),
 ]
 
@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'Painterjl', u'Painter.jl Documentation',
+    ('index', 'Painterjl', u'PAINTER.jl Documentation',
      [u'JuliaPAINTER'], 1)
 ]
 
@@ -227,7 +227,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Painterjl', u'Painter.jl Documentation',
+  ('index', 'Painterjl', u'PAINTER.jl Documentation',
    u'JuliaPAINTER', 'Painterjl', 'One line description of project.',
    'Miscellaneous'),
 ]

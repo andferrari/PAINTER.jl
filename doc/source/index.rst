@@ -1,7 +1,7 @@
-Painter.jl
+PAINTER.jl
 ==========
 
-``Painter.jl`` is a `Julia <http://julialang.org>`_ implementation of PAINTER: Polychromatic
+``PAINTER.jl`` is a `Julia <http://julialang.org>`_ implementation of PAINTER: Polychromatic
 opticAl INTErferometric Reconstruction software.
 
 See `Credits <http://painterjl.readthedocs.org/en/latest/credits.html>`_
