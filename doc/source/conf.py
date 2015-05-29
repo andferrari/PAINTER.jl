@@ -164,7 +164,7 @@ html_show_copyright = False
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Painterjldoc'
+htmlhelp_basename = 'PAINTERjldoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -183,7 +183,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Painterjl.tex', u'PAINTER.jl Documentation',
+  ('index', 'PAINTERjl.tex', u'PAINTER.jl Documentation',
    u'JuliaPAINTER', 'manual'),
 ]
 
@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'Painterjl', u'PAINTER.jl Documentation',
+    ('index', 'PAINTERjl', u'PAINTER.jl Documentation',
      [u'JuliaPAINTER'], 1)
 ]
 
@@ -227,8 +227,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Painterjl', u'PAINTER.jl Documentation',
-   u'JuliaPAINTER', 'Painterjl', 'One line description of project.',
+  ('index', 'PAINTERjl', u'PAINTER.jl Documentation',
+   u'JuliaPAINTER', 'PAINTERjl', 'One line description of project.',
    'Miscellaneous'),
 ]
 
