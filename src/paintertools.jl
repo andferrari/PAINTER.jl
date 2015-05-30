@@ -322,7 +322,7 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
 
 # Consensus
         y_tmp = copy(PDATA.yc)
-        PDATA.yc = ( PDATA.y_v2 + PDATA.y_phidp + PDATA.y_phit3 + PDATA.Fx + (PDATA.tau_xc - (PDATA.tau_pwc + PDATA.tau_xict3 + PDATA.tau_xicdp)) ./ rho_y ) ./ 3
+        PDATA.yc = ( PDATA.y_v2 + PDATA.y_phidp + PDATA.y_phit3 + PDATA.Fx + (PDATA.tau_xc - (PDATA.tau_pwc + PDATA.tau_xict3 + PDATA.tau_xicdp)) ./ rho_y ) ./ 4
 
 # Object estimation
         x_tmp = copy(PDATA.x)
