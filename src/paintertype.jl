@@ -38,7 +38,7 @@ type PAINTER_Input
     rho_ps::Real
     alpha::Real
     beta::Real
-    gamma::Real
+    gamma::Real # for dp
     eps1::Real
     eps2::Real
     epsilon::Real
