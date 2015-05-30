@@ -38,7 +38,6 @@ type PAINTER_Input
     rho_ps::Real
     alpha::Real
     beta::Real
-    gamma::Real # for dp
     eps1::Real
     eps2::Real
     epsilon::Real
@@ -58,8 +57,6 @@ type PAINTER_Data
     plan::Array
     F3D::Array
     H::SparseMatrixCSC
-    HDP::SparseMatrixCSC
-    HT3::SparseMatrixCSC
     M::Array
     x::SharedArray{Float64}
     vHt::Array
@@ -77,13 +74,9 @@ type PAINTER_Data
     tau_xc::Array
     tau_pwc::Array
     tau_xic::Array
-    tau_xicdp::Array
-    tau_xict3::Array
     yc::Array
     y_v2::Array
     y_phi::Array
-    y_phidp::Array
-    y_phit3::Array
     crit1::Array
     crit2::Array
     ind::Int
@@ -111,11 +104,11 @@ end
 function painterinputinit()
     return PAINTER_Input(painterplotfct, "", [], [], [], [], [], [], []
                          , [], [], [], [], 0., 0., 0., 0., 0., 0., 0., 0.
-                         , 0., 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
+                         , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
                          , true, [], [], [], [])
 end
 function painterdatainit()
-    return PAINTER_Data(0., [], [], speye(0), speye(0), speye(0), [], [], [], [], [], [], []
+    return PAINTER_Data(0., [], [], speye(0), [], [], [], [], [], [], []
                         , [], [], [], [], [], [], [], [], [], [], [], []
-                        , [], [], [], [], [], Float64[], Float64[], 0, 0, 0)
+                        , [], Float64[], Float64[], 0, 0, 0)
 end
