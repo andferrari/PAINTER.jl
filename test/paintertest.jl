@@ -25,5 +25,4 @@ OIDATA, PDATA, OPTOPT = painter(nbitermax = Mynbitermax, nx = Mynx, lambda_spat 
                             vt = false, memsize = 100, mxvl = 1000, mxtr = 1000, stpmn = 1e-20,
                             stpmx = 1e+20);
 
-
-@test_approx_eq_eps PDATA.crit1[1] 1.92813 1E-4
+@test_approx_eq_eps PDATA.crit1[1] 1.47623 1E-4
