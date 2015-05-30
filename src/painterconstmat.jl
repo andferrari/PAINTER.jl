@@ -76,7 +76,7 @@ function phasetophasediff(Closure_index::Matrix,nw::Integer,nb::Integer,T3::Inte
       HT3 = sparse(rowt, colt, Valuet, NT3 * nw, nbnw)
       HDP = sparse(rowb, colb, Valueb, nb * (nw-1), nbnw)
       H = vcat(HT3, HDP)
-      return H
+      return H, HT3, HDP
     end
 end
 ###################################################################################

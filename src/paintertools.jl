@@ -100,30 +100,32 @@ end
 #
 # Equation 58-59 of PAINTER
 #
-function proxv2!(y_v2::Array,P::Array,rho_y::Real,alpha::Real,nb::Int,nw::Int)
-    mod_y = abs(y_v2)
-    ang_y = angle(y_v2)
-    tmp1 = rho_y / (4 * alpha)
-    tmp2 = alpha
-    for m in 1:nb,n in 1:nw
-# # without weight
-        sol = max(0., cubicroots(1., 0., tmp1 -P[ind], -tmp1 * mod_y[m,n]))
-        cst = tmp2*(P[ind] - sol.^2).^2 + .5 .* rho_y * (sol - mod_y[m,n] ).^2
-        (a,b) = findmin(cst)
-        mod_y[m,n] = sol[b]
-    end
-    y_v2[:] = mod_y .* exp(im .* ang_y)
-end
+# function proxv2!(y_v2::Array,P::Array,rho_y::Real,alpha::Real,nb::Int,nw::Int)
+#     mod_y = abs(y_v2)
+#     ang_y = angle(y_v2)
+#     tmp1 = rho_y / (4 * alpha)
+#     tmp2 = alpha
+#     for m in 1:nb,n in 1:nw
+# # # without weight
+#         sol = max(0., cubicroots(1., 0., tmp1 -P[ind], -tmp1 * mod_y[m,n]))
+#         psol = P[ind] - sol.*sol
+#         ysol = sol - mod_y[m,n]
+#         cst = tmp2*psol.*psol + .5 .* rho_y * ysol.*ysol
+#         (a,b) = findmin(cst)
+#         mod_y[m,n] = sol[b]
+#     end
+#     y_v2[:] = mod_y .* exp(im .* ang_y)
+# end
 function proxv2!(y_v2::Array,P::Array,W::Array,rho_y::Real,alpha::Real,nb::Int,nw::Int)
     mod_y = abs(y_v2)
     ang_y = angle(y_v2)
     tmp1 = W.*rho_y /(4 * alpha)
     tmp2 = alpha ./ W
     for m in 1:nb, n in 1:nw
-        sol = max(0., cubicroots(1., 0., tmp1[m,n] - P[m,n], -tmp1[m,n] .* mod_y[m,n]))
-        cst = tmp2[m,n] .* (P[m,n] - sol.^2).^2 + .5 .* rho_y * (sol - mod_y[m,n] ).^2
-        (a,b) = findmin(cst)
-        mod_y[m,n] = sol[b]
+      sol = max(0., cubicroots(1., 0., tmp1[m,n] - P[m,n], -tmp1[m,n] .* mod_y[m,n]))
+      cst = tmp2[m,n] .* (P[m,n] - sol.*sol).^2 + .5 .* rho_y * (sol - mod_y[m,n] ).^2
+      (a,b) = findmin(cst)
+      mod_y[m,n] = sol[b]
     end
     y_v2[:] = mod_y .* exp(im .* ang_y)
 end
@@ -152,9 +154,10 @@ end
     c = c / a
     d = d / a
     bOn3  = b/3.
-    q = (3 .* c - b^2) / 9.
-    r = (9 .* b * c - 27 .* d - 2 * b^3) / 54.
-    discriminant = q^3 + r^2
+    q = (3 .* c - b*b) / 9.
+    r = (9 .* b * c - 27 .* d - 2 * b*b*b) / 54.
+    r2 = r*r
+    discriminant = q*q*q + r2
     if discriminant >= 0        # We have 1 real root and 2 imaginary
         s = realcuberoot(r + sqrt(discriminant))
         t = realcuberoot(r - sqrt(discriminant))
@@ -162,15 +165,16 @@ end
     else                        # We have 3 real roots
         # In this case (r + sqrt(discriminate)) is complex so the following
         # code constructs the cube root of this complex quantity
-        rho = sqrt(r^2 - discriminant)
+        rho = sqrt(r2 - discriminant)
         cubeRootrho = realcuberoot(rho)    # Cube root of complex magnitude
         thetaOn3 = acos(r / rho) / 3       # Complex angle/3
         crRhoCosThetaOn3 = cubeRootrho * cos(thetaOn3)
         crRhoSinThetaOn3 = cubeRootrho * sin(thetaOn3)
         root = zeros(3)
         root[1] = 2 * crRhoCosThetaOn3 - bOn3
-        root[2] = -crRhoCosThetaOn3 - bOn3 - sqrt(3) * crRhoSinThetaOn3
-        root[3] = -crRhoCosThetaOn3 - bOn3 + sqrt(3) * crRhoSinThetaOn3
+        sqrt3 = sqrt(3)
+        root[2] = -crRhoCosThetaOn3 - bOn3 - sqrt3 * crRhoSinThetaOn3
+        root[3] = -crRhoCosThetaOn3 - bOn3 + sqrt3 * crRhoSinThetaOn3
     end
   return root
 end
@@ -226,9 +230,9 @@ function costgradphi!(x_phi::Vector,g_phi::Vector,gam_t::Vector,phi_t::Vector,y_
     dphi = H * x_phi - Xi;
     yest = gam .* exp(im * x_phi)
     w1 = -sum(K .* cos(dphi))
-    w2 = sum(abs(yest - y_t).^2)
+    w2 = sum(abs2(yest - y_t))
     g_phi[:]= beta .* H' * (sin(dphi) ./ K) - rho_y .* gam .* gam_t .* sin(Ek)
-    f = ((beta * w1) + (rho_y * w2)) / 2
+    f = ((beta * w1) + (rho_y * w2)) #/ 2 # times 1/2 will change nothing to the result
     return f
 end
 ###################################################################################
@@ -263,11 +267,16 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
     const W = OIDATA.W
     const Xi = OIDATA.Xi
     const K = OIDATA.K
+    const DP = OIDATA.DP
+    const DPerr = OIDATA.DPerr
+    const T3 = OIDATA.T3
+    const T3err = OIDATA.T3err
     const paral = OIDATA.paral
     const eta = PDATA.eta
     const plan = PDATA.plan
     const F3D = PDATA.F3D
-    const H = PDATA.H
+    const HDP = PDATA.HDP
+    const HT3 = PDATA.HT3
     const M = PDATA.M
     const NWvlt = length(Wvlt)
 # ----------------------------------
@@ -303,13 +312,17 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
         PDATA.y_v2 = PDATA.yc + PDATA.tau_pwc / rho_y
         proxv2!(PDATA.y_v2, P, W, rho_y, alpha, nb, nw)
 
-# update of yc from phases difference
-        PDATA.y_phi = PDATA.yc + PDATA.tau_xic / rho_y
-        proxphase!(PDATA.y_phi, Xi, K, rho_y, beta, nb, nw, H, OPTOPT)
+# update of yc from closures phases
+        PDATA.y_phit3 = PDATA.yc + PDATA.tau_xict3 / rho_y
+        proxphase!(PDATA.y_phit3, T3, T3err, rho_y, beta, nb, nw, HT3, OPTOPT)
+
+# update of yc from differential phases
+        PDATA.y_phidp = PDATA.yc + PDATA.tau_xicdp / rho_y
+        proxphase!(PDATA.y_phidp, DP, DPerr, rho_y, beta, nb, nw, HDP, OPTOPT)
 
 # Consensus
         y_tmp = copy(PDATA.yc)
-        PDATA.yc = ( PDATA.y_v2 + PDATA.y_phi + PDATA.Fx + (PDATA.tau_xc - (PDATA.tau_pwc + PDATA.tau_xic)) ./ rho_y ) ./ 3
+        PDATA.yc = ( PDATA.y_v2 + PDATA.y_phidp + PDATA.y_phit3 + PDATA.Fx + (PDATA.tau_xc - (PDATA.tau_pwc + PDATA.tau_xict3 + PDATA.tau_xicdp)) ./ rho_y ) ./ 3
 
 # Object estimation
         x_tmp = copy(PDATA.x)
@@ -331,7 +344,7 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
         for m in 1:nx, n in 1:nx
             PDATA.Spcdct[m, n, :]= idct(tmp[:, m, n] )
         end
-        PDATA.v = ( PDATA.Spcdct + (rho_spec * PDATA.x) + PDATA.tau_v) / (2 * rho_spec)
+        PDATA.v = ( PDATA.Spcdct + (rho_spec * PDATA.x) + PDATA.tau_v) / (rho_spec + rho_spec)
         vecv = permutedims(PDATA.v, [3, 1, 2])
         for m in 1:nx, n in 1:nx
             PDATA.vHt[m, n, :] = dct(vecv[:, m, n] )
@@ -347,7 +360,8 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
 
 # update of Lagrange multipliers
         PDATA.tau_pwc = PDATA.tau_pwc + rho_y * (PDATA.yc - PDATA.y_v2)
-        PDATA.tau_xic = PDATA.tau_xic + rho_y * (PDATA.yc - PDATA.y_phi)
+        PDATA.tau_xict3 = PDATA.tau_xict3 + rho_y * (PDATA.yc - PDATA.y_phit3)
+        PDATA.tau_xicdp = PDATA.tau_xicdp + rho_y * (PDATA.yc - PDATA.y_phidp)
         PDATA.tau_xc = PDATA.tau_xc + rho_y * (PDATA.Fx - PDATA.yc)
         PDATA.tau_s = PDATA.tau_s + rho_spat * (PDATA.Hx - PDATA.z)
         PDATA.tau_v = PDATA.tau_v + rho_spec * (PDATA.x - PDATA.v)

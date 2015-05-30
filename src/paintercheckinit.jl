@@ -177,7 +177,9 @@ function mask(nx::Int,side::Int;choice="square")
     elseif(choice == "disk")
         xg = reshape(repeat([1:nx], outer=[nx]), nx, nx)
         yg = xg'
-        rg = sqrt( (xg - .5 - (nx / 2)).^2 + (yg - .5 - (nx / 2)).^2 )
+        xm = (xg - .5 - (nx / 2))
+        ym = (yg - .5 - (nx / 2))
+        rg = sqrt( xm.*xm + ym.*ym )
         mask3D = float(abs(rg) .< (side + .5))
     end
 
@@ -457,7 +459,7 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.eta = nwvlt * OIDATA.rho_spat + OIDATA.rho_spec + OIDATA.rho_ps + OIDATA.epsilon
     PDATA.plan = planarray_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nx, OIDATA.nw)
     PDATA.F3D = nudft3d_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nb, OIDATA.nx, OIDATA.nw)
-    PDATA.H = phasetophasediff(OIDATA.Closure_index, OIDATA.nw, OIDATA.nb, 1, 1)
+    PDATA.H, PDATA.HT3, PDATA.HDP = phasetophasediff(OIDATA.Closure_index, OIDATA.nw, OIDATA.nb, 1, 1)
     PDATA.M  = invmat_par(PDATA.F3D, OIDATA.rho_y, PDATA.eta, OIDATA.nw)
 
 # Array Initialization
@@ -477,8 +479,12 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.tau_xc = zeros(Complex128, nb, nw)
     PDATA.tau_pwc = zeros(Complex128, nb, nw)
     PDATA.tau_xic = zeros(Complex128, nb, nw)
+    PDATA.tau_xict3 = zeros(Complex128, nb, nw)
+    PDATA.tau_xicdp = zeros(Complex128, nb, nw)
     PDATA.y_v2 = zeros(Complex128, nb, nw)
     PDATA.y_phi = zeros(Complex128, nb, nw)
+    PDATA.y_phit3 = zeros(Complex128, nb, nw)
+    PDATA.y_phidp = zeros(Complex128, nb, nw)        
     PDATA.yc, OIDATA.xinit3D = checkinit(OIDATA.xinit3D, OIDATA.nb, OIDATA.nx, OIDATA.nw, PDATA.plan)
     return PDATA,OIDATA
 end
