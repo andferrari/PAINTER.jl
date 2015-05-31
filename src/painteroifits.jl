@@ -128,15 +128,14 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
     OIDATA.V = OIDATA.V[:, OIDATA.indwvl]
     OIDATA.P = OIDATA.P[:, OIDATA.indwvl]
     OIDATA.W = OIDATA.W[:, OIDATA.indwvl]
-    OIDATA.T3 = vec(OIDATA.T3[:, OIDATA.indwvl] * unitconvert)
+    OIDATA.T3 = OIDATA.T3[:, OIDATA.indwvl] * unitconvert
     OIDATA.DP = OIDATA.DP[:, OIDATA.indwvl] * unitconvert
-    OIDATA.T3err = vec(OIDATA.T3err[:, OIDATA.indwvl] * unitconvert)
+    OIDATA.T3err = OIDATA.T3err[:, OIDATA.indwvl] * unitconvert
     OIDATA.DPerr = OIDATA.DPerr[:, OIDATA.indwvl] * unitconvert
     OIDATA.wvl = vec(mean(OIDATA.wvl[:, OIDATA.indwvl], 1))
 # # compute Differential Phases as needed for PAINTER and adjust angle unit
-    OIDATA.nb, OIDATA.nw = size(OIDATA.U)
-    # OIDATA.nb = size(OIDATA.U, 1)
-    # OIDATA.nw = size(OIDATA.U, 2)
+    OIDATA.nb = size(OIDATA.U, 1)
+    OIDATA.nw = size(OIDATA.U, 2)
     OIDATA.DP = diffphi(OIDATA.DP, OIDATA.nb, OIDATA.nw)
     OIDATA.DPerr = diffphierr(OIDATA.DPerr, OIDATA.nb, OIDATA.nw)
 # # Verification des unites - TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE
@@ -145,8 +144,8 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
 # T3Mat    *= pi/180
 # K3Mat    *= pi/180
 # KPMat    *= pi/180
-    OIDATA.Xi = vcat(OIDATA.T3, OIDATA.DP)
-    OIDATA.K = vcat(OIDATA.T3err, OIDATA.DPerr)
+    OIDATA.Xi = vcat(vec(OIDATA.T3), OIDATA.DP)
+    OIDATA.K = vcat(vec(OIDATA.T3err), OIDATA.DPerr)
     return OIDATA
 end
 ###################################################################################
