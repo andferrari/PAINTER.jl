@@ -21,7 +21,7 @@ To install ``PAINTER.jl``, type from a Julia session the following commands:
 .. code:: julia
 
   Pkg.update()
-  Pkg.clone("https://github.com/andferrari/PAINTER.jl.git")
+  Pkg.add("PAINTER")
 
 and relax!
 
