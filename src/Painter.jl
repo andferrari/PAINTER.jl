@@ -18,6 +18,7 @@ module Painter
     using NFFT
     using Wavelets
     using FITSIO
+    using FITSIO.Libcfitsio
 
     if(Pkg.installed("PyPlot") != nothing)
         using PyPlot
