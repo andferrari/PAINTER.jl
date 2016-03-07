@@ -111,18 +111,17 @@ function painterload(loadpath::ASCIIString)
 end
 
 # ######################################
-# Added by M. Vannier, 10 Apr. 2015
-# ######################################
+# Added by M. Vannier, 10 Apr. 2015, modified by J. Kluska, may 2015
 
 function painterfitsexport(savepath::ASCIIString, PDATA::PAINTER_Data, OIDATA::PAINTER_Input; forceWvlExt = false)
-    # savepath : path + name of ouput file, including ".fits" extension
+    #  savepath : path + name of ouput file, including ".fits" extension
     # OIDATA :  structure which contains all OIFITS information and user defined parameters.
     # PDATA :  structure which contains output results and diagnostics
     # optional : forceWvlExt (default = false) : boolean to force the writing of a specific "WAVELENGTH" extension.
     #            If "false", that extension is produced only if wavelengths have irregular spacing (within 1% precision).
     # EX:
-    #  painterfitsexport("~/my_Painter/my_file.fits", PDATA, OIDATA)
-    #  painterfitsexport("~/my_Painter/my_file.fits", PDATA, OIDATA; forceWvlExt = true)
+    #  painterfitsexport("~/my_PAINTER/my_file.fits", PDATA, OIDATA)
+    #  painterfitsexport("~/my_PAINTER/my_file.fits", PDATA, OIDATA; forceWvlExt = true)
 
     # test: write specific wavelength extension or not ?
     # Yes if irregular spacing between wvl or if forceWvlExt = true
@@ -156,6 +155,7 @@ function painterfitsexport(savepath::ASCIIString, PDATA::PAINTER_Data, OIDATA::P
       print(" ...Writing wavelength vector in main header")
       coldefs = [("WAVELENGTH", "1D", "m")];
       fits_create_binary_tbl(fits, size(w)[1], coldefs, "WAVELENGTHS")
+close(f)
       fits_write_col(fits::FITSFile, Float64, 1::Integer, 1::Integer, 1::Integer, w)
     end
 
@@ -170,9 +170,41 @@ function painterfitsexport(savepath::ASCIIString, PDATA::PAINTER_Data, OIDATA::P
     # vector of scalar values for successive columns of "INFO". Should match the description in coldefs
     info_values = [OIDATA.lambda_spat, OIDATA.lambda_spec, OIDATA.epsilon, PDATA.crit1, PDATA.crit2]
 
-    for i in 1:size(info_values)[1]
-        fits_write_col(fits::FITSFile, Float64, i::Integer, 1::Integer, 1::Integer, [info_values[i]])
+    #JKL PART
+    for i in 1:size(PDATA.crit1)[1]
+    	fits_write_col(fits::FITSFile, 1::Integer, i::Integer, 1::Integer, [info_values[1]])
+    	fits_write_col(fits::FITSFile, 2::Integer, i::Integer, 1::Integer, [info_values[2]])
+    	fits_write_col(fits::FITSFile, 3::Integer, i::Integer, 1::Integer, [info_values[3]])
+
+    	#fits_write_col(fits::FITSFile, 4::Integer, 1::Integer, 1::Integer, [PDATA.crit1])
+    	#fits_write_col(fits::FITSFile, 5::Integer, 1::Integer, 1::Integer, [PDATA.crit2])
+    end
+    fits_write_col(fits::FITSFile, 4::Integer, 1::Integer, 1::Integer, [PDATA.crit1])
+    fits_write_col(fits::FITSFile, 5::Integer, 1::Integer, 1::Integer, [PDATA.crit2])
+    #JKL END
+
+
+    #  for i in 1:size(info_values)[1]
+    #	print(i)
+    #    fits_write_col(fits::FITSFile, i::Integer, 1::Integer, 1::Integer, [info_values[i]])
+    #  end
+
+    # ADDING THE VISIBILITIES IN THE FITS FILE (JKL)
+    coldefs2 = [ ("U", "2D", ""), # OIDATA.U
+                ("V", "2D", ""), # OIDATA.V
+                ("VisRe", "2D", ""), # PDATA.Fx.re
+                ("VisIm", "2D", ""), # PDATA.Fx.im
+		("Wave","2D", "")];   # OIDATA.wvl
+    fits_create_binary_tbl(fits, 1, coldefs2, "VIS")
+
+    for i = 1:OIDATA.nb
+	    fits_write_col(fits::FITSFile, 1::Integer, i::Integer, 1::Integer, [OIDATA.U[i,:]])
+	    fits_write_col(fits::FITSFile, 2::Integer, i::Integer, 1::Integer, [OIDATA.V[i,:]])
+	    fits_write_col(fits::FITSFile, 3::Integer, i::Integer, 1::Integer, [real(PDATA.Fx[i,:])])
+	    fits_write_col(fits::FITSFile, 4::Integer, i::Integer, 1::Integer, [imag(PDATA.Fx[i,:])])
+	    fits_write_col(fits::FITSFile, 5::Integer, i::Integer, 1::Integer, [OIDATA.wvl])
     end
 
-    close(f)
+close(f)
 end
+
