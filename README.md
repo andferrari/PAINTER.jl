@@ -1,8 +1,7 @@
 PAINTER.jl
 ==========
 
-The current version of ``PAINTER.jl`` does not work with Julia 0.4+. Please use an
-[older release](http://julialang.org/downloads/oldreleases.html). 
+The current version of ``PAINTER.jl`` work with Julia 0.4+.  
 
 ``PAINTER.jl`` will be updated asap!
 
