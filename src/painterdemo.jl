@@ -9,7 +9,7 @@ function myplotfunction(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     w = PDATA.w .> 0.
 
     indpix = linspace(-(FOV / 2), (FOV / 2), nx)
-    pos = int([1, round(nx / 4), round(nx / 2), round(nx * 3 / 4), nx])
+    pos = round(Int, [1, round(Int,nx / 4), round(Int,nx / 2), round(Int,nx * 3 / 4), nx])
 
     count_y = 0
     count_x = 0
@@ -24,12 +24,12 @@ function myplotfunction(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
         xticks([])
         yticks([])
         if( n == (nw + 1 - SubRow + count_x) )
-            xticks([pos - 1], round(indpix[pos] * 100000) / 100)
+            xticks(collect(pos - 1), round(Int,indpix[pos] * 100000) / 100)
             xlabel("FOV (mas)")
             count_x += 1
         end
         if(n == (1 + count_y * SubRow))
-            yticks([pos - 1], round(indpix[pos] * 100000) / 100)
+            yticks(collect(pos - 1), round(Int,indpix[pos] * 100000) / 100)
             ylabel("FOV (mas)")
             count_y += 1
         end
