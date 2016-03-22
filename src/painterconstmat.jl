@@ -12,7 +12,7 @@ function invmat_par(F3D::Array,rho_y::Real,eta::Real,nw::Int)#,paral::Bool)
 # rho_x: admm parameters
 # eta: (nwvlt*OIDATA.rho_spat+OIDATA.rho_spec+OIDATA.rho_ps+OIDATA.epsilon)
 # if paral
-    mat2inv = {(F3D[n], (rho_y / eta)) for n in 1:nw }
+    mat2inv = [(F3D[n], (rho_y / eta)) for n in 1:nw ]
     M = pmap(toinv, mat2inv)
 # else
 # # # # SERIAL
@@ -48,8 +48,8 @@ function phasetophasediff(Closure_index::Matrix,nw::Integer,nb::Integer,T3::Inte
     nbnw = (nb * nw)
     if(T3 == 1)
       NT3 = size(Closure_index, 1)
-      rowt = repeat([1:(NT3 * nw)], inner = [3])
-      colt = repeat(vec(Closure_index'), outer = [nw]) + repeat([0:(nw - 1)] * nb, inner = [3 * NT3])
+      rowt = repeat(collect(1:(NT3 * nw)), inner = [3])
+      colt = repeat(vec(Closure_index'), outer = [nw]) + repeat(collect(0:(nw - 1)) * nb, inner = [3 * NT3])
       Valuet = repeat([1, 1, -1], outer=[NT3 * nw])
     end
 
@@ -57,8 +57,8 @@ function phasetophasediff(Closure_index::Matrix,nw::Integer,nb::Integer,T3::Inte
 # defined as in equation 19 of PAINTER [1], 7 of [0]
 # rank = Nbas*(Nwvl-1)
     if(DP == 1)
-      rowb = repeat([1:(nb * (nw - 1))], inner = [2])
-      colb = vec([repmat([1:nb]', 1, (nw-1)),[(nb + 1):nbnw]'])
+      rowb = repeat(collect(1:(nb * (nw - 1))), inner = [2])
+      colb = vec(vcat(repmat(collect(1:nb)', 1, (nw-1)),collect((nb + 1):nbnw)'))
       Valueb = repeat([1,-1], outer=[nb*(nw-1)])
     end
 
@@ -88,7 +88,7 @@ function planarray_par(tab_u::Array,tab_v::Array,nx::Int,nw::Int)#,parral::Bool)
 # nx is images side size
 # nw is the number of wavelength
 # if parral
-    Mtmp = {( hcat(tab_u[:,n] / nx, tab_v[:,n] / nx)', nx) for n in 1:nw}
+    Mtmp = [( hcat(tab_u[:,n] / nx, tab_v[:,n] / nx)', nx) for n in 1:nw]
     return pmap(toplan, Mtmp)
 # else
 # # # SERIAL
@@ -133,7 +133,7 @@ function nudft3d_par(tab_u::Array,tab_v::Array,nb::Int,nx::Int,nw::Int)
 	    #       end
 	    # toc()
 	    # tic()
-            UVMAT = {(tab_u[:, n], tab_v[:, n], nx, nb) for n in 1:nw }
+            UVMAT = [(tab_u[:, n], tab_v[:, n], nx, nb) for n in 1:nw ]
 	          F3D = pmap(non_uniform_dft_par, UVMAT)
             return F3D
 
@@ -155,7 +155,7 @@ function non_uniform_dft_par(UVMAT)
 # UVMAT[2] : V
 # UVMAT[3] : nx
 # UVMAT[4] : nb
-    k1  	= repmat([(-UVMAT[3] / 2):(-1 + (UVMAT[3] / 2))], 1, UVMAT[3])
+        k1  	= repmat(collect((-UVMAT[3] / 2):(-1 + (UVMAT[3] / 2))), 1, UVMAT[3])
     k1m 	= repmat((vec(k1 )' / UVMAT[3]), UVMAT[4], 1)
     k2m 	= repmat((vec(k1')' / UVMAT[3]), UVMAT[4], 1)
     um 		= repmat(vec(UVMAT[1]), 1, (UVMAT[3] * UVMAT[3]))

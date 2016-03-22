@@ -47,7 +47,7 @@ function estimx_par{Tw<:WT.OrthoWaveletClass}(x::SharedArray{Float64,3},Fx::Shar
 
 # parallel sum of wavelet basis
     if paral
-        MAP = { ([matz[:, :, n, b] ], wavelet(Wvlt[b]) ) for n in 1:nw, b in 1:NWvlt}
+        MAP = [(matz[:, :, n, b] , wavelet(Wvlt[b]) ) for n in 1:nw, b in 1:NWvlt]
         wvd = sum(reshape(pmap(myidwt,MAP), nw, NWvlt ), 2)
 
 # parallel image reconstruction

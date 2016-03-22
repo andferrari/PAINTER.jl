@@ -121,7 +121,7 @@ function checkinit(xinit::Array,nb::Int,nx::Int,nw::Int,plan::Array)
 # plan: non uniform fft plan
     if isempty(xinit)
         xinit = zeros(nx, nx)
-        xinit[int( (nx / 2) + 1), int((nx / 2) + 1)] = 1
+        xinit[round(Int,  (nx / 2) + 1), round(Int, (nx / 2) + 1)] = 1
     end
 
     if ndims(xinit) == 1
@@ -221,7 +221,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
         println("Converted to integer")
     end
 
-    nx = int(nx)
+    nx = round(Int, nx)
 
     if(nx < 0)
         println("nx must be non negative (default: 64 pixels)")
@@ -366,9 +366,10 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     if isempty(Folder)
         tmp = pwd()
         Folder = string(tmp, tmp[1], "OIFITS")
+        println(Folder)
     end
 
-    if typeof(Folder) == ASCIIString
+    if (typeof(Folder) == ASCIIString)||(typeof(Folder) == UTF8String)
         cpath = Folder
 
     else
@@ -388,7 +389,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     pathprint = cpath
 
 # Check Wavelet input
-    if (typeof(Wvlt) <: Array) & all({typeof(wlt) <: WT.OrthoWaveletClass for wlt in Wvlt})
+    if (typeof(Wvlt) <: Array) & all( [typeof(wlt) <: WT.OrthoWaveletClass for wlt in Wvlt])
         Wvltprint = "$Wvlt"
     else
         error("Wavelets list must be a vector of orthogonal wavelets")
