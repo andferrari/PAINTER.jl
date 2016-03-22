@@ -1,10 +1,6 @@
 PAINTER.jl
 ==========
 
-The current version of ``PAINTER.jl`` work with Julia 0.4+.  
-
-``PAINTER.jl`` will be updated asap!
-
 [![Build Status](https://travis-ci.org/andferrari/PAINTER.jl.svg?branch=master)](https://travis-ci.org/andferrari/PAINTER.jl)
 
 ``PAINTER.jl`` is a julia implementation of PAINTER: Polychromatic
