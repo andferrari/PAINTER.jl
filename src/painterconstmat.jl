@@ -67,7 +67,7 @@ function phasetophasediff(Closure_index::Matrix,nw::Integer,nb::Integer,T3::Inte
           HDP = alldp(nb, nw)
       elseif dptype == "ref"
           # rank = Nbas*( Nwvl - 1 )
-          # dpprm is the reference channel 
+          # dpprm is the reference channel
           HDP = alldpref(nb, nw, dpprm)
       elseif dptype == "diag"
           # rank = Nbas*floor( Nwvl - Nwvl/horizon )
@@ -85,7 +85,6 @@ function phasetophasediff(Closure_index::Matrix,nw::Integer,nb::Integer,T3::Inte
       end
     end
 
-figure(); imshow(full(HDP))
 # phase difference to phase matrix
 # defined as in equation 20 of PAINTER [1], 6 of [0]
     if((T3 == 1)&&(DP == 0))
