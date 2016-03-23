@@ -60,6 +60,15 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 
   Default: centered Dirac functions at all wavelengths.
 
+* ``dptype`` define the kind of matrix difference used to generate differential phase, can be parameterized by ``dpprm`` :
+
+  * ``"all"`` the difference between the first wavelength and all others (1-2, 1-3, ...), see  Eqs. 35
+  * ``"diag"`` the difference between all consecutive wavelengths (1-2, 2-3, ...)
+  * ``"ref"`` the same as ``"all"`` but with a reference channel defined by ``dpprm``, the same as ``"all"`` if ``dpprm``=1
+  * ``"frame"`` the difference between wavelength are performed inside non overlaping window with a size ``dpprm``
+  * ``"sliding"`` the difference between wavelength are performed using a sliding window with a size ``dpprm``
+
+  Default: if not given the default matrix difference is ``"all"``.
 
 **ADMM algorithm parameters:**
 
@@ -137,4 +146,4 @@ References
 ----------
 
 .. [1] Schutz, A., Ferrari, A., Mary, D. Soulez, F., Thiébaut, E., Vannier, M. "PAINTER: a spatio-spectral image reconstruction algorithm for optical interferometry". JOSA A. Vol. 31, Iss. 11, pp. 2356–2361, (2014). `arXiv <http://arxiv.org/abs/1407.1885>`_
-.. [2] Schutz, A., Ferrari, A., Mary, D., Thiébaut, E., Soulez, F. "Large scale 3D image reconstruction in optical interferometry". Submitted to EUSIPCO 2015, Nice. `arXiv <http://arxiv.org/abs/1503.01565>`_
+.. [2] Schutz, A., Ferrari, A., Mary, D., Thiébaut, E., Soulez, F. "Large scale 3D image reconstruction in optical interferometry". EUSIPCO, 2015, Nice. `arXiv <http://arxiv.org/abs/1503.01565>`_

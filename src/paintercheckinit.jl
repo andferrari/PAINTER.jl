@@ -1,5 +1,5 @@
 ###################################################################################
-# Antony Schutz 2015, ANR - POLCA
+# Antony Schutz 2015, ANR - POLCA - 2016
 ###################################################################################
 function checkPack()
 
@@ -206,7 +206,7 @@ end
 # mask3D	      : Support constraint: can be a path to a fits file, or to data image (2D or 3D in both case)
 # xinit3D       : Initial Estimate: can be a path to a fits file, or to data image (2D or 3D in both case)
 ###################################################################################
-function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lambda_L1,epsilon,rho_y,rho_spat,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,paral,PlotFct)
+function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lambda_L1,epsilon,rho_y,rho_spat,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,paral,dptype,dpprm,PlotFct)
 # check if user parameters are valid parameters, correct them if type is not good or replace by default if parameter are not valid
     if(FOV < 0)
         println("FOV must be non negative (default: 0.04 arcsecond)")
@@ -359,7 +359,31 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
         xinit3dprint = "3D Init Initialization from 3D data of size $Sx"
 
     elseif isempty(xinit3D)
-      xinit3dprint = "3D Init Initialization from default, centered dirac"
+        xinit3dprint = "3D Init Initialization from default, centered dirac"
+    end
+
+    # Check Differential phases matrix parameters
+    if typeof(dptype) == ASCIIString
+        if (dptype!="all") && (dptype!="ref") && (dptype!="frame")&& (dptype!="sliding")&& (dptype!="diag")
+              println("dptype: all (default), ref, diag, frame, sliding ")
+              println("initialized to default value")
+              dptype = "all"
+        end
+    else
+        error("dptype must be a string: all (default), ref, frame, sliding, diag ")
+    end
+
+    if !isinteger(dpprm)
+        println("lambda_ref/horizon must an integer")
+        println("Converted to integer")
+    end
+
+    dpprm = round(Int,dpprm)
+
+    if(dpprm <= 0)
+        println("lambda_ref/horizon must be non negative (default: 1)")
+        println("initialized to default value")
+        dpprm = 1
     end
 
 # Check data path
@@ -419,7 +443,9 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     println("xinit3d     = $xinit3dprint")
     println("Wavelets    = $Wvltprint")
     println("Plot Func   = $PlotFct")
-
+    println("dptype      = $dptype")
+    println("dpprm       = $dpprm")
+    
     OIDATA.PlotFct = PlotFct
     OIDATA.Folder = cpath
     OIDATA.lambda_spat = lambda_spat
@@ -440,15 +466,17 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     OIDATA.xinit3D = xinit3D
     OIDATA.Wvlt = Wvlt
     OIDATA.paral = paral
+    OIDATA.dptype = dptype
+    OIDATA.dpprm = dpprm
     return OIDATA
 end
 ###################################################################################
 # Initialise ADMM Array
 function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 
-    nx = OIDATA.nx
-    nb = OIDATA.nb
-    nw = OIDATA.nw
+    # nx = OIDATA.nx
+    # nb = OIDATA.nb
+    # nw = OIDATA.nw
     nwvlt = length(OIDATA.Wvlt)
     DegRd = 2.0 * pi / 360.0
     RadAs = 3600.0 / DegRd
@@ -458,28 +486,27 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.eta = nwvlt * OIDATA.rho_spat + OIDATA.rho_spec + OIDATA.rho_ps + OIDATA.epsilon
     PDATA.plan = planarray_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nx, OIDATA.nw)
     PDATA.F3D = nudft3d_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nb, OIDATA.nx, OIDATA.nw)
-    PDATA.H = phasetophasediff(OIDATA.Closure_index, OIDATA.nw, OIDATA.nb, 1, 1)
     PDATA.M  = invmat_par(PDATA.F3D, OIDATA.rho_y, PDATA.eta, OIDATA.nw)
-
+    PDATA.H = phasetophasediff(OIDATA.Closure_index, OIDATA.nw, OIDATA.nb, 1, 1,OIDATA.dptype, OIDATA.dpprm)
 # Array Initialization
-    PDATA.x = SharedArray(Float64, (nx, nx, nw))
-    PDATA.vHt = zeros(Float64, nx, nx, nw)
-    PDATA.z = zeros(Float64, nx, nx, nw, nwvlt)
-    PDATA.Hx = zeros(Float64, nx, nx, nw, nwvlt)
-    PDATA.tau_s = zeros(Float64, nx, nx, nw, nwvlt)
-    PDATA.w = zeros(Float64, nx, nx, nw)
-    PDATA.v = zeros(Float64, nx, nx, nw)
-    PDATA.r = zeros(Float64, nx, nx, nw)
-    PDATA.tau_w = zeros(Float64, nx, nx, nw)
-    PDATA.tau_v = zeros(Float64, nx, nx, nw)
-    PDATA.tau_r = zeros(Float64, nx, nx, nw)
-    PDATA.Spcdct = zeros(Float64, nx, nx, nw)
-    PDATA.Fx = SharedArray(Complex{Float64}, (nb, nw))
-    PDATA.tau_xc = zeros(Complex128, nb, nw)
-    PDATA.tau_pwc = zeros(Complex128, nb, nw)
-    PDATA.tau_xic = zeros(Complex128, nb, nw)
-    PDATA.y_v2 = zeros(Complex128, nb, nw)
-    PDATA.y_phi = zeros(Complex128, nb, nw)
+    PDATA.x = SharedArray(Float64, (OIDATA.nx, OIDATA.nx, OIDATA.nw))
+    PDATA.vHt = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.z = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
+    PDATA.Hx = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
+    PDATA.tau_s = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
+    PDATA.w = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.v = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.r = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.tau_w = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.tau_v = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.tau_r = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.Spcdct = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.Fx = SharedArray(Complex{Float64}, (OIDATA.nb, OIDATA.nw))
+    PDATA.tau_xc = zeros(Complex128, OIDATA.nb, OIDATA.nw)
+    PDATA.tau_pwc = zeros(Complex128, OIDATA.nb, OIDATA.nw)
+    PDATA.tau_xic = zeros(Complex128, OIDATA.nb, OIDATA.nw)
+    PDATA.y_v2 = zeros(Complex128, OIDATA.nb, OIDATA.nw)
+    PDATA.y_phi = zeros(Complex128, OIDATA.nb, OIDATA.nw)
     PDATA.yc, OIDATA.xinit3D = checkinit(OIDATA.xinit3D, OIDATA.nb, OIDATA.nx, OIDATA.nw, PDATA.plan)
     return PDATA,OIDATA
 end

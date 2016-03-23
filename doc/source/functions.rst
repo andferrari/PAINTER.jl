@@ -58,7 +58,7 @@ Auxiliary functions
 
 .. function:: painterfitsexport(filename::ASCIIString,PDATA::PAINTER_Data, OIDATA::PAINTER_Input)
 
-  Saves the relevant information from  ``PDATA`` (ouput data cube and associated criteria, reconstructed complex visibilities,...) and from  ``OIDATA`` (wavelengths, input reconstruction parameters,...) into a FITS file "filename", which possibly includes a full path. The resulting FITS file has three HDUs : "Primary" is the reconstructed image cube, "INFO" contains the reconstruction parameters and criteria, and "VIS" contains the complex visibilities of the reconstruction, with the associated wavelengths and (U,V) points. 
+  Saves the relevant information from  ``PDATA`` (ouput data cube and associated criteria, reconstructed complex visibilities,...) and from  ``OIDATA`` (wavelengths, input reconstruction parameters,...) into a FITS file "filename", which possibly includes a full path. The resulting FITS file has three HDUs : "Primary" is the reconstructed image cube, "INFO" contains the reconstruction parameters and criteria, and "VIS" contains the complex visibilities of the reconstruction, with the associated wavelengths and (U,V) points.
 
   .. code:: julia
 
