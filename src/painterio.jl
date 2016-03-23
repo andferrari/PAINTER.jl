@@ -1,5 +1,5 @@
 ###################################################################################
-# Antony Schutz 2015, ANR - POLCA
+# Antony Schutz 2015, ANR - POLCA - 2016
 ###################################################################################
 ## PAINTER Save and Load utilities
 function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
@@ -10,7 +10,8 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         OIDATA.lambda_spec, "lambda_L1", OIDATA.lambda_L1, "rho_y", OIDATA.rho_y, "rho_spat", OIDATA.rho_spat, "rho_spec",
         OIDATA.rho_spec, "rho_ps", OIDATA.rho_ps, "alpha", OIDATA.alpha, "beta", OIDATA.beta, "eps1", OIDATA.eps1, "eps2",
         OIDATA.eps2, "epsilon", OIDATA.epsilon, "mask3D", OIDATA.mask3D, "xinit3D", OIDATA.xinit3D, "Wvlt", OIDATA.Wvlt, "paral",
-        OIDATA.paral, "T3", OIDATA.T3, "T3err", OIDATA.T3err, "DP", OIDATA.DP, "DPerr", OIDATA.DPerr)#, "PlotFct", OIDATA.PlotFct)
+        OIDATA.paral, "T3", OIDATA.T3, "T3err", OIDATA.T3err, "DP", OIDATA.DP, "DPerr", OIDATA.DPerr,
+        "dptype", OIDATA.dptype , "dpprm", OIDATA.dpprm)
 
     JLD.save(string("PDATA_",savepath),
         "eta", PDATA.eta,"plan", PDATA.plan, "F3D", PDATA.F3D, "H", PDATA.H, "M", PDATA.M, "x", PDATA.x, "vHt",
@@ -20,6 +21,7 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         "yc", PDATA.yc, "y_v2", PDATA.y_v2, "y_phi", PDATA.y_phi, "crit1", PDATA.crit1, "crit2",
         PDATA.crit2, "ind", PDATA.ind, "CountPlot", PDATA.CountPlot, "count", PDATA.count)#, "nbitermax", PDATA.nbitermax)
 end
+
 function painterload(loadpath::ASCIIString)
 # OIDATA
     OIDATA = painterinputinit()
@@ -61,7 +63,8 @@ function painterload(loadpath::ASCIIString)
     OIDATA.xinit3D = tmp["xinit3D"]
     OIDATA.Wvlt = tmp["Wvlt"]
     OIDATA.paral = tmp["paral"]
-
+    OIDATA.dptype = tmp["dptype"]
+    OIDATA.dpprm = tmp["dpprm"]
 # PDATA
     PDATA  = painterdatainit()
     tmp = JLD.load(string("PDATA_",loadpath))
@@ -208,4 +211,3 @@ close(f)
 
 close(f)
 end
-
