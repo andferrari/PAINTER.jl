@@ -15,11 +15,14 @@ Mylambda_spat = 1e-5
 Myrho_spec = 0.5
 Mylambda_spec = 1e-5
 Mynbitermax = 4
+dptype = "sliding"
+dpprm = 5
 
 OIDATA, PDATA, OPTOPT = painter(nbitermax = Mynbitermax, nx = Mynx, lambda_spat = Mylambda_spat,
                             lambda_spec = Mylambda_spec, rho_y = Myrho_y, rho_spat = Myrho_spat,
                             rho_spec = Myrho_spec, rho_ps = Myrho_ps, alpha = Myalpha, beta = Mybeta,
                             eps1 = Myeps1, eps2 = Myeps2, FOV = MyFOV, indwvl = Myindwvl,
+                            dptype = dptype, dpprm = dpprm,
                             ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95),
                             scl = OptimPack.SCALING_OREN_SPEDICATO, gat = 0, grt = 1e-3,
                             vt = false, memsize = 100, mxvl = 1000, mxtr = 1000, stpmn = 1e-20,
