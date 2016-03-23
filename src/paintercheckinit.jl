@@ -443,7 +443,9 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     println("xinit3d     = $xinit3dprint")
     println("Wavelets    = $Wvltprint")
     println("Plot Func   = $PlotFct")
-
+    println("dptype      = $dptype")
+    println("dpprm       = $dpprm")
+    
     OIDATA.PlotFct = PlotFct
     OIDATA.Folder = cpath
     OIDATA.lambda_spat = lambda_spat
