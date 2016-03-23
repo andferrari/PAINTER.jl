@@ -1,5 +1,5 @@
 ###################################################################################
-# Antony Schutz 2015, ANR - POLCA
+# Antony Schutz 2015, ANR - POLCA - 2016
 ###################################################################################
 # REF
 ###################################################################################
@@ -381,6 +381,7 @@ end
 function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
                  lambda_spec = 1/100, lambda_L1 = 0, epsilon = 1e-6,
                  rho_y = 1, rho_spat = 1, rho_spec = 1, rho_ps = 1, alpha = 1,
+                 dptype = "all", dpprm = 0,
                  Wvlt  = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar],
                  beta = 1, eps1 = 1e-6, eps2 = 1e-6, FOV = 4e-2, mask3D = [], xinit3D = [], indfile = [], indwvl = [],
                  ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-4, gtol = 0.9),
@@ -397,7 +398,8 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
 # PAINTER User parameter validation
     OIDATA = painterinit(OIDATA, Folder, nx, lambda_spat, lambda_spec, lambda_L1, 
                          epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, beta,
-                         eps1, eps2, FOV, mask3D, xinit3D, Wvlt, paral, PlotFct)
+                         eps1, eps2, FOV, mask3D, xinit3D, Wvlt, paral, 
+                         dptype, dpprm, PlotFct)
 # OIFITS-FITS Data Read
     println("")
     OIDATA = readoifits(OIDATA, indfile, indwvl)

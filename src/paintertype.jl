@@ -1,5 +1,5 @@
 ###################################################################################
-# Antony Schutz 2015, ANR - POLCA
+# Antony Schutz 2015, ANR - POLCA - 2016
 ###################################################################################
 ## Data Type
 ###################################################################################
@@ -49,6 +49,8 @@ type PAINTER_Input
     T3err::Array{Float64}           # Matrix of phases closure error
     DP::Array{Float64}              # Matrix of Differential phases
     DPerr::Array{Float64}           # Matrix of Differential phases error
+    dptype::ASCIIString             # way to construct diff phases
+    dpprm::Int                      # horizon for sliding dp or index of reference    
 end
 # Structure containing all data which are modified during admm
 # PDATA::PAINTER_Data
@@ -105,7 +107,7 @@ function painterinputinit()
     return PAINTER_Input(painterplotfct, "", [], [], [], [], [], [], []
                          , [], [], [], [], 0., 0., 0., 0., 0., 0., 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
-                         , true, [], [], [], [])
+                         , true, [], [], [], [], "", 0)
 end
 function painterdatainit()
     return PAINTER_Data(0., [], [], speye(0), [], [], [], [], [], [], []

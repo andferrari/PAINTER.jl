@@ -1,5 +1,5 @@
 ###################################################################################
-# Antony Schutz 2015, ANR - POLCA
+# Antony Schutz 2015, ANR - POLCA - 2016
 ###################################################################################
 # OIFITS RELATED - Read files, create quantities of interest
 ###################################################################################
@@ -128,16 +128,20 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
     OIDATA.V = OIDATA.V[:, OIDATA.indwvl]
     OIDATA.P = OIDATA.P[:, OIDATA.indwvl]
     OIDATA.W = OIDATA.W[:, OIDATA.indwvl]
+
     OIDATA.T3 = OIDATA.T3[:, OIDATA.indwvl] * unitconvert
     OIDATA.DP = OIDATA.DP[:, OIDATA.indwvl] * unitconvert
     OIDATA.T3err = OIDATA.T3err[:, OIDATA.indwvl] * unitconvert
     OIDATA.DPerr = OIDATA.DPerr[:, OIDATA.indwvl] * unitconvert
+
     OIDATA.wvl = vec(mean(OIDATA.wvl[:, OIDATA.indwvl], 1))
 # # compute Differential Phases as needed for PAINTER and adjust angle unit
     OIDATA.nb = size(OIDATA.U, 1)
     OIDATA.nw = size(OIDATA.U, 2)
-    OIDATA.DP = diffphi(OIDATA.DP, OIDATA.nb, OIDATA.nw)
-    OIDATA.DPerr = diffphierr(OIDATA.DPerr, OIDATA.nb, OIDATA.nw)
+
+    HDP = phasetophasediff(rand(1, 1), OIDATA.nw, OIDATA.nb, 0, 1, OIDATA.dptype, OIDATA.dpprm)
+    OIDATA.DP = diffphi(OIDATA.DP, HDP)
+    OIDATA.DPerr = diffphierr(OIDATA.DPerr, HDP)
 # # Verification des unites - TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE
 # check for angle unit
 # DPMat    *= pi/180
@@ -193,7 +197,7 @@ end
 # ---------------------------------------------------------------------------------
 # PAINTER used Differential Visibilities, creation from Differential Visibilities
 # ---------------------------------------------------------------------------------
-function diffphi(DiffPhi::Array,nb::Int,nw::Int)
+function diffphi(DiffPhi::Array, HDP::SparseMatrixCSC)
 # DiffPhi: Differential visibilities as given in OIFITS Data
 # DiffPhi is matrix (Nbase*Nwvl)
 # All channels reference are assumed to be equal
@@ -202,17 +206,15 @@ function diffphi(DiffPhi::Array,nb::Int,nw::Int)
 # Dr              = DiffPhi[:,2:end];
 # D               = repmat(D1,1,size(DiffPhi,2)-1);
 # DiffPhiAB       = D - Dr;
-    HDP = phasetophasediff(rand(1, 1), nw, nb, 0, 1)
     DiffPhiAB = HDP * vec(DiffPhi)
 end
 # ---------------------------
 # All channels are assumed to be independent
 # variance of sum of random variables = sum of random variables variance
-function diffphierr(DiffPhierr::Array,nb::Int,nw::Int)
+function diffphierr(DiffPhierr::Array, HDP::SparseMatrixCSC)
 # D1              = DiffPhierr[:,1]
 # Dr              = DiffPhierr[:,2:end]
 # D               = repmat(D1,1,size(DiffPhierr,2)-1)
 # DiffPhiABerr    = D + Dr
-    HDP = phasetophasediff(rand(1, 1), nw, nb, 0, 1)
     DiffPhiABerr = abs(HDP) * vec(DiffPhierr)
 end
