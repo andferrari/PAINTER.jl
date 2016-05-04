@@ -75,7 +75,7 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
         end
 # # # OI VIS
         if isempty(OIFITS.select(master, "OI_VIS"))
-            error("OI_VIS field is missing, PAINTER needs differential visibilities")
+            println("OI_VIS field is missing, PAINTER needs differential visibilities")
         else
 
             for dbvis1 in OIFITS.select(master, "OI_VIS")
