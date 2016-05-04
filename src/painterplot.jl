@@ -22,7 +22,7 @@ function painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     nw = OIDATA.nw
     FOV = OIDATA.FOV
     SubColumn,SubRow = createsubplotindex(nw)
-  println((SubColumn,SubRow))
+
     indpix = linspace(-(FOV / 2), (FOV / 2), nx)
     @printf("stop crit, primal: %e (%e) \t dual %e (%e)\n", crit1[end], eps1, crit2[end], eps2)
 ###################################################################################

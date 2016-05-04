@@ -56,6 +56,7 @@ end
     savepath = "data.jld"
     dptype = "sliding"
     dpprm = 5
+    Folder = ""
 # initialize algorithm and run admm
     OIDATA, PDATA, OPTOPT = painter(nbitermax = nbitermax, nx = nx, lambda_spat = lambda_spat,
                                 lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,
@@ -74,4 +75,4 @@ end
     PDATA, OIDATA = painterload(savepath)
 
 # Warm start of the algorithm
-    OIDATA, PDATA, OPTOPT = painter(OIDATA,PDATA,OPTOPT,11,true, PlotFct = PlotFct)
+    OIDATA, PDATA, OPTOPT = painter(OIDATA,PDATA,OPTOPT,100,true, PlotFct = PlotFct)

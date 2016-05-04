@@ -149,9 +149,6 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
 
     if OIDATA.isDP == 1
         HDP = phasetophasediff(rand(1, 1), OIDATA.nw, OIDATA.nb, 0, 1, OIDATA.dptype, OIDATA.dpprm)
-        println( size( full( HDP )))
-        println( size( full( OIDATA.DP )))
-
         OIDATA.DP = diffphi(OIDATA.DP, HDP)
         OIDATA.DPerr = diffphierr(OIDATA.DPerr, HDP)
         # # Verification des unites - TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE
