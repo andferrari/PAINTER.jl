@@ -16,6 +16,9 @@
 #
 function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
 
+# Check for DP and T3 must be in data at least
+    OIDATA.isDP = 1
+
 # Read Directory
     Folder    = OIDATA.Folder
     CDir      = readdir(Folder)
@@ -76,6 +79,8 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
 # # # OI VIS
         if isempty(OIFITS.select(master, "OI_VIS"))
             println("OI_VIS field is missing, PAINTER needs differential visibilities")
+            println(" --- will try to work only with closure phases ")
+            OIDATA.isDP = 0
         else
 
             for dbvis1 in OIFITS.select(master, "OI_VIS")
@@ -130,26 +135,34 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
     OIDATA.W = OIDATA.W[:, OIDATA.indwvl]
 
     OIDATA.T3 = OIDATA.T3[:, OIDATA.indwvl] * unitconvert
-    OIDATA.DP = OIDATA.DP[:, OIDATA.indwvl] * unitconvert
     OIDATA.T3err = OIDATA.T3err[:, OIDATA.indwvl] * unitconvert
-    OIDATA.DPerr = OIDATA.DPerr[:, OIDATA.indwvl] * unitconvert
+    if OIDATA.DP == 1
+        OIDATA.DP = OIDATA.DP[:, OIDATA.indwvl] * unitconvert
+        OIDATA.DPerr = OIDATA.DPerr[:, OIDATA.indwvl] * unitconvert
+    end
+
 
     OIDATA.wvl = vec(mean(OIDATA.wvl[:, OIDATA.indwvl], 1))
 # # compute Differential Phases as needed for PAINTER and adjust angle unit
     OIDATA.nb = size(OIDATA.U, 1)
     OIDATA.nw = size(OIDATA.U, 2)
 
-    HDP = phasetophasediff(rand(1, 1), OIDATA.nw, OIDATA.nb, 0, 1, OIDATA.dptype, OIDATA.dpprm)
-    OIDATA.DP = diffphi(OIDATA.DP, HDP)
-    OIDATA.DPerr = diffphierr(OIDATA.DPerr, HDP)
-# # Verification des unites - TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE
-# check for angle unit
-# DPMat    *= pi/180
-# T3Mat    *= pi/180
-# K3Mat    *= pi/180
-# KPMat    *= pi/180
-    OIDATA.Xi = vcat(vec(OIDATA.T3), OIDATA.DP)
-    OIDATA.K = vcat(vec(OIDATA.T3err), OIDATA.DPerr)
+    if OIDATA.DP == 1
+        HDP = phasetophasediff(rand(1, 1), OIDATA.nw, OIDATA.nb, 0, 1, OIDATA.dptype, OIDATA.dpprm)
+        OIDATA.DP = diffphi(OIDATA.DP, HDP)
+        OIDATA.DPerr = diffphierr(OIDATA.DPerr, HDP)
+        # # Verification des unites - TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE
+        # check for angle unit
+        # DPMat    *= pi/180
+        # T3Mat    *= pi/180
+        # K3Mat    *= pi/180
+        # KPMat    *= pi/180
+        OIDATA.Xi = vcat(vec(OIDATA.T3), OIDATA.DP)
+        OIDATA.K = vcat(vec(OIDATA.T3err), OIDATA.DPerr)
+    else
+      OIDATA.Xi = vec(OIDATA.T3)
+      OIDATA.K = vec(OIDATA.T3err)
+    end
     return OIDATA
 end
 ###################################################################################
