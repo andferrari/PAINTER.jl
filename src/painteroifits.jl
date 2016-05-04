@@ -136,7 +136,7 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
 
     OIDATA.T3 = OIDATA.T3[:, OIDATA.indwvl] * unitconvert
     OIDATA.T3err = OIDATA.T3err[:, OIDATA.indwvl] * unitconvert
-    if OIDATA.DP == 1
+    if OIDATA.isDP == 1
         OIDATA.DP = OIDATA.DP[:, OIDATA.indwvl] * unitconvert
         OIDATA.DPerr = OIDATA.DPerr[:, OIDATA.indwvl] * unitconvert
     end
@@ -147,8 +147,11 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
     OIDATA.nb = size(OIDATA.U, 1)
     OIDATA.nw = size(OIDATA.U, 2)
 
-    if OIDATA.DP == 1
+    if OIDATA.isDP == 1
         HDP = phasetophasediff(rand(1, 1), OIDATA.nw, OIDATA.nb, 0, 1, OIDATA.dptype, OIDATA.dpprm)
+        println( size( full( HDP )))
+        println( size( full( OIDATA.DP )))
+
         OIDATA.DP = diffphi(OIDATA.DP, HDP)
         OIDATA.DPerr = diffphierr(OIDATA.DPerr, HDP)
         # # Verification des unites - TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE
