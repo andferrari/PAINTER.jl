@@ -445,7 +445,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     println("Plot Func   = $PlotFct")
     println("dptype      = $dptype")
     println("dpprm       = $dpprm")
-    
+
     OIDATA.PlotFct = PlotFct
     OIDATA.Folder = cpath
     OIDATA.lambda_spat = lambda_spat
@@ -487,7 +487,7 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.plan = planarray_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nx, OIDATA.nw)
     PDATA.F3D = nudft3d_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nb, OIDATA.nx, OIDATA.nw)
     PDATA.M  = invmat_par(PDATA.F3D, OIDATA.rho_y, PDATA.eta, OIDATA.nw)
-    PDATA.H = phasetophasediff(OIDATA.Closure_index, OIDATA.nw, OIDATA.nb, 1, 1,OIDATA.dptype, OIDATA.dpprm)
+    PDATA.H = phasetophasediff(OIDATA.Closure_index, OIDATA.nw, OIDATA.nb, 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
 # Array Initialization
     PDATA.x = SharedArray(Float64, (OIDATA.nx, OIDATA.nx, OIDATA.nw))
     PDATA.vHt = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
