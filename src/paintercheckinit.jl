@@ -147,6 +147,11 @@ function checkinit(xinit::Array,nb::Int,nx::Int,nw::Int,plan::Array)
             yc = xinit + im * 0.
         end
 
+    elseif ndims(xinit) == 3
+        if (size(xinit, 1) == nx)&&(size(xinit, 2) == nx)&&(size(xinit, 3) == nw)
+            println("Colored vectorized Initial estimate")
+            yc = inityc(xinit, nb, nx, nw, plan)
+        end
     end
     return yc,xinit
 end
@@ -167,7 +172,7 @@ function mask(nx::Int,side::Int;choice="square")
 
 
     if(choice == "square")
-        side2 = (nx / 2) - side
+        side2 = round(Int, nx / 2) - side
         mask3D = ones(nx, nx)
         mask3D[1:(1 + side2), :] = 0
         mask3D[:, 1:(1 + side2)] = 0
@@ -364,13 +369,14 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
 
     # Check Differential phases matrix parameters
     if typeof(dptype) == ASCIIString
-        if (dptype!="all") && (dptype!="ref") && (dptype!="frame")&& (dptype!="sliding")&& (dptype!="diag")
+        if (dptype!="all") && (dptype!="ref") && (dptype!="frame")&& (dptype!="sliding")&& (dptype!="diag")&& (dptype!="phase")
               println("dptype: all (default), ref, diag, frame, sliding ")
+              println("dptype: can be 'phase' for phases of complexe visibilities")
               println("initialized to default value")
               dptype = "all"
         end
     else
-        error("dptype must be a string: all (default), ref, frame, sliding, diag ")
+        error("dptype must be a string: all (default), ref, frame, sliding, diag, phase ")
     end
 
     if !isinteger(dpprm)

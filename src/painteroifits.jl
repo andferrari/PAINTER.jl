@@ -101,7 +101,7 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
                 U,V  = spatialfrequencies(OIFITS.get_ucoord(dbvis2), OIFITS.get_vcoord(dbvis2), OIFITS.get_eff_wave(dbvis2))
                 U_v21 = vcat(U_v21, OIFITS.get_ucoord(dbvis2)) # for closure index
                 OIDATA.U = vcat(OIDATA.U, U)
-                OIDATA.V = vcat(OIDATA.V, V)
+                OIDATA.V = vcat(OIDATA.V, V)                
                 OIDATA.P = vcat(OIDATA.P, OIFITS.get_vis2data(dbvis2)')
                 OIDATA.W = vcat(OIDATA.W, OIFITS.get_vis2err(dbvis2)')
             end
@@ -163,6 +163,7 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
       OIDATA.Xi = vec(OIDATA.T3)
       OIDATA.K = vec(OIDATA.T3err)
     end
+
     return OIDATA
 end
 ###################################################################################
@@ -219,6 +220,7 @@ function diffphi(DiffPhi::Array, HDP::SparseMatrixCSC)
 # Dr              = DiffPhi[:,2:end];
 # D               = repmat(D1,1,size(DiffPhi,2)-1);
 # DiffPhiAB       = D - Dr;
+
     DiffPhiAB = HDP * vec(DiffPhi)
 end
 # ---------------------------
@@ -229,5 +231,6 @@ function diffphierr(DiffPhierr::Array, HDP::SparseMatrixCSC)
 # Dr              = DiffPhierr[:,2:end]
 # D               = repmat(D1,1,size(DiffPhierr,2)-1)
 # DiffPhiABerr    = D + Dr
+    # DiffPhiABerr = abs(HDP) * vec(DiffPhierr)
     DiffPhiABerr = abs(HDP) * vec(DiffPhierr)
 end

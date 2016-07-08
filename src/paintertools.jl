@@ -100,27 +100,15 @@ end
 #
 # Equation 58-59 of PAINTER
 #
-function proxv2!(y_v2::Array,P::Array,rho_y::Real,alpha::Real,nb::Int,nw::Int)
-    mod_y = abs(y_v2)
-    ang_y = angle(y_v2)
-    tmp1 = rho_y / (4 * alpha)
-    tmp2 = alpha
-    for m in 1:nb,n in 1:nw
-# # without weight
-        sol = max(0., cubicroots(1., 0., tmp1 -P[ind], -tmp1 * mod_y[m,n]))
-        cst = tmp2*(P[ind] - sol.^2).^2 + .5 .* rho_y * (sol - mod_y[m,n] ).^2
-        (a,b) = findmin(cst)
-        mod_y[m,n] = sol[b]
-    end
-    y_v2[:] = mod_y .* exp(im .* ang_y)
-end
 function proxv2!(y_v2::Array,P::Array,W::Array,rho_y::Real,alpha::Real,nb::Int,nw::Int)
     mod_y = abs(y_v2)
     ang_y = angle(y_v2)
     tmp1 = W.*rho_y /(4 * alpha)
     tmp2 = alpha ./ W
     for m in 1:nb, n in 1:nw
-        sol = max(0., cubicroots(1., 0., tmp1[m,n] - P[m,n], -tmp1[m,n] .* mod_y[m,n]))
+        # sol = max(0., paintercubicroots( tmp1[m,n] - P[m,n], -tmp1[m,n] .* mod_y[m,n]))
+        # d = -d
+        sol = max(0., paintercubicroots( tmp1[m,n] - P[m,n], tmp1[m,n] .* mod_y[m,n]))
         cst = tmp2[m,n] .* (P[m,n] - sol.^2).^2 + .5 .* rho_y * (sol - mod_y[m,n] ).^2
         (a,b) = findmin(cst)
         mod_y[m,n] = sol[b]
@@ -129,7 +117,12 @@ function proxv2!(y_v2::Array,P::Array,W::Array,rho_y::Real,alpha::Real,nb::Int,n
 end
 # ---------------------------------------------------------------------------------
 # ----- Cardano's formula
-function cubicroots(a::Real,b::Real,c::Real,d::Real)
+function paintercubicroots(c::Real,d::Real)
+#-----   special  case  in  Painter -----
+# a = 1.
+# b = 0.
+# d = -d
+#-----  -----  -----  -----  -----  -----
 # finds real valued roots of cubic
 # Arguments:
 #     a, b, c, d - coeffecients of cubic defined as
@@ -148,17 +141,17 @@ function realcuberoot(x::Real)
     sign(x) .* abs(x).^(1 / 3)
 end
     # Divide through by a to simplify things
-    b = b / a
-    c = c / a
-    d = d / a
-    bOn3  = b/3.
-    q = (3 .* c - b^2) / 9.
-    r = (9 .* b * c - 27 .* d - 2 * b^3) / 54.
+    q = c / 3.
+
+    # ----- d = -d
+    # r = - d / 2.    
+    r = d / 2.
+
     discriminant = q^3 + r^2
     if discriminant >= 0        # We have 1 real root and 2 imaginary
         s = realcuberoot(r + sqrt(discriminant))
         t = realcuberoot(r - sqrt(discriminant))
-        root = s + t - bOn3     # Just calculate the real root
+        root = s + t     # Just calculate the real root
     else                        # We have 3 real roots
         # In this case (r + sqrt(discriminate)) is complex so the following
         # code constructs the cube root of this complex quantity
@@ -168,12 +161,57 @@ end
         crRhoCosThetaOn3 = cubeRootrho * cos(thetaOn3)
         crRhoSinThetaOn3 = cubeRootrho * sin(thetaOn3)
         root = zeros(3)
-        root[1] = 2 * crRhoCosThetaOn3 - bOn3
-        root[2] = -crRhoCosThetaOn3 - bOn3 - sqrt(3) * crRhoSinThetaOn3
-        root[3] = -crRhoCosThetaOn3 - bOn3 + sqrt(3) * crRhoSinThetaOn3
+        root[1] = 2 * crRhoCosThetaOn3
+        root[2] = -crRhoCosThetaOn3 - sqrt(3) * crRhoSinThetaOn3
+        root[3] = -crRhoCosThetaOn3 + sqrt(3) * crRhoSinThetaOn3
     end
   return root
 end
+# function cubicroots(a::Real,b::Real,c::Real,d::Real)
+# # finds real valued roots of cubic
+# # Arguments:
+# #     a, b, c, d - coeffecients of cubic defined as
+# #                  ax^3 + bx^2 + cx + d = 0
+# # Returns:
+# # root   - an array of 1 or 3 real valued roots
+# # Reference:  mathworld.wolfram.com/CubicFormula.html
+# # Code follows Cardano's formula
+# # Copyright (c) 2008 Peter Kovesi
+# # School of Computer Science & Software Engineering
+# # The University of Western Australia
+# # pk at csse uwa edu au
+# # http://www.csse.uwa.edu.au/
+# # realcuberoot - computes real-valued cube root
+# function realcuberoot(x::Real)
+#     sign(x) .* abs(x).^(1 / 3)
+# end
+#     # Divide through by a to simplify things
+#     b = b / a
+#     c = c / a
+#     d = d / a
+#     bOn3  = b/3.
+#     q = (3 .* c - b^2) / 9.
+#     r = (9 .* b * c - 27 .* d - 2 * b^3) / 54.
+#     discriminant = q^3 + r^2
+#     if discriminant >= 0        # We have 1 real root and 2 imaginary
+#         s = realcuberoot(r + sqrt(discriminant))
+#         t = realcuberoot(r - sqrt(discriminant))
+#         root = s + t - bOn3     # Just calculate the real root
+#     else                        # We have 3 real roots
+#         # In this case (r + sqrt(discriminate)) is complex so the following
+#         # code constructs the cube root of this complex quantity
+#         rho = sqrt(r^2 - discriminant)
+#         cubeRootrho = realcuberoot(rho)    # Cube root of complex magnitude
+#         thetaOn3 = acos(r / rho) / 3       # Complex angle/3
+#         crRhoCosThetaOn3 = cubeRootrho * cos(thetaOn3)
+#         crRhoSinThetaOn3 = cubeRootrho * sin(thetaOn3)
+#         root = zeros(3)
+#         root[1] = 2 * crRhoCosThetaOn3 - bOn3
+#         root[2] = -crRhoCosThetaOn3 - bOn3 - sqrt(3) * crRhoSinThetaOn3
+#         root[3] = -crRhoCosThetaOn3 - bOn3 + sqrt(3) * crRhoSinThetaOn3
+#     end
+#   return root
+# end
 # ---------------------------------------------------------------------------------
 # Proximal operator for phases difference (Section 5.2 PAINTER)
 # ---------------------------------------------------------------------------------
@@ -318,42 +356,46 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
                                       plan, Wvlt, M, paral)
 
 # update of auxiliary variables
-        for n in 1:nw, b in 1:NWvlt
-            PDATA.Hx[:, :, n, b] = dwt(PDATA.x[:, :, n], wavelet(Wvlt[b]))
-        end
-
+        if rho_spat >0
+            for n in 1:nw, b in 1:NWvlt
+                PDATA.Hx[:, :, n, b] = dwt(PDATA.x[:, :, n], wavelet(Wvlt[b]))
+            end
 # update of z
-        PDATA.z = PDATA.Hx + (PDATA.tau_s / rho_spat)
-        PDATA.z = max(1 - ((lambda_spat / rho_spat) ./ abs(PDATA.z)), 0.) .* PDATA.z
-
+            PDATA.z = PDATA.Hx + (PDATA.tau_s / rho_spat)
+            PDATA.z = max(1 - ((lambda_spat / rho_spat) ./ abs(PDATA.z)), 0.) .* PDATA.z
+        end
 # update of v
-        tmp = permutedims(rho_spec * PDATA.r - PDATA.tau_r, [3, 1, 2])
-        for m in 1:nx, n in 1:nx
-            PDATA.Spcdct[m, n, :]= idct(tmp[:, m, n] )
-        end
-        PDATA.v = ( PDATA.Spcdct + (rho_spec * PDATA.x) + PDATA.tau_v) / (2 * rho_spec)
-        vecv = permutedims(PDATA.v, [3, 1, 2])
-        for m in 1:nx, n in 1:nx
-            PDATA.vHt[m, n, :] = dct(vecv[:, m, n] )
-        end
-
+        if rho_spec >0
+            tmp = permutedims(rho_spec * PDATA.r - PDATA.tau_r, [3, 1, 2])
+            for m in 1:nx, n in 1:nx
+                PDATA.Spcdct[m, n, :]= idct(tmp[:, m, n] )
+            end
+            PDATA.v = ( PDATA.Spcdct + (rho_spec * PDATA.x) + PDATA.tau_v) / (2 * rho_spec)
+            vecv = permutedims(PDATA.v, [3, 1, 2])
+            for m in 1:nx, n in 1:nx
+                PDATA.vHt[m, n, :] = dct(vecv[:, m, n] )
+            end
 # update of r
-        PDATA.r = PDATA.vHt + PDATA.tau_r / rho_spec
-        PDATA.r = max(1 - (lambda_spec / rho_spec) ./ abs(PDATA.r), 0) .* PDATA.r
-
+            PDATA.r = PDATA.vHt + PDATA.tau_r / rho_spec
+            PDATA.r = max(1 - (lambda_spec / rho_spec) ./ abs(PDATA.r), 0) .* PDATA.r
+        end
 # update of w
-        u = PDATA.x + PDATA.tau_w ./ rho_ps
-        PDATA.w = max(max(0.0, u) .* mask3D - lambda_L1, 0)
-
+        if rho_ps>0
+            u = PDATA.x + PDATA.tau_w ./ rho_ps
+            PDATA.w = max(max(0.0, u) .* mask3D - lambda_L1, 0)
+            PDATA.tau_w = PDATA.tau_w + rho_ps * (PDATA.x - PDATA.w)
+        end
 # update of Lagrange multipliers
         PDATA.tau_pwc = PDATA.tau_pwc + rho_y * (PDATA.yc - PDATA.y_v2)
         PDATA.tau_xic = PDATA.tau_xic + rho_y * (PDATA.yc - PDATA.y_phi)
         PDATA.tau_xc = PDATA.tau_xc + rho_y * (PDATA.Fx - PDATA.yc)
-        PDATA.tau_s = PDATA.tau_s + rho_spat * (PDATA.Hx - PDATA.z)
-        PDATA.tau_v = PDATA.tau_v + rho_spec * (PDATA.x - PDATA.v)
-        PDATA.tau_w = PDATA.tau_w + rho_ps * (PDATA.x - PDATA.w)
-        PDATA.tau_r = PDATA.tau_r + rho_spec * (PDATA.vHt- PDATA.r)
-
+        if rho_spat >0
+            PDATA.tau_s = PDATA.tau_s + rho_spat * (PDATA.Hx - PDATA.z)
+        end
+        if rho_spec >0
+            PDATA.tau_v = PDATA.tau_v + rho_spec * (PDATA.x - PDATA.v)
+            PDATA.tau_r = PDATA.tau_r + rho_spec * (PDATA.vHt- PDATA.r)
+        end
 # stopping criteria
         n1 = norm(vec(PDATA.x -x_tmp))
         n2 = norm(vec(PDATA.yc-y_tmp))
@@ -366,11 +408,18 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
             PDATA.count += 1
         end
 
+        if (PDATA.ind - 1)==(PDATA.count * PDATA.CountPlot)
+          name=string(OIDATA.Folder,"_",PDATA.ind ,".jld")
+          JLD.save(name,"x",PDATA.x)
+        end
+
         if (PDATA.ind >= nbitermax)||( (n1 < eps1)&&(n2 < eps2) )
             loop = false
         end
 
         @printf("| %02.02f | %02.04e | %02.04e | %04d |\n",toq(), PDATA.crit1[PDATA.ind], PDATA.crit2[PDATA.ind], PDATA.ind)
+
+
 
     end
     return PDATA

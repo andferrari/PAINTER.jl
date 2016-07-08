@@ -70,18 +70,21 @@ function phasetophasediff(Closure_index::Matrix,nw::Integer,nb::Integer,T3::Inte
           # dpprm is the reference channel
           HDP = alldpref(nb, nw, dpprm)
       elseif dptype == "diag"
-          # rank = Nbas*floor( Nwvl - Nwvl/horizon )
-          HDP = diagdp(nb,nw)
+          # rank = Nbas*( Nwvl - 1 )
+          HDP = diagdp(nb, nw)
       elseif dptype == "frame"
           # rank = Nbas*floor( Nwvl - Nwvl/horizon )
           # dpprm is the horizon size of window
-          HDP = framedp(nb,nw,dpprm)
+          HDP = framedp(nb, nw, dpprm)
       elseif dptype == "sliding"
           # rank = Nbas*( Nwvl - 1 )
           # dpprm is the horizon size of window
-          HDP = slidingdp(nb,nw,dpprm)
+          HDP = slidingdp(nb, nw, dpprm)
+      elseif dptype == "phase"
+          # rank = Nbas*Nwvl (full)
+          HDP = nodp(nb, nw)
       else
-          error("wong choice for Differential Phase to Phase Matrix: all (default), frame, ref, diag, sliding")
+          error("wrong choice for Differential Phase to Phase Matrix: all (default), frame, ref, diag, sliding or 'phase' ")
       end
     end
 
@@ -107,6 +110,12 @@ function alldp(nb::Int64,nw::Int64)
     colb = vec(vcat(repmat(collect(1:nb)', 1, (nw-1)),collect((nb + 1):nbnw)'))
     Valueb = repeat(vcat(1,-1), outer=[nb*(nw-1)])
     HDP = sparse(rowb, colb, Valueb, nb * (nw-1), nbnw)
+    return HDP
+end
+# case visphi is phases of complexe visibilities
+function nodp(nb::Int64,nw::Int64)
+    nbnw = (nb * nw)
+    HDP = speye(nbnw)
     return HDP
 end
 # All differential phase, with reference channel defined by lambdaref

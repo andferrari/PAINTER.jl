@@ -12,7 +12,12 @@
 # verb
 function painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     x = PDATA.x
-    w = PDATA.w
+    if sum(PDATA.w)==0
+      w = ones(PDATA.w)
+    else
+      w = PDATA.w
+    end
+
     crit1 = PDATA.crit1
     crit2 = PDATA.crit2
     eps1 = OIDATA.eps1
@@ -30,7 +35,7 @@ function painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 ###################################################################################
     figure(1)
     clf()
-    pos     = int([1, round(nx / 4), round(nx / 2), round(nx * 3 / 4), nx])
+    pos     = round(Int, [1, round(Int, nx / 4), round(Int, nx / 2), round(Int, nx * 3 / 4), nx])
     count_y = 0
     count_x = 0
     for n in 1:nw
@@ -41,12 +46,12 @@ function painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
         xticks([])
         yticks([])
         if( n == (nw + 1 - SubRow + count_x) )
-            xticks([pos - 1], round(indpix[pos] * 100000) / 100)
+            xticks(pos - 1, round(Int, indpix[pos] * 100000) / 100)
             xlabel("FOV (mas)")
             count_x += 1
         end
         if(n == (1 + count_y * SubRow))
-            yticks([pos - 1], round(indpix[pos] * 100000) / 100)
+            yticks(pos - 1, round(Int, indpix[pos] * 100000) / 100)
             ylabel("FOV (mas)")
             count_y += 1
         end
@@ -72,7 +77,7 @@ function painterplotfct(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     title( "Primal and Dual residual")
     legend([plt_1, plt_2, plt_3, plt_4],[label1, label2, label3, label4], loc = "upper right", fancybox = "true")
     grid("on")
-    show()
+    #  show()
 end
 ###################################################################################
 # PLOT TOOLS
@@ -133,8 +138,8 @@ function createsubplotindex(nw::Integer)
         SubRow = 6
     else
         println(" Automatic subplot, can be")
-        SubColumn = round(sqrt(nw))
-        SubRow = ceil( sqrt(nw))
+        SubColumn = round(Int, sqrt(nw))
+        SubRow = round(Int, .5+ sqrt(nw))
     end
     return int(SubColumn), int(SubRow)
 end

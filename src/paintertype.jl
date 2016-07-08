@@ -105,7 +105,7 @@ function optiminit(ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
     return OptOptions(ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
 end
 function painterinputinit()
-    return PAINTER_Input(painterplotfct, "", [], [], [], [], [], [], []
+    return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
                          , [], [], [], [], 0., 0., 0., 0., 0., 0., 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
                          , true, [], [], [], [], 0, "", 0)
