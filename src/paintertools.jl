@@ -144,7 +144,7 @@ end
     q = c / 3.
 
     # ----- d = -d
-    # r = - d / 2.    
+    # r = - d / 2.
     r = d / 2.
 
     discriminant = q^3 + r^2
@@ -215,7 +215,7 @@ end
 # ---------------------------------------------------------------------------------
 # Proximal operator for phases difference (Section 5.2 PAINTER)
 # ---------------------------------------------------------------------------------
-function proxphase!(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real,nb::Int,nw::Int,H::SparseMatrixCSC,OPTOPT::OptOptions)
+function proxphase(MAP)
 # estimate the complexe visibilities from the phases differences
 # y_phi: vector of auxiliary variable \tilde{y} (last estimate of complexe visibility) is upadted
 # Xi vector of observed Phases Difference [ {Nwvl*(Nb-1)*(Nb-2)/2 + Nb*(Nwvl-1)} *{1}]
@@ -227,6 +227,16 @@ function proxphase!(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real,nb
 # nw is the number of wavelength
 # H: Phases difference to Phases matrix (function Ph2PhDiff)
 # OPTOPT: structure of OptimPack vmlm option, see optimpack
+    y_phi = MAP[1]
+    Xi    = MAP[2]
+    K     = MAP[3]
+    rho_y = MAP[4]
+    beta  = MAP[5]
+    nb    = MAP[6]
+    nw    = MAP[7]
+    H     = MAP[8]
+    # OPTOPT= MAP[9]
+
     y_t = vec(y_phi)
     gam_t = abs(y_t)
     phi_t = angle(y_t)
@@ -235,9 +245,86 @@ function proxphase!(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real,nb
         return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
     end
 
-    phi = OptimPack.vmlm(cost!, phi_0, OPTOPT.memsize, verb = OPTOPT.vt, scaling = OPTOPT.scl
-                         , grtol = OPTOPT.grt, gatol=OPTOPT.gat, lnsrch=OPTOPT.ls, maxeval=OPTOPT.mxvl
-                         , maxiter=OPTOPT.mxtr, stpmin=OPTOPT.stpmn, stpmax=OPTOPT.stpmx)
+    ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95)
+    scl = OptimPack.SCALING_OREN_SPEDICATO
+    gat = 0
+    grt = 1e-3
+    vt = false
+    memsize = 100
+    mxvl = 1000
+    mxtr = 1000
+    stpmn = 1e-20
+    stpmx = 1e+20
+
+
+    phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt, scaling = scl
+                         , grtol = grt, gatol=gat, lnsrch=ls, maxeval=mxvl
+                         , maxiter=mxtr, stpmin=stpmn, stpmax=stpmx)
+    # phi = OptimPack.vmlm(cost!, phi_0, OPTOPT.memsize, verb = OPTOPT.vt, scaling = OPTOPT.scl
+    #                      , grtol = OPTOPT.grt, gatol=OPTOPT.gat, lnsrch=OPTOPT.ls, maxeval=OPTOPT.mxvl
+    #                      , maxiter=OPTOPT.mxtr, stpmin=OPTOPT.stpmn, stpmax=OPTOPT.stpmx)
+
+    if phi!=nothing
+        Ek = phi_t - phi
+        gam = max(0.0, gam_t .* cos(Ek))
+        y_phi = reshape(gam .* exp(im * phi), nb, nw)
+    else
+        y_phi = reshape(gam_t .* exp(im * phi_t), nb, nw)
+    end
+    return y_phi
+end
+
+# function proxphase(MAP)
+function proxphase!(y_phi::SharedArray{Complex{Float64},2},Xi::Vector,K::Vector,rho_y::Real,beta::Real,nb::Int,nw::Int,H::SparseMatrixCSC) #,OPTOPT::OptOptions)
+# function proxphase(y_phi::SharedArray{Float64,2},Xi::Vector,K::Vector,rho_y::Real,beta::Real,nb::Int,nw::Int,H::SparseMatrixCSC) #,OPTOPT::OptOptions)
+
+# estimate the complexe visibilities from the phases differences
+# y_phi: vector of auxiliary variable \tilde{y} (last estimate of complexe visibility) is upadted
+# Xi vector of observed Phases Difference [ {Nwvl*(Nb-1)*(Nb-2)/2 + Nb*(Nwvl-1)} *{1}]
+# K the variance of phases must be corrected using Von Mises Ditribution (function EstKapVM)
+# rho_y: Admm parameter (scalar>0)
+# beta: relative weight compared to phases difference: (scalar>0)
+# (Global Cost) = alpha * (cost of V2) + Beta * (Cost of Phases diffrence)
+# nb is the number of base
+# nw is the number of wavelength
+# H: Phases difference to Phases matrix (function Ph2PhDiff)
+# OPTOPT: structure of OptimPack vmlm option, see optimpack
+    # y_phi = MAP[1]
+    # Xi    = MAP[2]
+    # K     = MAP[3]
+    # rho_y = MAP[4]
+    # beta  = MAP[5]
+    # nb    = MAP[6]
+    # nw    = MAP[7]
+    # H     = MAP[8]
+    # OPTOPT= MAP[9]
+
+    y_t = vec(y_phi)
+    gam_t = abs(y_t)
+    phi_t = angle(y_t)
+    phi_0 = angle(y_t)
+    function cost!{T<:Real}(x_phi::Array{T,1}, g_phi::Array{T,1})
+        return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
+    end
+
+    ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95)
+    scl = OptimPack.SCALING_OREN_SPEDICATO
+    gat = 0
+    grt = 1e-3
+    vt = false
+    memsize = 100
+    mxvl = 1000
+    mxtr = 1000
+    stpmn = 1e-20
+    stpmx = 1e+20
+
+
+    phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt, scaling = scl
+                         , grtol = grt, gatol=gat, lnsrch=ls, maxeval=mxvl
+                         , maxiter=mxtr, stpmin=stpmn, stpmax=stpmx)
+    # phi = OptimPack.vmlm(cost!, phi_0, OPTOPT.memsize, verb = OPTOPT.vt, scaling = OPTOPT.scl
+    #                      , grtol = OPTOPT.grt, gatol=OPTOPT.gat, lnsrch=OPTOPT.ls, maxeval=OPTOPT.mxvl
+    #                      , maxiter=OPTOPT.mxtr, stpmin=OPTOPT.stpmn, stpmax=OPTOPT.stpmx)
 
     if phi!=nothing
         Ek = phi_t - phi
@@ -269,6 +356,7 @@ function costgradphi!(x_phi::Vector,g_phi::Vector,gam_t::Vector,phi_t::Vector,y_
     f = ((beta * w1) + (rho_y * w2)) / 2
     return f
 end
+
 ###################################################################################
 # MAIN ADMM LOOP
 ###################################################################################
@@ -305,9 +393,31 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
     const eta = PDATA.eta
     const plan = PDATA.plan
     const F3D = PDATA.F3D
-    const H = PDATA.H
+    # const H = PDATA.H
     const M = PDATA.M
     const NWvlt = length(Wvlt)
+# ----------------------------------
+# Second Init - search for independent T3
+Closure_index = OIDATA.Closure_index
+Cluster = independentT3(Closure_index)
+baseNb = basesincluster(Cluster)
+orderedCluster = makeclusterordered(Cluster,baseNb)
+rowt3 = t3row(Closure_index,Cluster)
+Nt3indep = length(baseNb)
+Hred = Dict{}()
+Xi = Dict{}()
+K = Dict{}()
+H = Dict{}()
+for n in 1:Nt3indep
+ H[n] = phasetophasediff(orderedCluster[n], OIDATA.nw, length(baseNb[n]), 1, 1, OIDATA.dptype, OIDATA.dpprm)
+ HDP = phasetophasediff(orderedCluster[n], OIDATA.nw, length(baseNb[n]), 0, 1, OIDATA.dptype, OIDATA.dpprm)
+ T3 = OIDATA.T3[rowt3[n],:]
+ T3err = OIDATA.T3err[rowt3[n],:]
+ DP = OIDATA.DPMAT[baseNb[n],:]
+ DPerr = OIDATA.DPerrMAT[baseNb[n],:]
+ Xi[n] = vcat(vec(T3),HDP*vec(DP)  )
+ K[n] = vcat(vec(T3err),abs(HDP)*vec(DPerr)  )
+end
 # ----------------------------------
 # Check if Pyplot is used to graphics
     if aff
@@ -343,7 +453,35 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
 
 # update of yc from phases difference
         PDATA.y_phi = PDATA.yc + PDATA.tau_xic / rho_y
-        proxphase!(PDATA.y_phi, Xi, K, rho_y, beta, nb, nw, H, OPTOPT)
+        # PDATA.y_phi = PDATA.yc + PDATA.tau_xic / rho_y
+        # split yphi in Dictionnay
+        # MAP = [(PDATA.y_phi[baseNb[n],:], Xi[n], K[n], rho_y, beta, length( baseNb[n] ), nw, H[n], OPTOPT ) for n in 1:Nt3indep ]
+        # yphidict = pmap(proxphase,MAP)
+        # println(yphidict)
+        # [(PDATA.y_phi[baseNb[n],:] = reshape( yphidict[n],length(baseNb[n]),nw )) for n in 1:Nt3indep ]
+
+        # if paral
+a = copy( PDATA.y_phi )
+          println("paral")
+          MAP = [(PDATA.y_phi[baseNb[n],:], Xi[n], K[n], rho_y, beta, length( baseNb[n] ), nw, H[n] ) for n in 1:Nt3indep ]
+          yphidict = map(proxphase,MAP)
+          # [(PDATA.y_phi[baseNb[n],:] = reshape( yphidict[n],length(baseNb[n]),nw )) for n in 1:Nt3indep ]
+          for n in 1:Nt3indep
+              PDATA.y_phi[baseNb[n],:] = yphidict[n]
+          end
+println(sum(abs2( a - PDATA.y_phi )))
+
+            # @sync @parallel for n in 1:Nt3indep
+            # tmp = SharedArray(Float64, length( baseNb[n] ) )
+            # tmp
+            #     proxphase!(PDATA.y_phi[baseNb[n],:], Xi[n], K[n], rho_y, beta, length( baseNb[n] ), nw, H[n]) # , OPTOPT )
+            # end
+        # else
+        #   println("no paral")
+        #     for n in 1:Nt3indep
+        #         proxphase!(PDATA.y_phi[baseNb[n],:], Xi[n], K[n], rho_y, beta, length( baseNb[n] ), nw, H[n]) # , OPTOPT )
+        #     end
+        # end
 
 # Consensus
         y_tmp = copy(PDATA.yc)
@@ -424,6 +562,104 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
     end
     return PDATA
 end
+
+# ---------------------------------------------------------------------------------
+# INDEPENDENT Phases Closures from index -- to put in PAINTEROIFITS.JL
+# ---------------------------------------------------------------------------------
+function independentT3(Closure_index::Matrix)
+    Cluster = Dict{}()
+    Index = collect(1:size(Closure_index,1))
+    m=0
+    while sum(Index)>0
+        m+=1
+        idxinit = find(Index.>0)[1]
+        Cluster[m] = Closure_index[Index[idxinit],:]
+        Index[idxinit] = 0
+        nn = 0
+        while true
+            nn+=1
+            init = vec(Cluster[m][nn,:])
+            Cluster[m], Index = searchfromclusterinlist(Cluster[m],init,Index,Closure_index)
+            l = size(Cluster[m],1)
+            if  nn==l
+                break
+            end
+
+          end
+      end
+    return Cluster
+end
+
+
+function searchfromclusterinlist(Cluster::Matrix,init::Vector,Index::Vector,Closure_index::Matrix)
+    for n in Index
+      if n>0
+        if( !isempty( find( init[1] .== Closure_index[n,:] ) )
+          ||!isempty( find( init[2] .== Closure_index[n,:] ) )
+          ||!isempty( find( init[3] .== Closure_index[n,:] ) ) )
+            Cluster = vcat( Cluster , Closure_index[n,:] )
+            Index[n] = 0
+        end
+      end
+    end
+    return Cluster, Index
+end
+
+# ---------------------------------------------------------------------------------
+# Number of bases in each cluster - tools to create smaller T3 and DP Matrices
+# ---------------------------------------------------------------------------------
+function basesincluster(Cluster::Dict)
+    Nc = length(Cluster)
+    basenb = Dict{}()
+    for n in 1:Nc
+        vecclust = sort( vec( Cluster[n] ) )
+        indpos = vcat(1, diff( vecclust ).>0)
+        basenb[n] = round(Int, vecclust[ (vecclust.*indpos).>0 ])
+    end
+    return basenb
+end
+# ---------------------------------------------------------------------------------
+# Sort bases in Cluster from 1 to Nb base in Cluster
+# ---------------------------------------------------------------------------------
+function makeclusterordered(Cluster::Dict,baseNb::Dict)
+  Nc = length(Cluster)
+  theorderedcluster = Dict{}()
+  for n in 1:Nc
+      thecluster = Cluster[n]
+      baseinthecluster = baseNb[n]
+      numberofindependentbaseinthecluster = length(baseinthecluster)
+      nt3 = size(thecluster,1)
+      orderedbaseinthecluster = collect(1:numberofindependentbaseinthecluster)
+      thevectorizedcluster = vec(thecluster)
+      theorderedvectorizedcluster = zeros(thevectorizedcluster)
+      for m in 1:numberofindependentbaseinthecluster
+          cond = find( thevectorizedcluster .==  baseinthecluster[m])
+          theorderedvectorizedcluster[cond] = orderedbaseinthecluster[m]
+        end
+      theorderedcluster[n] = reshape(theorderedvectorizedcluster,nt3,3)
+  end
+  return theorderedcluster
+end
+
+# ---------------------------------------------------------------------------------
+# T3 rows related to H
+# ---------------------------------------------------------------------------------
+function t3row(Closure_index::Matrix,Cluster::Dict)
+  Nc = length(Cluster)
+  rowt3 = Dict{}()
+  for n in 1:Nc
+      thecluster = Cluster[n]
+      lc = size(thecluster,1)
+      rowt3[n] = zeros(lc)
+      for m in 1:lc
+          rowt3[n][m] = find( prod(Closure_index .== thecluster[m,:],2))[1]
+      end
+      rowt3[n] = round(Int,rowt3[n])
+  end
+  return rowt3
+end
+
+
 ###################################################################################
 # PAINTER MAIN FUNCTION
 ###################################################################################

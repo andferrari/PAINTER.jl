@@ -101,7 +101,7 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
                 U,V  = spatialfrequencies(OIFITS.get_ucoord(dbvis2), OIFITS.get_vcoord(dbvis2), OIFITS.get_eff_wave(dbvis2))
                 U_v21 = vcat(U_v21, OIFITS.get_ucoord(dbvis2)) # for closure index
                 OIDATA.U = vcat(OIDATA.U, U)
-                OIDATA.V = vcat(OIDATA.V, V)                
+                OIDATA.V = vcat(OIDATA.V, V)
                 OIDATA.P = vcat(OIDATA.P, OIFITS.get_vis2data(dbvis2)')
                 OIDATA.W = vcat(OIDATA.W, OIFITS.get_vis2err(dbvis2)')
             end
@@ -146,6 +146,9 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
 # # compute Differential Phases as needed for PAINTER and adjust angle unit
     OIDATA.nb = size(OIDATA.U, 1)
     OIDATA.nw = size(OIDATA.U, 2)
+
+    OIDATA.DPMAT = OIDATA.DP
+    OIDATA.DPerrMAT = OIDATA.DPerr
 
     if OIDATA.isDP == 1
         HDP = phasetophasediff(rand(1, 1), OIDATA.nw, OIDATA.nb, 0, 1, OIDATA.dptype, OIDATA.dpprm)

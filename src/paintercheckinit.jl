@@ -493,7 +493,7 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.plan = planarray_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nx, OIDATA.nw)
     PDATA.F3D = nudft3d_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nb, OIDATA.nx, OIDATA.nw)
     PDATA.M  = invmat_par(PDATA.F3D, OIDATA.rho_y, PDATA.eta, OIDATA.nw)
-    PDATA.H = phasetophasediff(OIDATA.Closure_index, OIDATA.nw, OIDATA.nb, 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
+    # PDATA.H = phasetophasediff(OIDATA.Closure_index, OIDATA.nw, OIDATA.nb, 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
 # Array Initialization
     PDATA.x = SharedArray(Float64, (OIDATA.nx, OIDATA.nx, OIDATA.nw))
     PDATA.vHt = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
@@ -512,7 +512,7 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.tau_pwc = zeros(Complex128, OIDATA.nb, OIDATA.nw)
     PDATA.tau_xic = zeros(Complex128, OIDATA.nb, OIDATA.nw)
     PDATA.y_v2 = zeros(Complex128, OIDATA.nb, OIDATA.nw)
-    PDATA.y_phi = zeros(Complex128, OIDATA.nb, OIDATA.nw)
+    PDATA.y_phi = SharedArray(Complex128, OIDATA.nb, OIDATA.nw)
     PDATA.yc, OIDATA.xinit3D = checkinit(OIDATA.xinit3D, OIDATA.nb, OIDATA.nx, OIDATA.nw, PDATA.plan)
     return PDATA,OIDATA
 end

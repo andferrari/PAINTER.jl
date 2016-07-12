@@ -24,6 +24,8 @@ type PAINTER_Input
     W::Array{Float64}               # Matrix of V2err
     Xi::Array{Float64}              # Vector of phases difference
     K::Array{Float64}               # Vector of phases difference error
+    # Xi::Dict                        # Vector of phases difference
+    # K::Dict                         # Vector of phases difference error
     Closure_index::Array{Int}       # index of phases closure
     nb::Int                         # number of bases (spatiale frequencies per wavelength)
     nw::Int                         # number of wavelength
@@ -49,6 +51,8 @@ type PAINTER_Input
     T3err::Array{Float64}           # Matrix of phases closure error
     DP::Array{Float64}              # Matrix of Differential phases
     DPerr::Array{Float64}           # Matrix of Differential phases error
+    DPMAT::Array{Float64}              # Matrix of Differential phases
+    DPerrMAT::Array{Float64}           # Matrix of Differential phases error
     isDP::Int                       # To know if there is DP in data
     dptype::ASCIIString             # way to construct diff phases
     dpprm::Int                      # horizon for sliding dp or index of reference
@@ -59,7 +63,8 @@ type PAINTER_Data
     eta::Real
     plan::Array
     F3D::Array
-    H::SparseMatrixCSC
+    # H::SparseMatrixCSC
+    H::Dict
     M::Array
     x::SharedArray{Float64}
     vHt::Array
@@ -79,7 +84,8 @@ type PAINTER_Data
     tau_xic::Array
     yc::Array
     y_v2::Array
-    y_phi::Array
+    # y_phi::Array
+    y_phi::SharedArray{Complex{Float64}}
     crit1::Array
     crit2::Array
     ind::Int
@@ -105,13 +111,20 @@ function optiminit(ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
     return OptOptions(ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
 end
 function painterinputinit()
+  # return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
+  #                      , [], Dict{}(), Dict{}(), [], 0., 0., 0., 0., 0., 0., 0., 0.
+  #                      , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
+  #                      , true, [], [], [], [], [], [], 0, "", 0)
     return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
                          , [], [], [], [], 0., 0., 0., 0., 0., 0., 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
-                         , true, [], [], [], [], 0, "", 0)
+                         , true, [], [], [], [], [], [], 0, "", 0)
 end
 function painterdatainit()
-    return PAINTER_Data(0., [], [], speye(0), [], [], [], [], [], [], []
-                        , [], [], [], [], [], [], [], [], [], [], [], []
-                        , [], Float64[], Float64[], 0, 0, 0)
+  return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], [], []
+                      , [], [], [], [], [], [], [], [], [], [], [], []
+                      , [], Float64[], Float64[], 0, 0, 0)
+    # return PAINTER_Data(0., [], [], speye(0), [], [], [], [], [], [], []
+    #                     , [], [], [], [], [], [], [], [], [], [], [], []
+    #                     , [], Float64[], Float64[], 0, 0, 0)
 end

@@ -62,7 +62,7 @@ end
                                 lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,
                                 rho_spec = rho_spec, rho_ps = rho_ps, alpha = alpha, beta = beta,
                                 eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl,
-                                ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95),
+                                ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-6, gtol = 0.95),
                                 scl = OptimPack.SCALING_OREN_SPEDICATO, gat = 0, grt = 1e-3,
                                 vt = false, memsize = 100, mxvl = 1000, mxtr = 1000, stpmn = 1e-20,
                                 stpmx = 1e+20, PlotFct = PlotFct, aff = aff, paral = paral,

@@ -10,7 +10,7 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         OIDATA.lambda_spec, "lambda_L1", OIDATA.lambda_L1, "rho_y", OIDATA.rho_y, "rho_spat", OIDATA.rho_spat, "rho_spec",
         OIDATA.rho_spec, "rho_ps", OIDATA.rho_ps, "alpha", OIDATA.alpha, "beta", OIDATA.beta, "eps1", OIDATA.eps1, "eps2",
         OIDATA.eps2, "epsilon", OIDATA.epsilon, "mask3D", OIDATA.mask3D, "xinit3D", OIDATA.xinit3D, "Wvlt", OIDATA.Wvlt, "paral",
-        OIDATA.paral, "T3", OIDATA.T3, "T3err", OIDATA.T3err, "DP", OIDATA.DP, "DPerr", OIDATA.DPerr,
+        OIDATA.paral, "T3", OIDATA.T3, "T3err", OIDATA.T3err, "DP", OIDATA.DP, "DPerr", OIDATA.DPerr,"DPMAT", OIDATA.DPMAT, "DPerrMAT", OIDATA.DPerrMAT,
         "dptype", OIDATA.dptype , "dpprm", OIDATA.dpprm)
 
     JLD.save(string("PDATA_",savepath),
@@ -29,8 +29,10 @@ function painterload(loadpath::ASCIIString)
 #    OIDATA.PlotFct = tmp["PlotFct"]
     OIDATA.T3 = tmp["T3"]
     OIDATA.DP = tmp["DP"]
+    OIDATA.DPMAT = tmp["DPMAT"]
     OIDATA.T3err = tmp["T3err"]
     OIDATA.DPerr = tmp["DPerr"]
+    OIDATA.DPerrMAT = tmp["DPerrMAT"]    
     OIDATA.Folder = tmp["Folder"]
     OIDATA.FilesName = tmp["FilesName"]
     OIDATA.indfile = tmp["indfile"]
