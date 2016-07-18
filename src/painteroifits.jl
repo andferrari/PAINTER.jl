@@ -125,7 +125,7 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
         end
     end
 
-## FINAL OUTPUT
+## FINAL OUTPUT - Wavelength reduction
     unitconvert = pi / 180
     OIDATA.FilesName = CDir
     OIDATA.indfile = indfile
@@ -140,34 +140,47 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
         OIDATA.DP = OIDATA.DP[:, OIDATA.indwvl] * unitconvert
         OIDATA.DPerr = OIDATA.DPerr[:, OIDATA.indwvl] * unitconvert
     end
-
-
     OIDATA.wvl = vec(mean(OIDATA.wvl[:, OIDATA.indwvl], 1))
 # # compute Differential Phases as needed for PAINTER and adjust angle unit
     OIDATA.nb = size(OIDATA.U, 1)
     OIDATA.nw = size(OIDATA.U, 2)
 
-    OIDATA.DPMAT = OIDATA.DP
-    OIDATA.DPerrMAT = OIDATA.DPerr
-
-    if OIDATA.isDP == 1
-        HDP = phasetophasediff(rand(1, 1), OIDATA.nw, OIDATA.nb, 0, 1, OIDATA.dptype, OIDATA.dpprm)
-        OIDATA.DP = diffphi(OIDATA.DP, HDP)
-        OIDATA.DPerr = diffphierr(OIDATA.DPerr, HDP)
-        # # Verification des unites - TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE -- TO BE DONE
-        # check for angle unit
-        # DPMat    *= pi/180
-        # T3Mat    *= pi/180
-        # K3Mat    *= pi/180
-        # KPMat    *= pi/180
-        OIDATA.Xi = vcat(vec(OIDATA.T3), OIDATA.DP)
-        OIDATA.K = vcat(vec(OIDATA.T3err), OIDATA.DPerr)
-    else
-      OIDATA.Xi = vec(OIDATA.T3)
-      OIDATA.K = vec(OIDATA.T3err)
-    end
+# # Create cluster of independent CLosure Phases and associated
+    OIDATA = independentT3data(OIDATA)
+    println("Independent T3phi: ", length(OIDATA.baseNb), " Independent clusters found")
 
     return OIDATA
+end
+
+function independentT3data(OIDATA::PAINTER_Input)
+  Closure_index = OIDATA.Closure_index
+  Cluster = independentT3(Closure_index)
+  baseNb = basesincluster(Cluster)
+  orderedCluster = makeclusterordered(Cluster,baseNb)
+  rowt3 = t3row(Closure_index,Cluster)
+  Nt3indep = length(baseNb)
+  Xi = Dict{}()
+  K = Dict{}()
+  H = Dict{}()
+  for n in 1:Nt3indep
+      HDP = phasetophasediff(orderedCluster[n], OIDATA.nw, length(baseNb[n]), 0, 1, OIDATA.dptype, OIDATA.dpprm)
+      T3 = OIDATA.T3[rowt3[n],:]
+      T3err = OIDATA.T3err[rowt3[n],:]
+      if OIDATA.isDP == 1
+          DP = OIDATA.DP[baseNb[n],:]
+          DPerr = OIDATA.DPerr[baseNb[n],:]
+          Xi[n] = vcat(vec(T3),HDP*vec(DP)  )
+          K[n] = vcat(vec(T3err),abs(HDP)*vec(DPerr)  )
+      else
+          Xi[n] = vec(T3)
+          K[n] = vec(T3err)
+      end
+  end
+  OIDATA.Xi = Xi
+  OIDATA.K = K
+  OIDATA.baseNb = baseNb
+  OIDATA.orderedCluster= orderedCluster
+  return OIDATA
 end
 ###################################################################################
 # FUNCTIONS FOR OIFITS DATA TRANSFORMATION
@@ -236,4 +249,95 @@ function diffphierr(DiffPhierr::Array, HDP::SparseMatrixCSC)
 # DiffPhiABerr    = D + Dr
     # DiffPhiABerr = abs(HDP) * vec(DiffPhierr)
     DiffPhiABerr = abs(HDP) * vec(DiffPhierr)
+end
+# ---------------------------------------------------------------------------------
+# INDEPENDENT Phases Closures from index -- to put in PAINTEROIFITS.JL
+# ---------------------------------------------------------------------------------
+function independentT3(Closure_index::Matrix)
+    Cluster = Dict{}()
+    Index = collect(1:size(Closure_index,1))
+    m=0
+    while sum(Index)>0
+        m+=1
+        idxinit = find(Index.>0)[1]
+        Cluster[m] = Closure_index[Index[idxinit],:]
+        Index[idxinit] = 0
+        nn = 0
+        while true
+            nn+=1
+            init = vec(Cluster[m][nn,:])
+            Cluster[m], Index = searchfromclusterinlist(Cluster[m],init,Index,Closure_index)
+            l = size(Cluster[m],1)
+            if  nn==l
+                break
+            end
+
+          end
+      end
+    return Cluster
+end
+function searchfromclusterinlist(Cluster::Matrix,init::Vector,Index::Vector,Closure_index::Matrix)
+    for n in Index
+      if n>0
+        if( !isempty( find( init[1] .== Closure_index[n,:] ) )
+          ||!isempty( find( init[2] .== Closure_index[n,:] ) )
+          ||!isempty( find( init[3] .== Closure_index[n,:] ) ) )
+            Cluster = vcat( Cluster , Closure_index[n,:] )
+            Index[n] = 0
+        end
+      end
+    end
+    return Cluster, Index
+end
+# ---------------------------------------------------------------------------------
+# Number of bases in each cluster - tools to create smaller T3 and DP Matrices
+# ---------------------------------------------------------------------------------
+function basesincluster(Cluster::Dict)
+    Nc = length(Cluster)
+    basenb = Dict{}()
+    for n in 1:Nc
+        vecclust = sort( vec( Cluster[n] ) )
+        indpos = vcat(1, diff( vecclust ).>0)
+        basenb[n] = round(Int, vecclust[ (vecclust.*indpos).>0 ])
+    end
+    return basenb
+end
+# ---------------------------------------------------------------------------------
+# Sort bases in Cluster from 1 to Nb base in Cluster
+# ---------------------------------------------------------------------------------
+function makeclusterordered(Cluster::Dict,baseNb::Dict)
+  Nc = length(Cluster)
+  theorderedcluster = Dict{}()
+  for n in 1:Nc
+      thecluster = Cluster[n]
+      baseinthecluster = baseNb[n]
+      numberofindependentbaseinthecluster = length(baseinthecluster)
+      nt3 = size(thecluster,1)
+      orderedbaseinthecluster = collect(1:numberofindependentbaseinthecluster)
+      thevectorizedcluster = vec(thecluster)
+      theorderedvectorizedcluster = zeros(thevectorizedcluster)
+      for m in 1:numberofindependentbaseinthecluster
+          cond = find( thevectorizedcluster .==  baseinthecluster[m])
+          theorderedvectorizedcluster[cond] = orderedbaseinthecluster[m]
+        end
+      theorderedcluster[n] = reshape(theorderedvectorizedcluster,nt3,3)
+  end
+  return theorderedcluster
+end
+# ---------------------------------------------------------------------------------
+# T3 rows related to H
+# ---------------------------------------------------------------------------------
+function t3row(Closure_index::Matrix,Cluster::Dict)
+  Nc = length(Cluster)
+  rowt3 = Dict{}()
+  for n in 1:Nc
+      thecluster = Cluster[n]
+      lc = size(thecluster,1)
+      rowt3[n] = zeros(lc)
+      for m in 1:lc
+          rowt3[n][m] = find( prod(Closure_index .== thecluster[m,:],2))[1]
+      end
+      rowt3[n] = round(Int,rowt3[n])
+  end
+  return rowt3
 end

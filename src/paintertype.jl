@@ -22,10 +22,10 @@ type PAINTER_Input
     V::Array{Float64}               # V spatial frequencies
     P::Array{Float64}               # Matrix of V2
     W::Array{Float64}               # Matrix of V2err
-    Xi::Array{Float64}              # Vector of phases difference
-    K::Array{Float64}               # Vector of phases difference error
-    # Xi::Dict                        # Vector of phases difference
-    # K::Dict                         # Vector of phases difference error
+    # Xi::Array{Float64}              # Vector of phases difference
+    # K::Array{Float64}               # Vector of phases difference error
+    Xi::Dict                        # Dictionary of Vector of phases difference
+    K::Dict                         # Dictionary of Vector of phases difference error
     Closure_index::Array{Int}       # index of phases closure
     nb::Int                         # number of bases (spatiale frequencies per wavelength)
     nw::Int                         # number of wavelength
@@ -51,11 +51,11 @@ type PAINTER_Input
     T3err::Array{Float64}           # Matrix of phases closure error
     DP::Array{Float64}              # Matrix of Differential phases
     DPerr::Array{Float64}           # Matrix of Differential phases error
-    DPMAT::Array{Float64}              # Matrix of Differential phases
-    DPerrMAT::Array{Float64}           # Matrix of Differential phases error
     isDP::Int                       # To know if there is DP in data
     dptype::ASCIIString             # way to construct diff phases
     dpprm::Int                      # horizon for sliding dp or index of reference
+    baseNb::Dict
+    orderedCluster::Dict
 end
 # Structure containing all data which are modified during admm
 # PDATA::PAINTER_Data
@@ -63,10 +63,9 @@ type PAINTER_Data
     eta::Real
     plan::Array
     F3D::Array
-    # H::SparseMatrixCSC
     H::Dict
     M::Array
-    x::SharedArray{Float64}
+    x::Array
     vHt::Array
     z::Array
     Hx::Array
@@ -78,14 +77,13 @@ type PAINTER_Data
     tau_v::Array
     tau_r::Array
     Spcdct::Array
-    Fx::SharedArray{Complex{Float64}}
+    Fx::Array
     tau_xc::Array
     tau_pwc::Array
     tau_xic::Array
     yc::Array
     y_v2::Array
-    # y_phi::Array
-    y_phi::SharedArray{Complex{Float64}}
+    y_phi::Array
     crit1::Array
     crit2::Array
     ind::Int
@@ -116,9 +114,9 @@ function painterinputinit()
   #                      , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
   #                      , true, [], [], [], [], [], [], 0, "", 0)
     return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
-                         , [], [], [], [], 0., 0., 0., 0., 0., 0., 0., 0.
+                         , [], Dict{}(), Dict{}(), [], 0., 0., 0., 0., 0., 0., 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
-                         , true, [], [], [], [], [], [], 0, "", 0)
+                         , true, [], [], [], [], 0, "", 0, Dict{}(), Dict{}())
 end
 function painterdatainit()
   return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], [], []

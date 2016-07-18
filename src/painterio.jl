@@ -10,8 +10,8 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         OIDATA.lambda_spec, "lambda_L1", OIDATA.lambda_L1, "rho_y", OIDATA.rho_y, "rho_spat", OIDATA.rho_spat, "rho_spec",
         OIDATA.rho_spec, "rho_ps", OIDATA.rho_ps, "alpha", OIDATA.alpha, "beta", OIDATA.beta, "eps1", OIDATA.eps1, "eps2",
         OIDATA.eps2, "epsilon", OIDATA.epsilon, "mask3D", OIDATA.mask3D, "xinit3D", OIDATA.xinit3D, "Wvlt", OIDATA.Wvlt, "paral",
-        OIDATA.paral, "T3", OIDATA.T3, "T3err", OIDATA.T3err, "DP", OIDATA.DP, "DPerr", OIDATA.DPerr,"DPMAT", OIDATA.DPMAT, "DPerrMAT", OIDATA.DPerrMAT,
-        "dptype", OIDATA.dptype , "dpprm", OIDATA.dpprm)
+        OIDATA.paral, "T3", OIDATA.T3, "T3err", OIDATA.T3err, "DP", OIDATA.DP, "DPerr", OIDATA.DPerr,
+        "dptype", OIDATA.dptype , "dpprm", OIDATA.dpprm, "baseNb", OIDATA.baseNb, "orderedCluster", OIDATA.orderedCluster)
 
     JLD.save(string("PDATA_",savepath),
         "eta", PDATA.eta,"plan", PDATA.plan, "F3D", PDATA.F3D, "H", PDATA.H, "M", PDATA.M, "x", PDATA.x, "vHt",
@@ -29,10 +29,8 @@ function painterload(loadpath::ASCIIString)
 #    OIDATA.PlotFct = tmp["PlotFct"]
     OIDATA.T3 = tmp["T3"]
     OIDATA.DP = tmp["DP"]
-    OIDATA.DPMAT = tmp["DPMAT"]
     OIDATA.T3err = tmp["T3err"]
     OIDATA.DPerr = tmp["DPerr"]
-    OIDATA.DPerrMAT = tmp["DPerrMAT"]    
     OIDATA.Folder = tmp["Folder"]
     OIDATA.FilesName = tmp["FilesName"]
     OIDATA.indfile = tmp["indfile"]
@@ -67,6 +65,8 @@ function painterload(loadpath::ASCIIString)
     OIDATA.paral = tmp["paral"]
     OIDATA.dptype = tmp["dptype"]
     OIDATA.dpprm = tmp["dpprm"]
+    OIDATA.baseNb = tmp["baseNb"]
+    OIDATA.orderedCluster = tmp["orderedCluster"]
 # PDATA
     PDATA  = painterdatainit()
     tmp = JLD.load(string("PDATA_",loadpath))

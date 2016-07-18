@@ -40,8 +40,8 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 **Data and image related variables:**
 
 * ``Folder``: path to the folder containing OIFITS/FITS files. Default: ``./OIFITS``. If ``./OIFITS`` does not exists ``src/OIFITS`` in ``PAINTER.jl/`` default installation folder, containing FITS files for the demo, is used.
-* ``indfile``: allows to chose the set of OIFITS/FITS files in ``Folder`` that will be processed. ``indfile`` is an ``Array{Int64,1}`` containnig the indexes of the files in alphabetical order. Default: all files.
-* ``indwvl``: allows to chose the set of processed wavelengths. ``indwvl`` is an ``Array{Int64,1}`` containnig the indexes of the wavelengths in increasing order. Default: all wavelengths.
+* ``indfile``: allows to chose the set of OIFITS/FITS files in ``Folder`` that will be processed. ``indfile`` is an ``Array{Int64,1}`` containing the indexes of the files in alphabetical order. Default: all files.
+* ``indwvl``: allows to chose the set of processed wavelengths. ``indwvl`` is an ``Array{Int64,1}`` containing the indexes of the wavelengths in increasing order. Default: all wavelengths.
 * ``nx``: image size in pixels (the size of the image is nx\ :sup:`2`). Default: ``64``.
 * ``FOV``: Field Of View of the reconstructed image in ArcSecond. Default: ``40e-3``.
 * ``mask3D``: Binary mask defining the support constraint. ``mask3D`` can be:
@@ -65,14 +65,14 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
   * ``"all"`` the difference between the first wavelength and all others (1-2, 1-3, ...), see  Eqs. 35
   * ``"diag"`` the difference between all consecutive wavelengths (1-2, 2-3, ...)
   * ``"ref"`` the same as ``"all"`` but with a reference channel defined by ``dpprm``, the same as ``"all"`` if ``dpprm``=1
-  * ``"frame"`` the difference between wavelength are performed inside non overlaping window with a size ``dpprm``
+  * ``"frame"`` the difference between wavelength are performed inside non overlapping window with a size ``dpprm``
   * ``"sliding"`` the difference between wavelength are performed using a sliding window with a size ``dpprm``
 
-  Default: if not given the default matrix difference is ``"all"``.
+  Default: if not given the default matrix difference is ``"all"``, for details on other methods see [3].
 
 **ADMM algorithm parameters:**
 
-* ``Wvlt``: array of wavelets basis for spatial regularisation, see [2]_.  See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_ for definitions. Default: first 8 Daubechies wavelets and Haar wavelets. ``Wvlt = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar]``.
+* ``Wvlt``: array of wavelets basis for spatial regularization, see [2]_.  See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_ for definitions. Default: first 8 Daubechies wavelets and Haar wavelets. ``Wvlt = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar]``.
 * ``lambda_spat``: Spatial regularization parameter, see Eqs. 29, 31 in [1]_. Default: nx\ :sup:`-2`.
 * ``lambda_spec``: Spectral regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-2``.
 * ``lambda_L1``: regularization parameter for an l\ :sub:`1` constraint on the image. l\ :sub:`1` constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
@@ -102,8 +102,8 @@ extracted from OIFITS files.
 * ``T3err``: phases closure variance matrix.
 * ``DP``: differential phases vector.
 * ``DPerr``: differential phases variance vector.
-* ``Xi``: phases difference Vector.
-* ``K``: phases difference variance vector.
+* ``Xi``: dictionary of phases difference Vector.
+* ``K``: dictionary of phases difference variance vector.
 
 For matrices, the column index is associated to the wavelength index.
 
@@ -138,6 +138,7 @@ Useful outputs in the structure ``PDATA`` are:
 * ``PDATA.x``: the reconstruced 3D images !
 * ``PDATA.w``: positivity and support contraint. These constraints can be applied to ``PDATA.x`` with ``PDATA.x.*(PDATA.w.>0)``.
 * ``PDATA.Fx``: non uniform Fourier transform of the reconstructed 3D images.
+* ``PDATA.H``: dictionary of phases to phases differences sparse matrix.
 * ``PDATA.crit1``: the primal residual of the ADMM algorithm.
 * ``PDATA.crit2``: the dual residual of the ADMM algorithm.
 * ``PDATA.ind``: number of iterations, useful to re-run algorithm.
@@ -147,3 +148,4 @@ References
 
 .. [1] Schutz, A., Ferrari, A., Mary, D. Soulez, F., Thiébaut, E., Vannier, M. "PAINTER: a spatio-spectral image reconstruction algorithm for optical interferometry". JOSA A. Vol. 31, Iss. 11, pp. 2356–2361, (2014). `arXiv <http://arxiv.org/abs/1407.1885>`_
 .. [2] Schutz, A., Ferrari, A., Mary, D., Thiébaut, E., Soulez, F. "Large scale 3D image reconstruction in optical interferometry". EUSIPCO, 2015, Nice. `arXiv <http://arxiv.org/abs/1503.01565>`_
+.. [3] Schutz, A., Ferrari, A., Thiébaut, E., Soulez, F., Vannier, M., Mary D. "Interbands phase models for polychromatic image reconstruction in optical interferometry". SPIE, 2016, Edinburgh.

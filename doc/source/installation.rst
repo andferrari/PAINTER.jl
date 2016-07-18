@@ -39,7 +39,7 @@ To load the ``PAINTER.jl`` module, type from a Julia session:
 
 If ``PyPlot`` is installed, it will be automatically loaded.
 
-Some iteration steps of ``PAINTER.jl`` are parallelized.
+Iteration steps of ``PAINTER.jl`` are parallelized.
 To use parallel computing, start Julia with ``nprocs`` local process
 and load the module on all process:
 
