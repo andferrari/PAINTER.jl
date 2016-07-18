@@ -64,10 +64,10 @@ Algorithm warm start
 --------------------
 
 ``PDATA`` contains all variables and array modified during iterations, including the Lagrange
-multipliers. This allows a warm start of the ADMM algorithm. This is usefull for example when
+multipliers. This allows a warm start of the ADMM algorithm. This is useful for example when
 the iterations have been stopped by ``nbitermax`` but the algorithm has not yet converged.
 
-In this example the user wants 1000 aditional iterations with disabled plots:
+In this example the user wants 1000 additional iterations with disabled plots:
 
 .. code:: julia
 

@@ -13,7 +13,7 @@ Installation
 * `HDF5.jl <https://github.com/timholy/HDF5.jl>`_: for writing JLD ("Julia data") variables.
 
 They will be *automaticaly* installed during ``PAINTER.jl`` installation.
-Note that they require developpement tools included for example for
+Note that they require development tools included for example for
 OSX in ``Command Line Tools`` and for ubuntu in the ``build-essential`` package.
 
 To install ``PAINTER.jl``, type from a Julia session the following commands:

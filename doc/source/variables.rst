@@ -135,8 +135,8 @@ Variables in ``PDATA`` structure
 
 Useful outputs in the structure ``PDATA`` are:
 
-* ``PDATA.x``: the reconstruced 3D images !
-* ``PDATA.w``: positivity and support contraint. These constraints can be applied to ``PDATA.x`` with ``PDATA.x.*(PDATA.w.>0)``.
+* ``PDATA.x``: the reconstructed 3D images !
+* ``PDATA.w``: positivity and support constraint. These constraints can be applied to ``PDATA.x`` with ``PDATA.x.*(PDATA.w.>0)``.
 * ``PDATA.Fx``: non uniform Fourier transform of the reconstructed 3D images.
 * ``PDATA.H``: dictionary of phases to phases differences sparse matrix.
 * ``PDATA.crit1``: the primal residual of the ADMM algorithm.
