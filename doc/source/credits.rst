@@ -4,7 +4,7 @@ Credits
 ``PAINTER.jl`` is a julia implementation of *PAINTER: Polychromatic
 opticAl INTErferometric Reconstruction* algorithm described in [1]_ and [2]_.
 
-``PAINTER.jl`` was developped at:
+``PAINTER.jl`` was developed at:
 
   | Laboratoire `J.-L. Lagrange <http://lagrange.oca.eu>`_
   | `Université de Nice Sophia-Antipolis <http://unice.fr>`_, `CNRS <http://cnrs.fr>`_,
@@ -35,3 +35,4 @@ an accelerated version of PAINTER described in [2]_.
 
 .. [1] Schutz, A., Ferrari, A., Mary, D. Soulez, F., Thiébaut, E., Vannier, M. "PAINTER: a spatio-spectral image reconstruction algorithm for optical interferometry". JOSA A. Vol. 31, Iss. 11, pp. 2356–2361, (2014). `arXiv <http://arxiv.org/abs/1407.1885>`_
 .. [2] Schutz, A., Ferrari, A., Mary, D., Thiébaut, E., Soulez, F. "Large scale 3D image reconstruction in optical interferometry". EUSIPCO 2015, Nice. `arXiv <http://arxiv.org/abs/1503.01565>`_
+.. [3] Schutz, A., Ferrari, A., Thiébaut, E., Soulez, F., Vannier, M., Mary D. "Interbands phase models for polychromatic image reconstruction in optical interferometry". SPIE, 2016, Edinburgh._

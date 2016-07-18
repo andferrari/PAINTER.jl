@@ -56,11 +56,12 @@ end
     savepath = "data.jld"
     dptype = "sliding"
     dpprm = 5
+    Folder = ""
 # initialize algorithm and run admm
     OIDATA, PDATA, OPTOPT = painter(nbitermax = nbitermax, nx = nx, lambda_spat = lambda_spat,
                                 lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,
                                 rho_spec = rho_spec, rho_ps = rho_ps, alpha = alpha, beta = beta,
-                                eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl,
+                                eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl, admm=true,
                                 ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95),
                                 scl = OptimPack.SCALING_OREN_SPEDICATO, gat = 0, grt = 1e-3,
                                 vt = false, memsize = 100, mxvl = 1000, mxtr = 1000, stpmn = 1e-20,
@@ -74,4 +75,4 @@ end
     PDATA, OIDATA = painterload(savepath)
 
 # Warm start of the algorithm
-    OIDATA, PDATA, OPTOPT = painter(OIDATA,PDATA,OPTOPT,11,true, PlotFct = PlotFct)
+    OIDATA, PDATA, OPTOPT = painter(OIDATA,PDATA,OPTOPT,100,true, PlotFct = PlotFct)

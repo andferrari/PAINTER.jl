@@ -13,7 +13,7 @@ Installation
 * `HDF5.jl <https://github.com/timholy/HDF5.jl>`_: for writing JLD ("Julia data") variables.
 
 They will be *automaticaly* installed during ``PAINTER.jl`` installation.
-Note that they require developpement tools included for example for
+Note that they require development tools included for example for
 OSX in ``Command Line Tools`` and for ubuntu in the ``build-essential`` package.
 
 To install ``PAINTER.jl``, type from a Julia session the following commands:
@@ -39,7 +39,7 @@ To load the ``PAINTER.jl`` module, type from a Julia session:
 
 If ``PyPlot`` is installed, it will be automatically loaded.
 
-Some iteration steps of ``PAINTER.jl`` are parallelized.
+Iteration steps of ``PAINTER.jl`` are parallelized.
 To use parallel computing, start Julia with ``nprocs`` local process
 and load the module on all process:
 

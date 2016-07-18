@@ -15,14 +15,16 @@ function invmat_par(F3D::Array,rho_y::Real,eta::Real,nw::Int)#,paral::Bool)
     mat2inv = [(F3D[n], (rho_y / eta)) for n in 1:nw ]
     M = pmap(toinv, mat2inv)
 # else
-# # # # SERIAL
+
+# # TO FIND BUG
+# # # # # SERIAL
 # nb = size(F3D[1],1)
 # UnNb        = speye(nb)
-# Mtmp = zeros(Complex{Float64},nb,nb,nw)
-# M = { Mtmp[:,:,n] for n =1:nw }
+# println("matrix inversion - constmat l 21")
 # for n       = 1 : nw
-#   M[n] = inv(rho_y/eta*F3D[n]*F3D[n]' + UnNb)
+#   println( sum( abs2( M[n] - inv(rho_y/eta*F3D[n]*F3D[n]' + UnNb) )))
 # end
+
 # end
     return M
 end
@@ -70,18 +72,21 @@ function phasetophasediff(Closure_index::Matrix,nw::Integer,nb::Integer,T3::Inte
           # dpprm is the reference channel
           HDP = alldpref(nb, nw, dpprm)
       elseif dptype == "diag"
-          # rank = Nbas*floor( Nwvl - Nwvl/horizon )
-          HDP = diagdp(nb,nw)
+          # rank = Nbas*( Nwvl - 1 )
+          HDP = diagdp(nb, nw)
       elseif dptype == "frame"
           # rank = Nbas*floor( Nwvl - Nwvl/horizon )
           # dpprm is the horizon size of window
-          HDP = framedp(nb,nw,dpprm)
+          HDP = framedp(nb, nw, dpprm)
       elseif dptype == "sliding"
           # rank = Nbas*( Nwvl - 1 )
           # dpprm is the horizon size of window
-          HDP = slidingdp(nb,nw,dpprm)
+          HDP = slidingdp(nb, nw, dpprm)
+      elseif dptype == "phase"
+          # rank = Nbas*Nwvl (full)
+          HDP = nodp(nb, nw)
       else
-          error("wong choice for Differential Phase to Phase Matrix: all (default), frame, ref, diag, sliding")
+          error("wrong choice for Differential Phase to Phase Matrix: all (default), frame, ref, diag, sliding or 'phase' ")
       end
     end
 
@@ -107,6 +112,12 @@ function alldp(nb::Int64,nw::Int64)
     colb = vec(vcat(repmat(collect(1:nb)', 1, (nw-1)),collect((nb + 1):nbnw)'))
     Valueb = repeat(vcat(1,-1), outer=[nb*(nw-1)])
     HDP = sparse(rowb, colb, Valueb, nb * (nw-1), nbnw)
+    return HDP
+end
+# case visphi is phases of complexe visibilities
+function nodp(nb::Int64,nw::Int64)
+    nbnw = (nb * nw)
+    HDP = speye(nbnw)
     return HDP
 end
 # All differential phase, with reference channel defined by lambdaref
@@ -198,7 +209,19 @@ function planarray_par(tab_u::Array,tab_v::Array,nx::Int,nw::Int)#,parral::Bool)
 # nx is images side size
 # nw is the number of wavelength
 # if parral
+
     Mtmp = [( hcat(tab_u[:,n] / nx, tab_v[:,n] / nx)', nx) for n in 1:nw]
+
+# # TO FIND BUG
+#     println("planarray_par - constmat l 215")
+#     x = randn(nx,nx) + im*randn(nx,nx)
+#     tmp = pmap(toplan, Mtmp)
+#     for n       = 1 : nw
+#       plan = NFFTPlan( hcat(tab_u[:,n] / nx, tab_v[:,n] / nx)' , (nx, nx) )
+#       println( sum( abs2( nfft(plan, x) - nfft(tmp[n], x) )))
+#       println( sum( angle( nfft(plan, x) - nfft(tmp[n], x) )))
+#     end
+
     return pmap(toplan, Mtmp)
 # else
 # # # SERIAL
@@ -245,6 +268,17 @@ function nudft3d_par(tab_u::Array,tab_v::Array,nb::Int,nx::Int,nw::Int)
 	    # tic()
             UVMAT = [(tab_u[:, n], tab_v[:, n], nx, nb) for n in 1:nw ]
 	          F3D = pmap(non_uniform_dft_par, UVMAT)
+
+                  # # TO FIND BUG
+                  # println("nudft3d_par - constmat l 273")
+                  # F3D2 = complex(zeros(nb,nx*nx,nw))
+      	          # for n      = 1:nw
+      	          #   nudftmat   = non_uniform_dft(tab_u[:,n],tab_v[:,n],nx,nb)
+      	          #   F3D2[:,:,n] = nudftmat
+                  #   println( sum( abs2( F3D[n] - F3D2[:,:,n] )))
+                  #   println( sum( angle( F3D[n] - F3D2[:,:,n] )))
+      	          # end
+
             return F3D
 
         else
@@ -265,10 +299,21 @@ function non_uniform_dft_par(UVMAT)
 # UVMAT[2] : V
 # UVMAT[3] : nx
 # UVMAT[4] : nb
-        k1  	= repmat(collect((-UVMAT[3] / 2):(-1 + (UVMAT[3] / 2))), 1, UVMAT[3])
+    k1  	= repmat(collect((-UVMAT[3] / 2):(-1 + (UVMAT[3] / 2))), 1, UVMAT[3])
     k1m 	= repmat((vec(k1 )' / UVMAT[3]), UVMAT[4], 1)
     k2m 	= repmat((vec(k1')' / UVMAT[3]), UVMAT[4], 1)
     um 		= repmat(vec(UVMAT[1]), 1, (UVMAT[3] * UVMAT[3]))
     vm 		= repmat(vec(UVMAT[2]), 1, (UVMAT[3] * UVMAT[3]))
     return exp(-2 * im * pi * ((k1m .* um) + (k2m .* vm) )) ./ UVMAT[3]
 end
+
+#
+# # TO FIND BUG
+# function non_uniform_dft(U,V,nx,nb)
+#     k1  	= repmat(collect((-nx / 2):(-1 + (nx / 2))), 1, nx)
+#     k1m 	= repmat((vec(k1 )' / nx), nb, 1)
+#     k2m 	= repmat((vec(k1')' / nx), nb, 1)
+#     um 		= repmat(vec(U), 1, (nx * nx))
+#     vm 		= repmat(vec(V), 1, (nx * nx))
+#     return exp(-2 * im * pi * ((k1m .* um) + (k2m .* vm) )) ./ nx
+# end

@@ -147,6 +147,11 @@ function checkinit(xinit::Array,nb::Int,nx::Int,nw::Int,plan::Array)
             yc = xinit + im * 0.
         end
 
+    elseif ndims(xinit) == 3
+        if (size(xinit, 1) == nx)&&(size(xinit, 2) == nx)&&(size(xinit, 3) == nw)
+            println("Colored vectorized Initial estimate")
+            yc = inityc(xinit, nb, nx, nw, plan)
+        end
     end
     return yc,xinit
 end
@@ -167,7 +172,7 @@ function mask(nx::Int,side::Int;choice="square")
 
 
     if(choice == "square")
-        side2 = (nx / 2) - side
+        side2 = round(Int, nx / 2) - side
         mask3D = ones(nx, nx)
         mask3D[1:(1 + side2), :] = 0
         mask3D[:, 1:(1 + side2)] = 0
@@ -364,13 +369,14 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
 
     # Check Differential phases matrix parameters
     if typeof(dptype) == ASCIIString
-        if (dptype!="all") && (dptype!="ref") && (dptype!="frame")&& (dptype!="sliding")&& (dptype!="diag")
+        if (dptype!="all") && (dptype!="ref") && (dptype!="frame")&& (dptype!="sliding")&& (dptype!="diag")&& (dptype!="phase")
               println("dptype: all (default), ref, diag, frame, sliding ")
+              println("dptype: can be 'phase' for phases of complexe visibilities")
               println("initialized to default value")
               dptype = "all"
         end
     else
-        error("dptype must be a string: all (default), ref, frame, sliding, diag ")
+        error("dptype must be a string: all (default), ref, frame, sliding, diag, phase ")
     end
 
     if !isinteger(dpprm)
@@ -487,9 +493,12 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.plan = planarray_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nx, OIDATA.nw)
     PDATA.F3D = nudft3d_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nb, OIDATA.nx, OIDATA.nw)
     PDATA.M  = invmat_par(PDATA.F3D, OIDATA.rho_y, PDATA.eta, OIDATA.nw)
-    PDATA.H = phasetophasediff(OIDATA.Closure_index, OIDATA.nw, OIDATA.nb, 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
+    # PDATA.H = phasetophasediff(OIDATA.Closure_index, OIDATA.nw, OIDATA.nb, 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
+    for n in 1:length(OIDATA.baseNb)
+        PDATA.H[n] = phasetophasediff(OIDATA.orderedCluster[n], OIDATA.nw, length(OIDATA.baseNb[n]), 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
+    end
 # Array Initialization
-    PDATA.x = SharedArray(Float64, (OIDATA.nx, OIDATA.nx, OIDATA.nw))
+    PDATA.x = zeros(Float64, (OIDATA.nx, OIDATA.nx, OIDATA.nw))
     PDATA.vHt = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
     PDATA.z = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
     PDATA.Hx = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
@@ -501,7 +510,7 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.tau_v = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
     PDATA.tau_r = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
     PDATA.Spcdct = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
-    PDATA.Fx = SharedArray(Complex{Float64}, (OIDATA.nb, OIDATA.nw))
+    PDATA.Fx = zeros(Complex{Float64}, (OIDATA.nb, OIDATA.nw))
     PDATA.tau_xc = zeros(Complex128, OIDATA.nb, OIDATA.nw)
     PDATA.tau_pwc = zeros(Complex128, OIDATA.nb, OIDATA.nw)
     PDATA.tau_xic = zeros(Complex128, OIDATA.nb, OIDATA.nw)
