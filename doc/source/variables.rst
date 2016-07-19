@@ -5,7 +5,7 @@ If parameters are not set, default values are used. For example
 
 .. code:: julia
 
-  OIDATA,PDATA,OPTOPT =  painter()
+  OIDATA,PDATA =  painter()
 
 calls ``painter`` with all default values.
 
@@ -68,7 +68,7 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
   * ``"frame"`` the difference between wavelength are performed inside non overlapping window with a size ``dpprm``
   * ``"sliding"`` the difference between wavelength are performed using a sliding window with a size ``dpprm``
 
-  Default: if not given the default matrix difference is ``"all"``, for details on other methods see [3].
+  Default: if not given the default matrix difference is ``"all"``, for details about other methods see [3].
 
 **ADMM algorithm parameters:**
 
@@ -107,10 +107,10 @@ extracted from OIFITS files.
 
 For matrices, the column index is associated to the wavelength index.
 
-Variables in ``OPTOPT`` structure
----------------------------------
+Path to ``OptimPack`` options
+-----------------------------
 
-The structure ``OPTOPT``: contains all OptimPack parameters for the phases proximal operator.
+The variable ``pathoptpkpt`` determines the path to the file for the VMLM options configuration: contains all OptimPack parameters for the phases proximal operator.
 
 * ``ls``, ``scl``, ``gat``, ``grt``, ``vt``, ``memsize``, ``mxvl``, ``mxtr``, ``stpmn``, ``stpmx``. See  `OptimPack <https://github.com/emmt/OptimPack>`_ for details.
 
@@ -118,10 +118,10 @@ The structure ``OPTOPT``: contains all OptimPack parameters for the phases proxi
 
   .. code:: julia
 
-    ls=OptimPack.MoreThuenteLineSearch(ftol=1e-4,gtol=0.9)
+    ls=OptimPack.MoreThuenteLineSearch(ftol=1e-8,gtol=0.95)
     scl=OptimPack.SCALING\_OREN\_SPEDICATO
-    gat=1E-6
-    grt=1E-6
+    gat=0
+    grt=0
     vt=false
     memsize=100
     mxvl=1000
@@ -129,6 +129,7 @@ The structure ``OPTOPT``: contains all OptimPack parameters for the phases proxi
     stpmn=1E-20
     stpmx=1E+20
 
+And the default configuration files is ``optpckpt.jl`` located in the ``src`` folder of PAINTER (../.julia/Vx.x/PAINTER/src/). Default value: ``pathoptpkpt = string(Pkg.dir("PAINTER"),"/src/optpckpt.jl")``
 
 Variables in ``PDATA`` structure
 --------------------------------

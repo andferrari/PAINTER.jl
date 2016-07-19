@@ -211,7 +211,8 @@ end
 # mask3D	      : Support constraint: can be a path to a fits file, or to data image (2D or 3D in both case)
 # xinit3D       : Initial Estimate: can be a path to a fits file, or to data image (2D or 3D in both case)
 ###################################################################################
-function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lambda_L1,epsilon,rho_y,rho_spat,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,paral,dptype,dpprm,PlotFct)
+function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lambda_L1,epsilon,rho_y,rho_spat
+  ,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,paral,dptype,dpprm,PlotFct,pathoptpkpt)
 # check if user parameters are valid parameters, correct them if type is not good or replace by default if parameter are not valid
     if(FOV < 0)
         println("FOV must be non negative (default: 0.04 arcsecond)")
@@ -474,6 +475,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     OIDATA.paral = paral
     OIDATA.dptype = dptype
     OIDATA.dpprm = dpprm
+    OIDATA.pathoptpkpt = pathoptpkpt
     return OIDATA
 end
 ###################################################################################
@@ -499,17 +501,11 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     end
 # Array Initialization
     PDATA.x = zeros(Float64, (OIDATA.nx, OIDATA.nx, OIDATA.nw))
-    PDATA.vHt = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
-    PDATA.z = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
-    PDATA.Hx = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
     PDATA.tau_s = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
     PDATA.w = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
-    PDATA.v = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
-    PDATA.r = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
     PDATA.tau_w = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
     PDATA.tau_v = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
     PDATA.tau_r = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
-    PDATA.Spcdct = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
     PDATA.Fx = zeros(Complex{Float64}, (OIDATA.nb, OIDATA.nw))
     PDATA.tau_xc = zeros(Complex128, OIDATA.nb, OIDATA.nw)
     PDATA.tau_pwc = zeros(Complex128, OIDATA.nb, OIDATA.nw)
@@ -517,5 +513,13 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.y_v2 = zeros(Complex128, OIDATA.nb, OIDATA.nw)
     PDATA.y_phi = zeros(Complex128, OIDATA.nb, OIDATA.nw)
     PDATA.yc, OIDATA.xinit3D = checkinit(OIDATA.xinit3D, OIDATA.nb, OIDATA.nx, OIDATA.nw, PDATA.plan)
+
+    # PDATA.vHt = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.z = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
+    # PDATA.Hx = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
+    # PDATA.Spcdct = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.v = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    PDATA.r = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+
     return PDATA,OIDATA
 end

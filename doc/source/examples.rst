@@ -25,32 +25,32 @@ User parameters and single execution
 
   .. code:: julia
 
-    Mypath        = '../MyOifitsFolder'
-    MyFOV         = 0.01
-    Myindwvl      = 1:29
-    Mynx          = 64
-    Myeps1        = 1e-4
-    Myeps2        = 1e-4
-    Myrho_y       = 10
-    Myalpha       = 1e4
-    Mybeta        = 1e5
-    Myrho_spat    = 4
-    Myrho_ps      = Myrho_spat
-    Mylambda_spat = 1e-5
-    Myrho_spec    = 1/2
-    Mylambda_spec = 1e-5
-    Myaff         = true      # plot is enabled
-    Mynbitermax   = 100
-    Myparal       = false     # parallel computing is disabled
+    path        = '../OifitsFolder'
+    FOV         = 0.01
+    indwvl      = 1:29
+    nx          = 64
+    eps1        = 1e-4
+    eps2        = 1e-4
+    rho_y       = 10
+    alpha       = 1e4
+    beta        = 1e5
+    rho_spat    = 4
+    rho_ps      = rho_spat
+    lambda_spat = 1e-5
+    rho_spec    = 1/2
+    lambda_spec = 1e-5
+    aff         = true      # plot is enabled
+    nbitermax   = 100
+    paral       = false     # parallel computing is disabled
 
-  ``PAINTER.jl`` will extract OIFITS informations from all files in the folder ``../MyOifitsFolder`` and will restrict the analysis to the first 29 wavelengths.
+  ``PAINTER.jl`` will extract OIFITS informations from all files in the folder ``../OifitsFolder`` and will restrict the analysis to the first 29 wavelengths.
 
 * The initial estimate is the default.  ADMM is enabled by default and will run the algorithm for 100 iterations.
 * The support constraint is defined by a disk:
 
   .. code:: julia
 
-    Mymask3D = mask(Mynx, int(Mynx/2 -3), choice="disk")
+    mask3D = mask(nx, int(nx/2 -3), choice="disk")
 
 * Other parameters take the default values.
 
@@ -58,7 +58,7 @@ User parameters and single execution
 
 .. code:: julia
 
-  OIDATA, PDATA, OPTOPT = painter(Folder=MyFolder, nbitermax=Mynbitermax, nx=Mynx, lambda_spat=Mylambda_spat=Mylambda_spat, lambda_spec=Mylambda_spec, rho_y= Myrho_y, rho_spat= Myrho_spat, rho_spec= Myrho_spec, rho_ps= Myrho_ps, alpha= Myalpha, beta=Mybeta, eps1=Myeps1, eps2=Myeps2, FOV= MyFOV, indwvl=Myindwvl, paral=Myparal)
+  OIDATA, PDATA = painter(Folder=Folder, nbitermax=nbitermax, nx=nx, lambda_spat=lambda_spat=lambda_spat, lambda_spec=lambda_spec, rho_y= rho_y, rho_spat= rho_spat, rho_spec= rho_spec, rho_ps= rho_ps, alpha= alpha, beta=beta, eps1=eps1, eps2=eps2, FOV= FOV, indwvl=indwvl, paral=paral)
 
 Algorithm warm start
 --------------------
@@ -73,7 +73,7 @@ In this example the user wants 1000 additional iterations with disabled plots:
 
   nbitermax += 1000
   aff = false
-  OIDATA, PDATA_new, OPTOPT = painter(OIDATA,PDATA,OPTOPT, nbitermax, aff, PlotFct = myPlotfunction)
+  OIDATA, PDATA_new = painter(OIDATA,PDATA, nbitermax, aff, PlotFct = Plotfunction)
 
 ``PDATA_new`` is used to store the new auxiliary variables.
 
@@ -87,7 +87,7 @@ using single iterations in a loop:
 
     for n = 1:10
       nbitermax += 1
-      OIDATA, PDATA, OPTOPT = painter(OIDATA, PDATA, OPTOPT, nbitermax, aff)
+      OIDATA, PDATA = painter(OIDATA, PDATA, nbitermax, aff)
       saveX[n] = PDATA.x
       saveW[n] = PDATA.w
     end
@@ -100,7 +100,7 @@ User defined plot function
 It is possible to plot or to print some informations on available data during iterations.
 If ``PyPlot.jl`` is installed, ``painter`` will execute each ``CountPlot`` iterations the function defined by the variable ``PlotFct``. This user defined function must respect the input arguments of ``painterplotfct``:
 
-.. function:: myPlotfunction(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
+.. function:: Plotfunction(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 
 For example, to plot at each iteration the sum over all wavelengths of an estimated polychromatic  object, projected on a support constraint:
 
@@ -108,11 +108,11 @@ For example, to plot at each iteration the sum over all wavelengths of an estima
 
 	using PyPlot
 
-	function myPlotfunction(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
+	function Plotfunction(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 		x = PDATA.x
 		s = (PDATA.w.>0.0)
 		im2show = squeeze(sum(x.*s,3),3)
 		imshow(im2show)
 	end
 
-	OIDATA,PDATA,OPTOPT = painter(..., PlotFct = myPlotfunction)
+	OIDATA,PDATA = painter(..., PlotFct = Plotfunction)
