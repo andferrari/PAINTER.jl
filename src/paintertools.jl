@@ -260,7 +260,7 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
     Spcdct = convert( SharedArray, zeros( nx, nx, nw))
     vHt = convert( SharedArray, zeros(nx, nx, nw))
     Hx = convert( SharedArray, zeros( nx, nx, nw, NWvlt))
-pathoptpkpt = "/Users/antonyschutz/.julia/v0.4/PAINTER.jl/src/optpckpt.jl"
+
 # ----------------------------------
 # Check if Pyplot is used to graphics
     if aff
