@@ -280,6 +280,22 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
             end # If PyPlot is known so we can use it
         end
     end
+# ----------------------------------    
+    include(pathoptpkpt)
+    println(" ")
+    println("------------------- ")
+    println("VMLM will run with: ")
+    println("------------------- ")
+    println("memsize: ", memsize )
+    println("verb: ", vt )
+    println("grtol: ", grt )
+    println("gatol: ", gat )
+    println("maxeval: ", mxvl )
+    println("maxiter: ", mxtr )
+    println("stpmin: ", stpmn )
+    println("stpmax: ", stpmx )
+    println("scaling: ", scl )
+    println("lnsrch: ", ls )
 # ----------------------------------
     println("")
     println("-----------------------------------------")
@@ -416,6 +432,7 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
 # Check, Create PAINTER object and mask initialisation from data or fits
     OIDATA.mask3D   = checkmask(OIDATA.mask3D, OIDATA.nx, OIDATA.nw)
     PDATA.CountPlot = CountPlot
+
 # Main Loop ADMM
     if admm
         # PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
