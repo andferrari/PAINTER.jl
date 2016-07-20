@@ -280,12 +280,13 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
             end # If PyPlot is known so we can use it
         end
     end
-# ----------------------------------    
+# ----------------------------------
     include(pathoptpkpt)
     println(" ")
-    println("------------------- ")
-    println("VMLM will run with: ")
-    println("------------------- ")
+    println("------------------------ ")
+    println("VMLM will run with file: ")
+    println(pathoptpkpt)
+    println("------------------------ ")
     println("memsize: ", memsize )
     println("verb: ", vt )
     println("grtol: ", grt )
