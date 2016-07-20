@@ -176,8 +176,20 @@ function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
         return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
     end
 
-    include(pathoptpkpt)
-
+    if isempty(pathoptpkpt) # For travis
+        ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95)
+        scl = OptimPack.SCALING_OREN_SPEDICATO
+        gat = 0
+        grt = 1e-3
+        vt = false
+        memsize = 100
+        mxvl = 1000
+        mxtr = 1000
+        stpmn = 1e-20
+        stpmx = 1e+20
+    else
+        include(pathoptpkpt)
+    end
     phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
                         , grtol = grt, gatol = gat, maxeval = mxvl
                         , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
@@ -255,12 +267,13 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
     const NWvlt = length(Wvlt)
     const H = PDATA.H
     const baseNb = OIDATA.baseNb
-    Nt3indep = length(OIDATA.baseNb)
+    const Nt3indep = length(OIDATA.baseNb)
+    const pathoptpkpt = OIDATA.pathoptpkpt
     yphidict = SharedArray( Complex128, (nb,nw) )
     Spcdct = convert( SharedArray, zeros( nx, nx, nw))
     vHt = convert( SharedArray, zeros(nx, nx, nw))
     Hx = convert( SharedArray, zeros( nx, nx, nw, NWvlt))
-pathoptpkpt = "/Users/antonyschutz/.julia/v0.4/PAINTER.jl/src/optpckpt.jl"
+
 # ----------------------------------
 # Check if Pyplot is used to graphics
     if aff
@@ -278,6 +291,25 @@ pathoptpkpt = "/Users/antonyschutz/.julia/v0.4/PAINTER.jl/src/optpckpt.jl"
                 aff = false
             end # If PyPlot is known so we can use it
         end
+    end
+# ----------------------------------
+    if !isempty(pathoptpkpt)
+        include(pathoptpkpt)
+        println(" ")
+        println("------------------------ ")
+        println("VMLM will run with file: ")
+        println(pathoptpkpt)
+        println("------------------------ ")
+        println("memsize: ", memsize )
+        println("verb: ", vt )
+        println("grtol: ", grt )
+        println("gatol: ", gat )
+        println("maxeval: ", mxvl )
+        println("maxiter: ", mxtr )
+        println("stpmin: ", stpmn )
+        println("stpmax: ", stpmx )
+        println("scaling: ", scl )
+        println("lnsrch: ", ls )
     end
 # ----------------------------------
     println("")
@@ -415,6 +447,7 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
 # Check, Create PAINTER object and mask initialisation from data or fits
     OIDATA.mask3D   = checkmask(OIDATA.mask3D, OIDATA.nx, OIDATA.nw)
     PDATA.CountPlot = CountPlot
+
 # Main Loop ADMM
     if admm
         # PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
