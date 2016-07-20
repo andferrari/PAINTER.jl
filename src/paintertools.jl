@@ -255,7 +255,8 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
     const NWvlt = length(Wvlt)
     const H = PDATA.H
     const baseNb = OIDATA.baseNb
-    Nt3indep = length(OIDATA.baseNb)
+    const Nt3indep = length(OIDATA.baseNb)
+    const pathoptpkpt = OIDATA.pathoptpkpt
     yphidict = SharedArray( Complex128, (nb,nw) )
     Spcdct = convert( SharedArray, zeros( nx, nx, nw))
     vHt = convert( SharedArray, zeros(nx, nx, nw))
