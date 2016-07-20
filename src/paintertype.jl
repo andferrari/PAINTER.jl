@@ -56,6 +56,7 @@ type PAINTER_Input
     dpprm::Int                      # horizon for sliding dp or index of reference
     baseNb::Dict
     orderedCluster::Dict
+    pathoptpkpt::ASCIIString        # OPTIMPACK VMLM configuration files full path
 end
 # Structure containing all data which are modified during admm
 # PDATA::PAINTER_Data
@@ -66,9 +67,9 @@ type PAINTER_Data
     H::Dict
     M::Array
     x::Array
-    vHt::Array
+    # vHt::Array
     z::Array
-    Hx::Array
+    # Hx::Array
     tau_s::Array
     w::Array
     v::Array
@@ -76,7 +77,7 @@ type PAINTER_Data
     tau_w::Array
     tau_v::Array
     tau_r::Array
-    Spcdct::Array
+    # Spcdct::Array
     Fx::Array
     tau_xc::Array
     tau_pwc::Array
@@ -89,40 +90,43 @@ type PAINTER_Data
     ind::Int
     CountPlot::Int
     count::Int
+
 end
 # Structure for OptimPack, see OptimPack.jl
 # https://github.com/emmt/OptimPack.jl
-type OptOptions
-    ls
-    scl
-    gat
-    grt
-    vt
-    memsize
-    mxvl
-    mxtr
-    stpmn
-    stpmx
-end
+# type OptOptions
+#     # ls
+#     # scl
+#     gat
+#     grt
+#     vt
+#     memsize
+#     mxvl
+#     mxtr
+#     stpmn
+#     stpmx
+# end
 
-function optiminit(ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
-    return OptOptions(ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
-end
+# function optiminit( gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
+#     return OptOptions( gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
+# end
+# function optiminit(ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
+#     return OptOptions(ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
+# end
 function painterinputinit()
-  # return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
-  #                      , [], Dict{}(), Dict{}(), [], 0., 0., 0., 0., 0., 0., 0., 0.
-  #                      , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
-  #                      , true, [], [], [], [], [], [], 0, "", 0)
+
     return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
                          , [], Dict{}(), Dict{}(), [], 0., 0., 0., 0., 0., 0., 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
-                         , true, [], [], [], [], 0, "", 0, Dict{}(), Dict{}())
+                         , true, [], [], [], [], 0, "", 0, Dict{}(), Dict{}(),"")
 end
 function painterdatainit()
-  return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], [], []
-                      , [], [], [], [], [], [], [], [], [], [], [], []
+  return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], []
+                      , [], [], [], [], [], [], [], [], [], []
                       , [], Float64[], Float64[], 0, 0, 0)
-    # return PAINTER_Data(0., [], [], speye(0), [], [], [], [], [], [], []
-    #                     , [], [], [], [], [], [], [], [], [], [], [], []
-    #                     , [], Float64[], Float64[], 0, 0, 0)
+
+  # return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], [], []
+  #                     , [], [], [], [], [], [], [], [], [], [], [], []
+  #                     , [], Float64[], Float64[], 0, 0, 0)
+
 end

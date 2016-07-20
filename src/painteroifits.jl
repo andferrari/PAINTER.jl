@@ -147,7 +147,6 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
 
 # # Create cluster of independent CLosure Phases and associated
     OIDATA = independentT3data(OIDATA)
-    println("Independent T3phi: ", length(OIDATA.baseNb), " Independent clusters found")
 
     return OIDATA
 end

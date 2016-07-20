@@ -2,7 +2,7 @@
 # Antony Schutz 2015, ANR - POLCA - 2016
 ###################################################################################
 ## PAINTER Save and Load utilities
-function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions)
+function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input) #,OPTOPT::OptOptions)
     JLD.save(string("OIDATA_",savepath),
         "Folder", OIDATA.Folder, "FilesName", OIDATA.FilesName, "indfile", OIDATA.indfile, "indwvl", OIDATA.indwvl, "wvl", OIDATA.wvl, "U",
         OIDATA.U, "V",OIDATA.V, "P", OIDATA.P, "W", OIDATA.W, "Xi", OIDATA.Xi, "K", OIDATA.K, "Closure_index", OIDATA.Closure_index,
@@ -14,12 +14,47 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         "dptype", OIDATA.dptype , "dpprm", OIDATA.dpprm, "baseNb", OIDATA.baseNb, "orderedCluster", OIDATA.orderedCluster)
 
     JLD.save(string("PDATA_",savepath),
-        "eta", PDATA.eta,"plan", PDATA.plan, "F3D", PDATA.F3D, "H", PDATA.H, "M", PDATA.M, "x", PDATA.x, "vHt",
-        PDATA.vHt,"z", PDATA.z, "Hx", PDATA.Hx, "tau_s", PDATA.tau_s, "w", PDATA.w, "v", PDATA.v, "r", PDATA.r, "tau_w",
-        PDATA.tau_w, "tau_v", PDATA.tau_v, "tau_r", PDATA.tau_r, "Spcdct", PDATA.Spcdct, "Fx", PDATA.Fx, "tau_xc",
-        PDATA.tau_xc, "tau_pwc", PDATA.tau_pwc, "tau_xic", PDATA.tau_xic,
-        "yc", PDATA.yc, "y_v2", PDATA.y_v2, "y_phi", PDATA.y_phi, "crit1", PDATA.crit1, "crit2",
-        PDATA.crit2, "ind", PDATA.ind, "CountPlot", PDATA.CountPlot, "count", PDATA.count)#, "nbitermax", PDATA.nbitermax)
+        "eta", PDATA.eta,
+        "plan", PDATA.plan,
+        "F3D", PDATA.F3D,
+        "H", PDATA.H,
+        "M", PDATA.M,
+        "x", PDATA.x,
+        "z", PDATA.z,
+        "v", PDATA.v,
+        "r", PDATA.r,
+        "w", PDATA.w,
+        "tau_s", PDATA.tau_s,
+        "tau_w", PDATA.tau_w,
+        "tau_v", PDATA.tau_v,
+        "tau_r", PDATA.tau_r,
+        "tau_xc", PDATA.tau_xc,
+        "tau_pwc", PDATA.tau_pwc,
+        "tau_xic", PDATA.tau_xic,
+        "Fx", PDATA.Fx,
+        "yc", PDATA.yc,
+        "y_v2", PDATA.y_v2,
+        "y_phi", PDATA.y_phi,
+        "crit1", PDATA.crit1,
+        "crit2", PDATA.crit2,
+        "ind", PDATA.ind,
+        "CountPlot", PDATA.CountPlot,
+        "count", PDATA.count
+
+        # "vHt", PDATA.vHt,
+        # "Hx", PDATA.Hx,
+        # "Spcdct", PDATA.Spcdct
+        )
+    # JLD.save(string("OPTOPT_",savepath),
+    #     "gat", OPTOPT.gat,
+    #     "grt", OPTOPT.grt,
+    #     "vt", OPTOPT.vt,
+    #     "memsize", OPTOPT.memsize,
+    #     "mxvl", OPTOPT.mxvl,
+    #     "mxtr", OPTOPT.mxtr,
+    #     "stpmn", OPTOPT.stpmn,
+    #     "stpmx", OPTOPT.stpmx
+    # )
 end
 
 function painterload(loadpath::ASCIIString)
@@ -76,21 +111,15 @@ function painterload(loadpath::ASCIIString)
     PDATA.H = tmp["H"]
     PDATA.M = tmp["M"]
     PDATA.x = tmp["x"]
-    PDATA.vHt = tmp["vHt"]
-    PDATA.z = tmp["z"]
-    PDATA.Hx = tmp["Hx"]
-    PDATA.tau_s = tmp["tau_s"]
     PDATA.w = tmp["w"]
-    PDATA.v = tmp["v"]
-    PDATA.r = tmp["r"]
+    PDATA.tau_s = tmp["tau_s"]
     PDATA.tau_w = tmp["tau_w"]
     PDATA.tau_v = tmp["tau_v"]
     PDATA.tau_r = tmp["tau_r"]
-    PDATA.Spcdct = tmp["Spcdct"]
-    PDATA.Fx = tmp["Fx"]
     PDATA.tau_xc = tmp["tau_xc"]
     PDATA.tau_pwc = tmp["tau_pwc"]
     PDATA.tau_xic = tmp["tau_xic"]
+    PDATA.Fx = tmp["Fx"]
     PDATA.yc = tmp["yc"]
     PDATA.y_v2 = tmp["y_v2"]
     PDATA.y_phi = tmp["y_phi"]
@@ -99,20 +128,26 @@ function painterload(loadpath::ASCIIString)
     PDATA.ind = tmp["ind"]
     PDATA.CountPlot = tmp["CountPlot"]
     PDATA.count = tmp["count"]
+
+    # PDATA.Spcdct = tmp["Spcdct"]
+    # PDATA.vHt = tmp["vHt"]
+    # PDATA.Hx = tmp["Hx"]
+    PDATA.z = tmp["z"]
+    PDATA.v = tmp["v"]
+    PDATA.r = tmp["r"]
+
 # OPTOPT
-#   tmp = JLD.load(string("OPTOPT_",loadpath))
-#   ls  = tmp["ls"]
-#   scl  = tmp["scl"]
-#   gat  = tmp["gat"]
-#   grt  = tmp["grt"]
-#   vt  = tmp["vt"]
-#   memsize  = tmp["memsize"]
-#   mxvl  = tmp["mxvl"]
-#   mxtr  = tmp["mxtr"]
-#   stpmn  = tmp["stpmn"]
-#   stpmx  = tmp["stpmx"]
-#   OPTOPT = optiminit(ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx)
-    return PDATA, OIDATA
+    # tmp = JLD.load(string("OPTOPT_",loadpath))
+    # gat = tmp["gat"]
+    # grt = tmp["grt"]
+    # vt = tmp["vt"]
+    # memsize = tmp["memsize"]
+    # mxvl = tmp["mxvl"]
+    # mxtr = tmp["mxtr"]
+    # stpmn = tmp["stpmn"]
+    # stpmx = tmp["stpmx"]
+    # OPTOPT = optiminit(gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx)
+    return PDATA, OIDATA #, OPTOPT
 end
 
 # ################################################################

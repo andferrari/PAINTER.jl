@@ -26,13 +26,13 @@
 # Object Estimation - Orthognal matrix - wavelet
 # ---------------------------------------------------------------------------------
 # function estimx_par{Tw<:WT.OrthoWaveletClass}(x::SharedArray{Float64,3},Fx::SharedArray{Complex{Float64},2},
-function estimx_par{Tw<:WT.OrthoWaveletClass}(x::Array{Float64,3},Fx::Array{Complex{Float64},2},
+function estimx_par{Tw<:WT.OrthoWaveletClass}( #x::Array{Float64,3},Fx::Array{Complex{Float64},2},
     rho_y::Float64,rho_spat::Float64,rho_spec::Float64,rho_ps::Float64,eta::Float64,
     yc::Array{Complex{Float64},2},z::Array{Float64,4},v::Array{Float64,3},w::Array{Float64,3},
     tau_xc::Array{Complex{Float64},2},tau_s::Array{Float64,4},tau_v::Array{Float64,3},tau_w::Array{Float64,3},
     nb::Int,nw::Int,nx::Int,NWvlt::Int,plan::Array{Any,1},Wvlt::Array{Tw,1},M::Array{Any,1},paral::Bool)
 # Estimate the constrained, regularized 3D images from complexe visibilities
-# step IV of PAINTER [0]
+# step IV of PAINTER [0,1]
 #
 # x: images [(nx*nx)*nw], Fx is nb*nw is Non uniform Fourier transform of 3D images
 # rho_x and tau_x: admm parameters and Lagrange mutlipliers
@@ -45,45 +45,27 @@ function estimx_par{Tw<:WT.OrthoWaveletClass}(x::Array{Float64,3},Fx::Array{Comp
     matv = (rho_spec * v) - tau_v
     matw = (rho_ps * w) - tau_w
     Reg  = matv + matw
-
+    matv = 0
+    matw = 0
 # parallel sum of wavelet basis
-    if paral
-        MAP = [(matz[:, :, n, b] , wavelet(Wvlt[b]) ) for n in 1:nw, b in 1:NWvlt]
-        wvd = sum(reshape(pmap(myidwt,MAP), nw, NWvlt ), 2)
-
-# parallel image reconstruction
-        xsa = convert(SharedArray,x)
-        Fxsa = convert(SharedArray,Fx)
-        @sync @parallel for n in 1:nw
-            xtmp = (nfft_adjoint(plan[n], maty[:, n]) / nx) + Reg[:, :, n] + wvd[n]
-            xfst = nfft_adjoint(plan[n], M[n] * (nfft(plan[n], xtmp) / nx)) / nx
-            xtmp = (xtmp - (rho_y / eta) * xfst) / eta
-            xsa[:,:,n] = real(xtmp)
-            Fxsa[:,n]  = nfft(plan[n], xtmp) / nx
-        end
-        x = xsa
-        Fx = Fxsa
-    else
-# # SERIAL
-        wavdec = zeros(nx, nx, nw, nb)
-        for b in 1:NWvlt, n in 1:nw
-            wavdec[:, :, n, b] = idwt(matz[:, :, n, b], wavelet(Wvlt[b]))
-        end
-        wvd = sum(wavdec, 4)
-        for n in 1:nw
-            xtmp = (nfft_adjoint(plan[n], maty[:, n]) / nx) + Reg[:, :, n]  + wvd[:, :, n]
-            xfst = nfft_adjoint(plan[n], M[n] * (nfft(plan[n], xtmp) / nx)) / nx
-            xtmp = (xtmp - (rho_y / eta) * xfst) / eta
-            x[:,:,n] = real(xtmp)
-            Fx[:,n]  = nfft(plan[n], xtmp) / nx
-        end
+    wvd = SharedArray( Float64, (nx,nx,nw,NWvlt))
+    @sync @parallel for ind in 1:nw*NWvlt
+        n,b = ind2sub((nw,NWvlt),ind)
+        wvd[:,:,n,b] = idwt(matz[:, :, n, b] , wavelet(Wvlt[b]) )
     end
-    return x,Fx
-end
-# ---------------------------------------------------------------------------------
-# for parallel calculus of inverse wavelet basis
-function myidwt(M)
-   return idwt(M[1], M[2])
+    matz = 0
+    wvd = sum(wvd,4)
+# parallel image reconstruction
+    x = SharedArray( Float64, (nx,nx,nw))
+    Fx = SharedArray( Complex{Float64}, (nb, nw))
+    @sync @parallel for n in 1:nw
+        xtmp = (nfft_adjoint(plan[n], maty[:, n]) / nx) + Reg[:, :, n] + wvd[:, :, n] #+ wvd[n]
+        xfst = nfft_adjoint(plan[n], M[n] * (nfft(plan[n], xtmp) / nx)) / nx
+        xtmp = (xtmp - (rho_y / eta) * xfst) / eta
+        x[:,:,n] = real(xtmp)
+        Fx[:,n]  = nfft(plan[n], xtmp) / nx
+    end
+    return x, Fx
 end
 ###################################################################################
 # Regularization - constraint
@@ -117,7 +99,7 @@ function proxv2!(y_v2::Array,P::Array,W::Array,rho_y::Real,alpha::Real,nb::Int,n
         mod_y[m,n] = sol[b]
     end
 
-    y_v2[:] = mod_y .* exp(im .* ang_y)
+    y_v2[:] = copy(mod_y) .* exp(im .* ang_y)
 end
 # ---------------------------------------------------------------------------------
 # ----- Cardano's formula
@@ -170,65 +152,9 @@ end
 end
 # ---------------------------------------------------------------------------------
 # Proximal operator for phases difference (Section 5.2 PAINTER)
-# ---------------------------------------------------------------------------------
-function proxphase(MAP)
-# estimate the complexe visibilities from the phases differences
-# y_phi: vector of auxiliary variable \tilde{y} (last estimate of complexe visibility) is upadted
-# Xi vector of observed Phases Difference [ {Nwvl*(Nb-1)*(Nb-2)/2 + Nb*(Nwvl-1)} *{1}]
-# K the variance of phases must be corrected using Von Mises Ditribution (function EstKapVM)
-# rho_y: Admm parameter (scalar>0)
-# beta: relative weight compared to phases difference: (scalar>0)
-# (Global Cost) = alpha * (cost of V2) + Beta * (Cost of Phases diffrence)
-# nb is the number of base
-# nw is the number of wavelength
-# H: Phases difference to Phases matrix (function Ph2PhDiff)
-# OPTOPT: structure of OptimPack vmlm option, see optimpack
-    y_phi = MAP[1]
-    Xi    = MAP[2]
-    K     = MAP[3]
-    rho_y = MAP[4]
-    beta  = MAP[5]
-    nb    = MAP[6]
-    nw    = MAP[7]
-    H     = MAP[8]
-    # OPTOPT= MAP[9]
-
-    y_t = vec(y_phi)
-    gam_t = abs(y_t)
-    phi_t = angle(y_t)
-    phi_0 = angle(y_t)
-    function cost!{T<:Real}(x_phi::Array{T,1}, g_phi::Array{T,1})
-        return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
-    end
-
-    ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95)
-    scl = OptimPack.SCALING_OREN_SPEDICATO
-    gat = 0
-    grt = 1e-3
-    vt = false
-    memsize = 100
-    mxvl = 1000
-    mxtr = 1000
-    stpmn = 1e-20
-    stpmx = 1e+20
-
-
-    phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt, scaling = scl
-                         , grtol = grt, gatol=gat, lnsrch=ls, maxeval=mxvl
-                         , maxiter=mxtr, stpmin=stpmn, stpmax=stpmx)
-
-    if phi!=nothing
-        Ek = phi_t - phi
-        gam = max(0.0, gam_t .* cos(Ek))
-        y_phi[:] = reshape(gam .* exp(im * phi), nb, nw)
-    else
-        y_phi[:] = reshape(gam_t .* exp(im * phi_t), nb, nw)
-    end
-    return y_phi
-end
-
-# for non parallel
-function proxphase!(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real,nb::Int,nw::Int,H::SparseMatrixCSC,OPTOPT::OptOptions)
+# for parallel
+function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
+                  ,nb::Int,nw::Int,H::SparseMatrixCSC,pathoptpkpt::ASCIIString)
 # estimate the complexe visibilities from the phases differences
 # y_phi: vector of auxiliary variable \tilde{y} (last estimate of complexe visibility) is upadted
 # Xi vector of observed Phases Difference [ {Nwvl*(Nb-1)*(Nb-2)/2 + Nb*(Nwvl-1)} *{1}]
@@ -245,13 +171,17 @@ function proxphase!(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real,nb
     gam_t = abs(y_t)
     phi_t = angle(y_t)
     phi_0 = angle(y_t)
+
     function cost!{T<:Real}(x_phi::Array{T,1}, g_phi::Array{T,1})
         return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
     end
 
-    phi = OptimPack.vmlm(cost!, phi_0, OPTOPT.memsize, verb = OPTOPT.vt, scaling = OPTOPT.scl
-                         , grtol = OPTOPT.grt, gatol=OPTOPT.gat, lnsrch=OPTOPT.ls, maxeval=OPTOPT.mxvl
-                         , maxiter=OPTOPT.mxtr, stpmin=OPTOPT.stpmn, stpmax=OPTOPT.stpmx)
+    include(pathoptpkpt)
+
+    phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
+                        , grtol = grt, gatol = gat, maxeval = mxvl
+                        , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
+                        , scaling = scl, lnsrch = ls)
 
     if phi!=nothing
         Ek = phi_t - phi
@@ -261,6 +191,7 @@ function proxphase!(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real,nb
         y_phi[:] = reshape(gam_t .* exp(im * phi_t), nb, nw)
     end
 end
+
 function costgradphi!(x_phi::Vector,g_phi::Vector,gam_t::Vector,phi_t::Vector,y_t::Vector,Xi::Vector,K::Vector,beta::Real,rho_y::Real,H::SparseMatrixCSC)
 # cost to minimize for phase difference minimization
 # x_phi: Phases vector to estimate
@@ -293,7 +224,7 @@ end
 #     painteradmm(PDATA,OIDATA,OPTOPT,nbitermax,aff)
 # end
 # for information about parameters read PAINTER [1] and admm [2]
-function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOptions,nbitermax::Int,aff::Bool)
+function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,aff::Bool)
     const nx = OIDATA.nx
     const nb = OIDATA.nb
     const nw = OIDATA.nw
@@ -325,6 +256,11 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
     const H = PDATA.H
     const baseNb = OIDATA.baseNb
     Nt3indep = length(OIDATA.baseNb)
+    yphidict = SharedArray( Complex128, (nb,nw) )
+    Spcdct = convert( SharedArray, zeros( nx, nx, nw))
+    vHt = convert( SharedArray, zeros(nx, nx, nw))
+    Hx = convert( SharedArray, zeros( nx, nx, nw, NWvlt))
+pathoptpkpt = "/Users/antonyschutz/.julia/v0.4/PAINTER.jl/src/optpckpt.jl"
 # ----------------------------------
 # Check if Pyplot is used to graphics
     if aff
@@ -359,53 +295,56 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
         proxv2!(PDATA.y_v2, P, W, rho_y, alpha, nb, nw)
 
 # update of yc from phases difference
-        PDATA.y_phi = PDATA.yc + PDATA.tau_xic / rho_y
-        MAP = [(PDATA.y_phi[baseNb[n],:], Xi[n], K[n], rho_y, beta, length( baseNb[n] ), nw, H[n] ) for n in 1:Nt3indep ]
-        yphidict = pmap(proxphase,MAP)
-        [(PDATA.y_phi[baseNb[n],:] = yphidict[n]) for n in 1:Nt3indep ]
-
+        y_phidat = PDATA.yc + PDATA.tau_xic / rho_y
+        @sync @parallel for n in 1:Nt3indep
+            yphidict[baseNb[n],:] = proxphase(y_phidat[baseNb[n],:], Xi[n], K[n]
+                     , rho_y, beta, length( baseNb[n] ), nw, H[n], pathoptpkpt )
+        end
+        PDATA.y_phi = copy(yphidict)
+        y_phidat = 0
 # Consensus
         y_tmp = copy(PDATA.yc)
         PDATA.yc = ( PDATA.y_v2 + PDATA.y_phi + PDATA.Fx + (PDATA.tau_xc - (PDATA.tau_pwc + PDATA.tau_xic)) ./ rho_y ) ./ 3
 
 # Object estimation
         x_tmp = copy(PDATA.x)
-        PDATA.x,PDATA.Fx = estimx_par(PDATA.x, PDATA.Fx, rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v,
-                                      PDATA.w, PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
+        PDATA.x,PDATA.Fx = estimx_par(rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v, PDATA.w,
+                                      PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
                                       plan, Wvlt, M, paral)
+        # PDATA.x,PDATA.Fx = estimx_par(PDATA.x, PDATA.Fx, rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v,
+        #                               PDATA.w, PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
+        #                               plan, Wvlt, M, paral)
 
 # update of auxiliary variables
         if rho_spat >0
-            tmpHx2 = convert(SharedArray,PDATA.Hx)
             tmpx = copy(PDATA.x)
-            @sync @parallel for z in 1:nw*NWvlt
-                n,b = ind2sub((nw,NWvlt),z)
-                tmpHx2[:, :, n, b] = dwt(tmpx[:, :, n], wavelet(Wvlt[b]))
+            @sync @parallel for ind in 1:nw*NWvlt
+                n,b = ind2sub((nw,NWvlt),ind)
+                Hx[:, :, n, b] = dwt(tmpx[:, :, n], wavelet(Wvlt[b]))
             end
-            PDATA.Hx = tmpHx2
+            tmpx = 0
 # update of z
-            PDATA.z = PDATA.Hx + (PDATA.tau_s / rho_spat)
+            PDATA.z = Hx + (PDATA.tau_s / rho_spat)
             PDATA.z = max(1 - ((lambda_spat / rho_spat) ./ abs(PDATA.z)), 0.) .* PDATA.z
         end
 # update of v
         if rho_spec >0
             tmp = permutedims(rho_spec * PDATA.r - PDATA.tau_r, [3, 1, 2])
-            tmpSpcdct = convert(SharedArray,PDATA.Spcdct)
-            @sync @parallel for z in 1:nx*nx
-                m,n = ind2sub((nx,nx),z)
-                tmpSpcdct[m, n, :]= idct(tmp[:, m, n] )
+            @sync @parallel for ind in 1:nx*nx
+                m,n = ind2sub((nx,nx),ind)
+                Spcdct[m, n, :]= idct(tmp[:, m, n] )
             end
-            PDATA.Spcdct = tmpSpcdct
-            PDATA.v = ( PDATA.Spcdct + (rho_spec * PDATA.x) + PDATA.tau_v) / (2 * rho_spec)
+            tmp = 0
+
+            PDATA.v = ( Spcdct + (rho_spec * PDATA.x) + PDATA.tau_v) / (2 * rho_spec)
             vecv = permutedims(PDATA.v, [3, 1, 2])
-            tmpvHt = convert(SharedArray,PDATA.vHt)
-            @sync @parallel for z in 1:nx*nx
-                m,n = ind2sub((nx,nx),z)
-                tmpvHt[m, n, :] = dct(vecv[:, m, n] )
+            @sync @parallel for ind in 1:nx*nx
+                m,n = ind2sub((nx,nx),ind)
+                vHt[m, n, :] = dct(vecv[:, m, n] )
             end
-            PDATA.vHt = tmpvHt
+            vecv = 0
 # update of r
-            PDATA.r = PDATA.vHt + PDATA.tau_r / rho_spec
+            PDATA.r = vHt + PDATA.tau_r / rho_spec
             PDATA.r = max(1 - (lambda_spec / rho_spec) ./ abs(PDATA.r), 0) .* PDATA.r
         end
 # update of w
@@ -419,11 +358,11 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,OPTOPT::OptOption
         PDATA.tau_xic = PDATA.tau_xic + rho_y * (PDATA.yc - PDATA.y_phi)
         PDATA.tau_xc = PDATA.tau_xc + rho_y * (PDATA.Fx - PDATA.yc)
         if rho_spat >0
-            PDATA.tau_s = PDATA.tau_s + rho_spat * (PDATA.Hx - PDATA.z)
+            PDATA.tau_s = PDATA.tau_s + rho_spat * (Hx - PDATA.z)
         end
         if rho_spec >0
             PDATA.tau_v = PDATA.tau_v + rho_spec * (PDATA.x - PDATA.v)
-            PDATA.tau_r = PDATA.tau_r + rho_spec * (PDATA.vHt- PDATA.r)
+            PDATA.tau_r = PDATA.tau_r + rho_spec * (vHt- PDATA.r)
         end
 # stopping criteria
         n1 = norm(vec(PDATA.x -x_tmp))
@@ -452,24 +391,21 @@ end
 function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
                  lambda_spec = 1/100, lambda_L1 = 0, epsilon = 1e-6,
                  rho_y = 1, rho_spat = 1, rho_spec = 1, rho_ps = 1, alpha = 1,
-                 dptype = "all", dpprm = 0,
+                 dptype = "all", dpprm = 0, pathoptpkpt = string(Pkg.dir("PAINTER"),"/src/optpckpt.jl"),
                  Wvlt  = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar],
                  beta = 1, eps1 = 1e-6, eps2 = 1e-6, FOV = 4e-2, mask3D = [], xinit3D = [], indfile = [], indwvl = [],
-                 ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-4, gtol = 0.9),
-                 scl = OptimPack.SCALING_OREN_SPEDICATO, gat = 1e-6, grt = 1e-6,
-                 vt = false, memsize = 100, mxvl = 1000, mxtr = 1000, stpmn = 1e-20,
-                 stpmx = 1e+20, PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, paral = true)
+                 PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, paral = true)
 # Check if mandatory package are installed
     checkPack()
 # PAINTER Data Type Creation
     OIDATA = painterinputinit()
     PDATA  = painterdatainit()
-    OPTOPT = optiminit(ls, scl, gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
+    # OPTOPT = optiminit( gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
 # PAINTER User parameter validation
     OIDATA = painterinit(OIDATA, Folder, nx, lambda_spat, lambda_spec, lambda_L1, 
                          epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, beta,
                          eps1, eps2, FOV, mask3D, xinit3D, Wvlt, paral, 
-                         dptype, dpprm, PlotFct)
+                         dptype, dpprm, PlotFct,pathoptpkpt)
 # OIFITS-FITS Data Read
     println("")
     OIDATA = readoifits(OIDATA, indfile, indwvl)
@@ -481,13 +417,19 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
     PDATA.CountPlot = CountPlot
 # Main Loop ADMM
     if admm
-        PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
+        # PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
+        PDATA = painteradmm(PDATA, OIDATA, nbitermax, aff)
     end
-    return OIDATA, PDATA, OPTOPT
+    return OIDATA, PDATA
 end
 #########################################
-function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,OPTOPT::OptOptions,nbitermax::Int,aff::Bool;PlotFct = painterplotfct)
+function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,nbitermax::Int,aff::Bool;PlotFct = painterplotfct)
     OIDATA.PlotFct = PlotFct
-    PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
-    return OIDATA, PDATA, OPTOPT
+    PDATA = painteradmm(PDATA, OIDATA, nbitermax, aff)
+    return OIDATA, PDATA
 end
+# function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,OPTOPT::OptOptions,nbitermax::Int,aff::Bool;PlotFct = painterplotfct)
+#     OIDATA.PlotFct = PlotFct
+#     PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
+#     return OIDATA, PDATA, OPTOPT
+# end
