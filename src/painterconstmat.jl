@@ -11,21 +11,8 @@ function invmat_par(F3D::Array,rho_y::Real,eta::Real,nw::Int)#,paral::Bool)
 # F3D: non uniform 3D Fourier Transform Matrix
 # rho_x: admm parameters
 # eta: (nwvlt*OIDATA.rho_spat+OIDATA.rho_spec+OIDATA.rho_ps+OIDATA.epsilon)
-# if paral
     mat2inv = [(F3D[n], (rho_y / eta)) for n in 1:nw ]
     M = pmap(toinv, mat2inv)
-# else
-
-# # TO FIND BUG
-# # # # # SERIAL
-# nb = size(F3D[1],1)
-# UnNb        = speye(nb)
-# println("matrix inversion - constmat l 21")
-# for n       = 1 : nw
-#   println( sum( abs2( M[n] - inv(rho_y/eta*F3D[n]*F3D[n]' + UnNb) )))
-# end
-
-# end
     return M
 end
 # ---------------------------------------------------------------------------------
@@ -61,9 +48,6 @@ function phasetophasediff(Closure_index::Matrix,nw::Integer,nb::Integer,T3::Inte
 # defined as in equation 19 of PAINTER [1], 7 of [0]
 # rank = Nbas*(Nwvl-1)
     if(DP == 1)
-      # rowb = repeat(collect(1:(nb * (nw - 1))), inner = [2])
-      # colb = vec(vcat(repmat(collect(1:nb)', 1, (nw-1)),collect((nb + 1):nbnw)'))
-      # Valueb = repeat([1,-1], outer=[nb*(nw-1)])
       if dptype == "all"
           # rank = Nbas*( Nwvl - 1 )
           HDP = alldp(nb, nw)
@@ -208,28 +192,8 @@ function planarray_par(tab_u::Array,tab_v::Array,nx::Int,nw::Int)#,parral::Bool)
 # tab_u and tab_v are spatial frequencies
 # nx is images side size
 # nw is the number of wavelength
-# if parral
-
     Mtmp = [( hcat(tab_u[:,n] / nx, tab_v[:,n] / nx)', nx) for n in 1:nw]
-
-# # TO FIND BUG
-#     println("planarray_par - constmat l 215")
-#     x = randn(nx,nx) + im*randn(nx,nx)
-#     tmp = pmap(toplan, Mtmp)
-#     for n       = 1 : nw
-#       plan = NFFTPlan( hcat(tab_u[:,n] / nx, tab_v[:,n] / nx)' , (nx, nx) )
-#       println( sum( abs2( nfft(plan, x) - nfft(tmp[n], x) )))
-#       println( sum( angle( nfft(plan, x) - nfft(tmp[n], x) )))
-#     end
-
     return pmap(toplan, Mtmp)
-# else
-# # # SERIAL
-# for n       = 1 : size(tab_u,2)
-# Freq        = (hcat(tab_u[:,n]/nx,tab_v[:,n]/nx))'
-# plan[n]     = NFFTPlan(Freq,(nx,nx))
-# end
-# end
 end
 # ---------------------------------------------------------------------------------
 # for parallel calculus
@@ -258,27 +222,8 @@ function nudft3d_par(tab_u::Array,tab_v::Array,nb::Int,nx::Int,nw::Int)
 
 # test if U and V have same size and have same number of wavelength, otherwise PB
         if(size(tab_u,2) == size(tab_v,2))
-	    # # # SERIAL
-	    #       F3D = complex(zeros(nb,nx*nx,nw))
-	    #       for n      = 1:nw
-	    #         nudftmat   = non_uniform_dft(tab_u[:,n],tab_v[:,n])
-	    #         F3D[:,:,n] = nudftmat
-	    #       end
-	    # toc()
-	    # tic()
             UVMAT = [(tab_u[:, n], tab_v[:, n], nx, nb) for n in 1:nw ]
 	          F3D = pmap(non_uniform_dft_par, UVMAT)
-
-                  # # TO FIND BUG
-                  # println("nudft3d_par - constmat l 273")
-                  # F3D2 = complex(zeros(nb,nx*nx,nw))
-      	          # for n      = 1:nw
-      	          #   nudftmat   = non_uniform_dft(tab_u[:,n],tab_v[:,n],nx,nb)
-      	          #   F3D2[:,:,n] = nudftmat
-                  #   println( sum( abs2( F3D[n] - F3D2[:,:,n] )))
-                  #   println( sum( angle( F3D[n] - F3D2[:,:,n] )))
-      	          # end
-
             return F3D
 
         else
@@ -306,14 +251,3 @@ function non_uniform_dft_par(UVMAT)
     vm 		= repmat(vec(UVMAT[2]), 1, (UVMAT[3] * UVMAT[3]))
     return exp(-2 * im * pi * ((k1m .* um) + (k2m .* vm) )) ./ UVMAT[3]
 end
-
-#
-# # TO FIND BUG
-# function non_uniform_dft(U,V,nx,nb)
-#     k1  	= repmat(collect((-nx / 2):(-1 + (nx / 2))), 1, nx)
-#     k1m 	= repmat((vec(k1 )' / nx), nb, 1)
-#     k2m 	= repmat((vec(k1')' / nx), nb, 1)
-#     um 		= repmat(vec(U), 1, (nx * nx))
-#     vm 		= repmat(vec(V), 1, (nx * nx))
-#     return exp(-2 * im * pi * ((k1m .* um) + (k2m .* vm) )) ./ nx
-# end

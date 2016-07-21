@@ -12,17 +12,12 @@
 #
 #------------------------------------------------------------------------------
 module PAINTER
-    using HDF5, JLD
+    using JLD
     using OIFITS
     using OptimPack
     using NFFT
     using Wavelets
-    using FITSIO
-    using FITSIO.Libcfitsio
 
-    if(Pkg.installed("PyPlot") != nothing)
-        using PyPlot
-    end
     export painter, mask, paintersave, painterload, painterfitsexport, painterplotfct, WT
 
     include("paintertype.jl")

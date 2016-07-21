@@ -1,3 +1,7 @@
+if(Pkg.installed("PyPlot") != nothing)
+    Pkg.add("PyPlot")
+end
+
 using PyPlot
 
 function plotfunction(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)

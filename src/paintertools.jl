@@ -176,20 +176,7 @@ function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
         return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
     end
 
-    if isempty(pathoptpkpt) # For travis
-        ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95)
-        scl = OptimPack.SCALING_OREN_SPEDICATO
-        gat = 0
-        grt = 1e-3
-        vt = false
-        memsize = 100
-        mxvl = 1000
-        mxtr = 1000
-        stpmn = 1e-20
-        stpmx = 1e+20
-    else
-        include(pathoptpkpt)
-    end
+    include(pathoptpkpt)
     phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
                         , grtol = grt, gatol = gat, maxeval = mxvl
                         , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
