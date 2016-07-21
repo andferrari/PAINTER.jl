@@ -231,22 +231,12 @@ function diffphi(DiffPhi::Array, HDP::SparseMatrixCSC)
 # DiffPhi is matrix (Nbase*Nwvl)
 # All channels reference are assumed to be equal
 # defined as in equation 21 of PAINTER (1)
-# D1              = DiffPhi[:,1];
-# Dr              = DiffPhi[:,2:end];
-# D               = repmat(D1,1,size(DiffPhi,2)-1);
-# DiffPhiAB       = D - Dr;
-
     DiffPhiAB = HDP * vec(DiffPhi)
 end
 # ---------------------------
 # All channels are assumed to be independent
 # variance of sum of random variables = sum of random variables variance
 function diffphierr(DiffPhierr::Array, HDP::SparseMatrixCSC)
-# D1              = DiffPhierr[:,1]
-# Dr              = DiffPhierr[:,2:end]
-# D               = repmat(D1,1,size(DiffPhierr,2)-1)
-# DiffPhiABerr    = D + Dr
-    # DiffPhiABerr = abs(HDP) * vec(DiffPhierr)
     DiffPhiABerr = abs(HDP) * vec(DiffPhierr)
 end
 # ---------------------------------------------------------------------------------

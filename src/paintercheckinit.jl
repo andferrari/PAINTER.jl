@@ -427,7 +427,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     end
 
     if typeof(PlotFct) != Function
-        error("PlotFct must a Function, default plot function: painterplotfct() will be used")
+        error("PlotFct must be a Function, default plot function: painterplotfct() will be used")
         PlotFct = painterplotfct
     end
 
@@ -482,9 +482,6 @@ end
 # Initialise ADMM Array
 function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 
-    # nx = OIDATA.nx
-    # nb = OIDATA.nb
-    # nw = OIDATA.nw
     nwvlt = length(OIDATA.Wvlt)
     DegRd = 2.0 * pi / 360.0
     RadAs = 3600.0 / DegRd

@@ -190,7 +190,6 @@ function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
                             , scaling = scl, lnsrch = ls)
     end
 
-
     if phi!=nothing
         Ek = phi_t - phi
         gam = max(0.0, gam_t .* cos(Ek))
@@ -379,10 +378,6 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
         if aff&&(PDATA.ind - 1)==(PDATA.count * PDATA.CountPlot)
             OIDATA.PlotFct(PDATA,OIDATA)
             PDATA.count += 1
-        end
-        if (PDATA.ind - 1)==(PDATA.count * PDATA.CountPlot)
-          name=string(OIDATA.Folder,"_",PDATA.ind ,".jld")
-          JLD.save(name,"x",PDATA.x)
         end
         if (PDATA.ind >= nbitermax)||( (n1 < eps1)&&(n2 < eps2) )
             loop = false

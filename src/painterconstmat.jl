@@ -192,8 +192,6 @@ function planarray_par(tab_u::Array,tab_v::Array,nx::Int,nw::Int)#,parral::Bool)
 # tab_u and tab_v are spatial frequencies
 # nx is images side size
 # nw is the number of wavelength
-# if parral
-
     Mtmp = [( hcat(tab_u[:,n] / nx, tab_v[:,n] / nx)', nx) for n in 1:nw]
     return pmap(toplan, Mtmp)
 end
