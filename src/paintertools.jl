@@ -176,24 +176,19 @@ function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
         return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
     end
 
-    if isempty(pathoptpkpt) # For travis
-        ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95)
-        scl = OptimPack.SCALING_OREN_SPEDICATO
-        gat = 0
-        grt = 1e-3
-        vt = false
-        memsize = 100
-        mxvl = 1000
-        mxtr = 1000
-        stpmn = 1e-20
-        stpmx = 1e+20
+    if !isempty(pathoptpkpt)
+      include(pathoptpkpt)
+      phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
+                          , grtol = grt, gatol = gat, maxeval = mxvl
+                          , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
+                          , scaling = scl, lnsrch = ls)
     else
-        include(pathoptpkpt)
+      phi = OptimPack.vmlm(cost!, phi_0, 100, verb = false
+                          , grtol = 1e-3, gatol = 0, maxeval = 1000
+                          , maxiter = 1000, stpmin = 1e-20, stpmax = 1e+20
+                          , scaling = OptimPack.SCALING_OREN_SPEDICATO
+                          , lnsrch = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95))
     end
-    phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
-                        , grtol = grt, gatol = gat, maxeval = mxvl
-                        , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
-                        , scaling = scl, lnsrch = ls)
 
     if phi!=nothing
         Ek = phi_t - phi
@@ -343,9 +338,6 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
         PDATA.x,PDATA.Fx = estimx_par(rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v, PDATA.w,
                                       PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
                                       plan, Wvlt, M, paral)
-        # PDATA.x,PDATA.Fx = estimx_par(PDATA.x, PDATA.Fx, rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v,
-        #                               PDATA.w, PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
-        #                               plan, Wvlt, M, paral)
 
 # update of auxiliary variables
         if rho_spat >0
@@ -406,10 +398,6 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
             OIDATA.PlotFct(PDATA,OIDATA)
             PDATA.count += 1
         end
-        if (PDATA.ind - 1)==(PDATA.count * PDATA.CountPlot)
-          name=string(OIDATA.Folder,"_",PDATA.ind ,".jld")
-          JLD.save(name,"x",PDATA.x)
-        end
         if (PDATA.ind >= nbitermax)||( (n1 < eps1)&&(n2 < eps2) )
             loop = false
         end
@@ -432,7 +420,6 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
 # PAINTER Data Type Creation
     OIDATA = painterinputinit()
     PDATA  = painterdatainit()
-    # OPTOPT = optiminit( gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
 # PAINTER User parameter validation
     OIDATA = painterinit(OIDATA, Folder, nx, lambda_spat, lambda_spec, lambda_L1, 
                          epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, beta,
@@ -461,8 +448,3 @@ function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,nbitermax::Int,aff::B
     PDATA = painteradmm(PDATA, OIDATA, nbitermax, aff)
     return OIDATA, PDATA
 end
-# function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,OPTOPT::OptOptions,nbitermax::Int,aff::Bool;PlotFct = painterplotfct)
-#     OIDATA.PlotFct = PlotFct
-#     PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
-#     return OIDATA, PDATA, OPTOPT
-# end
