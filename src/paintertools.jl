@@ -330,9 +330,6 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
         PDATA.x,PDATA.Fx = estimx_par(rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v, PDATA.w,
                                       PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
                                       plan, Wvlt, M, paral)
-        # PDATA.x,PDATA.Fx = estimx_par(PDATA.x, PDATA.Fx, rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v,
-        #                               PDATA.w, PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
-        #                               plan, Wvlt, M, paral)
 
 # update of auxiliary variables
         if rho_spat >0
@@ -393,10 +390,6 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
             OIDATA.PlotFct(PDATA,OIDATA)
             PDATA.count += 1
         end
-        if (PDATA.ind - 1)==(PDATA.count * PDATA.CountPlot)
-          name=string(OIDATA.Folder,"_",PDATA.ind ,".jld")
-          JLD.save(name,"x",PDATA.x)
-        end
         if (PDATA.ind >= nbitermax)||( (n1 < eps1)&&(n2 < eps2) )
             loop = false
         end
@@ -419,7 +412,6 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
 # PAINTER Data Type Creation
     OIDATA = painterinputinit()
     PDATA  = painterdatainit()
-    # OPTOPT = optiminit( gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
 # PAINTER User parameter validation
     OIDATA = painterinit(OIDATA, Folder, nx, lambda_spat, lambda_spec, lambda_L1, 
                          epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, beta,
@@ -448,8 +440,3 @@ function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,nbitermax::Int,aff::B
     PDATA = painteradmm(PDATA, OIDATA, nbitermax, aff)
     return OIDATA, PDATA
 end
-# function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,OPTOPT::OptOptions,nbitermax::Int,aff::Bool;PlotFct = painterplotfct)
-#     OIDATA.PlotFct = PlotFct
-#     PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
-#     return OIDATA, PDATA, OPTOPT
-# end
