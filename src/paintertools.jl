@@ -177,23 +177,19 @@ function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
     end
 
     if isempty(pathoptpkpt) # For travis
-        ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95)
-        scl = OptimPack.SCALING_OREN_SPEDICATO
-        gat = 0
-        grt = 1e-3
-        vt = false
-        memsize = 100
-        mxvl = 1000
-        mxtr = 1000
-        stpmn = 1e-20
-        stpmx = 1e+20
+        phi = OptimPack.vmlm(cost!, phi_0, 100, verb = false
+                            , grtol = 1e-3, gatol = 0, maxeval = 1000
+                            , maxiter = 1000, stpmin = 1e-20, stpmax = e+20
+                            , scaling = OptimPack.SCALING_OREN_SPEDICATO
+                            , lnsrch = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95))
     else
         include(pathoptpkpt)
+        phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
+                            , grtol = grt, gatol = gat, maxeval = mxvl
+                            , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
+                            , scaling = scl, lnsrch = ls)
     end
-    phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
-                        , grtol = grt, gatol = gat, maxeval = mxvl
-                        , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
-                        , scaling = scl, lnsrch = ls)
+
 
     if phi!=nothing
         Ek = phi_t - phi
@@ -275,24 +271,6 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
     Hx = convert( SharedArray, zeros( nx, nx, nw, NWvlt))
 
 # ----------------------------------
-# Check if Pyplot is used to graphics
-    if aff
-# check if Pyplot is installed
-        if(Pkg.installed("PyPlot") == nothing)
-            println("")
-            println("PyPlot is not installed: Pkg.add(''PyPlot''), aff=false ")
-            aff = false
-        else # PyPlot is installed, check if Painter know where is PyPlot
-            try
-                PyPlot.pygui(true)
-            catch e
-                println("")
-                println("PyPlot not used: using PyPlot, try to load it otherwise aff=false")
-                aff = false
-            end # If PyPlot is known so we can use it
-        end
-    end
-# ----------------------------------
     if !isempty(pathoptpkpt)
         include(pathoptpkpt)
         println(" ")
@@ -343,10 +321,6 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
         PDATA.x,PDATA.Fx = estimx_par(rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v, PDATA.w,
                                       PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
                                       plan, Wvlt, M, paral)
-        # PDATA.x,PDATA.Fx = estimx_par(PDATA.x, PDATA.Fx, rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v,
-        #                               PDATA.w, PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
-        #                               plan, Wvlt, M, paral)
-
 # update of auxiliary variables
         if rho_spat >0
             tmpx = copy(PDATA.x)
@@ -432,7 +406,6 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
 # PAINTER Data Type Creation
     OIDATA = painterinputinit()
     PDATA  = painterdatainit()
-    # OPTOPT = optiminit( gat, grt, vt, memsize, mxvl, mxtr, stpmn, stpmx)
 # PAINTER User parameter validation
     OIDATA = painterinit(OIDATA, Folder, nx, lambda_spat, lambda_spec, lambda_L1, 
                          epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, beta,
@@ -450,7 +423,6 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
 
 # Main Loop ADMM
     if admm
-        # PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
         PDATA = painteradmm(PDATA, OIDATA, nbitermax, aff)
     end
     return OIDATA, PDATA
@@ -461,8 +433,3 @@ function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,nbitermax::Int,aff::B
     PDATA = painteradmm(PDATA, OIDATA, nbitermax, aff)
     return OIDATA, PDATA
 end
-# function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,OPTOPT::OptOptions,nbitermax::Int,aff::Bool;PlotFct = painterplotfct)
-#     OIDATA.PlotFct = PlotFct
-#     PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
-#     return OIDATA, PDATA, OPTOPT
-# end

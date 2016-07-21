@@ -40,28 +40,13 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         "ind", PDATA.ind,
         "CountPlot", PDATA.CountPlot,
         "count", PDATA.count
-
-        # "vHt", PDATA.vHt,
-        # "Hx", PDATA.Hx,
-        # "Spcdct", PDATA.Spcdct
         )
-    # JLD.save(string("OPTOPT_",savepath),
-    #     "gat", OPTOPT.gat,
-    #     "grt", OPTOPT.grt,
-    #     "vt", OPTOPT.vt,
-    #     "memsize", OPTOPT.memsize,
-    #     "mxvl", OPTOPT.mxvl,
-    #     "mxtr", OPTOPT.mxtr,
-    #     "stpmn", OPTOPT.stpmn,
-    #     "stpmx", OPTOPT.stpmx
-    # )
 end
 
 function painterload(loadpath::ASCIIString)
 # OIDATA
     OIDATA = painterinputinit()
     tmp = JLD.load(string("OIDATA_",loadpath))
-#    OIDATA.PlotFct = tmp["PlotFct"]
     OIDATA.T3 = tmp["T3"]
     OIDATA.DP = tmp["DP"]
     OIDATA.T3err = tmp["T3err"]
@@ -128,26 +113,10 @@ function painterload(loadpath::ASCIIString)
     PDATA.ind = tmp["ind"]
     PDATA.CountPlot = tmp["CountPlot"]
     PDATA.count = tmp["count"]
-
-    # PDATA.Spcdct = tmp["Spcdct"]
-    # PDATA.vHt = tmp["vHt"]
-    # PDATA.Hx = tmp["Hx"]
     PDATA.z = tmp["z"]
     PDATA.v = tmp["v"]
     PDATA.r = tmp["r"]
-
-# OPTOPT
-    # tmp = JLD.load(string("OPTOPT_",loadpath))
-    # gat = tmp["gat"]
-    # grt = tmp["grt"]
-    # vt = tmp["vt"]
-    # memsize = tmp["memsize"]
-    # mxvl = tmp["mxvl"]
-    # mxtr = tmp["mxtr"]
-    # stpmn = tmp["stpmn"]
-    # stpmx = tmp["stpmx"]
-    # OPTOPT = optiminit(gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx)
-    return PDATA, OIDATA #, OPTOPT
+    return PDATA, OIDATA
 end
 
 # ################################################################
