@@ -427,7 +427,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     end
 
     if typeof(PlotFct) != Function
-        error("PlotFct must a Function, default plot function: painterplotfct() will be used")
+        error("PlotFct must be a Function, default plot function: painterplotfct() will be used")
         PlotFct = painterplotfct
     end
 
