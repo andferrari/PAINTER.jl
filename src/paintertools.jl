@@ -176,11 +176,19 @@ function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
         return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
     end
 
-    include(pathoptpkpt)
-    phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
-                        , grtol = grt, gatol = gat, maxeval = mxvl
-                        , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
-                        , scaling = scl, lnsrch = ls)
+    if !isempty(pathoptpkpt)
+      include(pathoptpkpt)
+      phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
+                          , grtol = grt, gatol = gat, maxeval = mxvl
+                          , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
+                          , scaling = scl, lnsrch = ls)
+    else
+      phi = OptimPack.vmlm(cost!, phi_0, 100, verb = flase
+                          , grtol = 1e-3, gatol = 0, maxeval = 1000
+                          , maxiter = 1000, stpmin = 1e-20, stpmax = 1e+20
+                          , scaling = OptimPack.SCALING_OREN_SPEDICATO
+                          , lnsrch = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95))
+    end
 
     if phi!=nothing
         Ek = phi_t - phi
