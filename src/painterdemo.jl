@@ -1,4 +1,4 @@
-if( Pkg.installed("PyPlot") != nothing)
+if( Pkg.installed("PyPlot") == nothing)
     Pkg.add("PyPlot")
 end
 
