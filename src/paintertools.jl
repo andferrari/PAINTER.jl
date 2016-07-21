@@ -183,7 +183,7 @@ function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
                           , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
                           , scaling = scl, lnsrch = ls)
     else
-      phi = OptimPack.vmlm(cost!, phi_0, 100, verb = flase
+      phi = OptimPack.vmlm(cost!, phi_0, 100, verb = false
                           , grtol = 1e-3, gatol = 0, maxeval = 1000
                           , maxiter = 1000, stpmin = 1e-20, stpmax = 1e+20
                           , scaling = OptimPack.SCALING_OREN_SPEDICATO
