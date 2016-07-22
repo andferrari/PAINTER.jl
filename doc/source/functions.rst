@@ -12,7 +12,7 @@ Main function
 
     .. code:: julia
 
-      OIDATA,PDATA = painter(Folder, nbitermax, nx, lambda_spat, lambda_spec, lambda_L1, epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, Wvlt, beta, eps1, eps2, FOV, mask3D, xinit3D, indfile, indwvl, aff, CountPlot, PlotFct, admm, paral, pathoptpkpt)
+      OIDATA,PDATA = painter(Folder, nbitermax, nx, lambda_spat, lambda_spec, lambda_L1, epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, Wvlt, beta, eps1, eps2, FOV, mask3D, xinit3D, indfile, indwvl, aff, CountPlot, PlotFct, admm, paral)
 
   * Specific structures. This method allows to restart the algorithm, for example if the number of iterations is not sufficient (see variable ``nbitermax+=100``).
 

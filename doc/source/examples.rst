@@ -13,8 +13,7 @@ To run the demo type:
 .. code:: julia
 
   using PAINTER
-  demo = string(Pkg.dir("PAINTER"),"/src/painterdemo.jl")
-  include(demo);
+  painterdemo()
 
 The demo includes warm start, save and load of structures, a custom plot function (require PyPLot), ...
 
@@ -27,7 +26,7 @@ User parameters and single execution
 
     path        = '../OifitsFolder'
     FOV         = 0.01
-    indwvl      = 1:29
+    indwvl      = 1:30
     nx          = 64
     eps1        = 1e-4
     eps2        = 1e-4
@@ -39,6 +38,7 @@ User parameters and single execution
     lambda_spat = 1e-5
     rho_spec    = 1/2
     lambda_spec = 1e-5
+    dptype      = "sliding" # type of differential phases
     aff         = true      # plot is enabled
     nbitermax   = 100
     paral       = false     # parallel computing is disabled

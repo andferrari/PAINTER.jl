@@ -1,10 +1,10 @@
-if( Pkg.installed("PyPlot") == nothing)
+if(Pkg.installed("PyPlot") == nothing)
     Pkg.add("PyPlot")
 end
 
 using PyPlot
 
-function plotfunction(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
+function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
     nx = OIDATA.nx
     nw = OIDATA.nw
     wvl = OIDATA.wvl
@@ -62,7 +62,7 @@ end
     dpprm = 5
     Folder = ""
 # initialize algorithm and run admm
-    OIDATA, PDATA = painter(nbitermax = nbitermax, nx = nx, lambda_spat = lambda_spat,
+    OIDATA, PDATA = PAINTER.painter(nbitermax = nbitermax, nx = nx, lambda_spat = lambda_spat,
                             lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,
                             rho_spec = rho_spec, rho_ps = rho_ps, alpha = alpha, beta = beta,
                             eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl, admm=true,
@@ -70,10 +70,15 @@ end
                             dpprm = dpprm, Folder = Folder)
 
 # save data struture in .jld files
-    paintersave(savepath,PDATA,OIDATA)
+    println("save data")
+    PAINTER.paintersave(savepath,PDATA,OIDATA)
 
 # load data struture in .jld files
-    PDATA, OIDATA = painterload(savepath)
+    println("load data")
+    PDATA, OIDATA = PAINTER.painterload(savepath)
 
 # Warm start of the algorithm
-    OIDATA, PDATA = painter(OIDATA,PDATA,100,true, PlotFct = PlotFct)
+    println("PAINTER: Warm Start")
+    OIDATA, PDATA = PAINTER.painter(OIDATA,PDATA,11,true, PlotFct = PlotFct)
+
+    nothing

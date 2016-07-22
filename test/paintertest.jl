@@ -23,7 +23,7 @@ OIDATA, PDATA = painter(nbitermax = nbitermax, nx = nx, lambda_spat = lambda_spa
                             lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,
                             rho_spec = rho_spec, rho_ps = rho_ps, alpha = alpha, beta = beta,
                             eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl,
-                            dptype = dptype, dpprm = dpprm, aff=aff,pathoptpkpt="")
+                            dptype = dptype, dpprm = dpprm, aff=aff)
 
 
 @test_approx_eq_eps PDATA.crit1[1] 1.92717 1E-4

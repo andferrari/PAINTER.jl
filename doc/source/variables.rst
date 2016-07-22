@@ -107,30 +107,6 @@ extracted from OIFITS files.
 
 For matrices, the column index is associated to the wavelength index.
 
-Path to ``OptimPack`` options
------------------------------
-
-The variable ``pathoptpkpt`` determines the path to the file for the VMLM options configuration: contains all OptimPack parameters for the phases proximal operator.
-
-* ``ls``, ``scl``, ``gat``, ``grt``, ``vt``, ``memsize``, ``mxvl``, ``mxtr``, ``stpmn``, ``stpmx``. See  `OptimPack <https://github.com/emmt/OptimPack>`_ for details.
-
-  Default values are:
-
-  .. code:: julia
-
-    ls=OptimPack.MoreThuenteLineSearch(ftol=1e-8,gtol=0.95)
-    scl=OptimPack.SCALING\_OREN\_SPEDICATO
-    gat=0
-    grt=0
-    vt=false
-    memsize=100
-    mxvl=1000
-    mxtr=1000
-    stpmn=1E-20
-    stpmx=1E+20
-
-And the default configuration files is ``optpckpt.jl`` located in the ``src`` folder of PAINTER (../.julia/Vx.x/PAINTER/src/). Default value: ``pathoptpkpt = string(Pkg.dir("PAINTER"),"/src/optpckpt.jl")``
-
 Variables in ``PDATA`` structure
 --------------------------------
 

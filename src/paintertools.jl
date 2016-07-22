@@ -85,7 +85,6 @@ end
 # nw is the number of wavelength
 #
 # Equation 58-59 of PAINTER
-#
 function proxv2!(y_v2::Array,P::Array,W::Array,rho_y::Real,alpha::Real,nb::Int,nw::Int)
     mod_y = convert(SharedArray,abs(y_v2))
     ang_y = angle(y_v2)
@@ -98,8 +97,8 @@ function proxv2!(y_v2::Array,P::Array,W::Array,rho_y::Real,alpha::Real,nb::Int,n
         (a,b) = findmin(cst)
         mod_y[m,n] = sol[b]
     end
-
-    y_v2[:] = copy(mod_y) .* exp(im .* ang_y)
+    y_v2[:] = mod_y .* exp(im .* ang_y)
+    # y_v2[:] = copy(mod_y) .* exp(im .* ang_y)
 end
 # ---------------------------------------------------------------------------------
 # ----- Cardano's formula
@@ -154,7 +153,7 @@ end
 # Proximal operator for phases difference (Section 5.2 PAINTER)
 # for parallel
 function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
-                  ,nb::Int,nw::Int,H::SparseMatrixCSC,pathoptpkpt::ASCIIString)
+                  ,nb::Int,nw::Int,H::SparseMatrixCSC)
 # estimate the complexe visibilities from the phases differences
 # y_phi: vector of auxiliary variable \tilde{y} (last estimate of complexe visibility) is upadted
 # Xi vector of observed Phases Difference [ {Nwvl*(Nb-1)*(Nb-2)/2 + Nb*(Nwvl-1)} *{1}]
@@ -166,7 +165,6 @@ function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
 # nw is the number of wavelength
 # H: Phases difference to Phases matrix (function Ph2PhDiff)
 # OPTOPT: structure of OptimPack vmlm option, see optimpack
-
     y_t = vec(y_phi)
     gam_t = abs(y_t)
     phi_t = angle(y_t)
@@ -176,19 +174,11 @@ function proxphase(y_phi::Matrix,Xi::Vector,K::Vector,rho_y::Real,beta::Real
         return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
     end
 
-    if isempty(pathoptpkpt) # For travis
-        phi = OptimPack.vmlm(cost!, phi_0, 100, verb = false
-                            , grtol = 1e-3, gatol = 0, maxeval = 1000
-                            , maxiter = 1000, stpmin = 1e-20, stpmax = e+20
-                            , scaling = OptimPack.SCALING_OREN_SPEDICATO
-                            , lnsrch = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95))
-    else
-        include(pathoptpkpt)
-        phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
-                            , grtol = grt, gatol = gat, maxeval = mxvl
-                            , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
-                            , scaling = scl, lnsrch = ls)
-    end
+    # ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx = optiminit()
+    phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
+                        , grtol = grt, gatol = gat, maxeval = mxvl
+                        , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
+                        , scaling = scl, lnsrch = ls)
 
     if phi!=nothing
         Ek = phi_t - phi
@@ -263,19 +253,26 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
     const H = PDATA.H
     const baseNb = OIDATA.baseNb
     const Nt3indep = length(OIDATA.baseNb)
-    const pathoptpkpt = OIDATA.pathoptpkpt
     yphidict = SharedArray( Complex128, (nb,nw) )
     Spcdct = convert( SharedArray, zeros( nx, nx, nw))
     vHt = convert( SharedArray, zeros(nx, nx, nw))
     Hx = convert( SharedArray, zeros( nx, nx, nw, NWvlt))
 
 # ----------------------------------
-    if !isempty(pathoptpkpt)
-        include(pathoptpkpt)
+# Check if Pyplot is used to graphics
+    if aff
+# check if Pyplot is installed
+        if( Pkg.installed("PyPlot") == nothing )
+            println("")
+            println("PyPlot is not installed: Pkg.add(''PyPlot''), aff=false ")
+            aff = false
+        end
+    end
+# ----------------------------------
+        # ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx = optiminit()
         println(" ")
         println("------------------------ ")
         println("VMLM will run with file: ")
-        println(pathoptpkpt)
         println("------------------------ ")
         println("memsize: ", memsize )
         println("verb: ", vt )
@@ -287,7 +284,6 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
         println("stpmax: ", stpmx )
         println("scaling: ", scl )
         println("lnsrch: ", ls )
-    end
 # ----------------------------------
     println("")
     println("-----------------------------------------")
@@ -307,9 +303,10 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
         y_phidat = PDATA.yc + PDATA.tau_xic / rho_y
         @sync @parallel for n in 1:Nt3indep
             yphidict[baseNb[n],:] = proxphase(y_phidat[baseNb[n],:], Xi[n], K[n]
-                     , rho_y, beta, length( baseNb[n] ), nw, H[n], pathoptpkpt )
+                     , rho_y, beta, length( baseNb[n] ), nw, H[n] )
         end
-        PDATA.y_phi = copy(yphidict)
+        # PDATA.y_phi = copy(yphidict)
+        PDATA.y_phi = yphidict
         y_phidat = 0
 # Consensus
         y_tmp = copy(PDATA.yc)
@@ -320,6 +317,7 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
         PDATA.x,PDATA.Fx = estimx_par(rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v, PDATA.w,
                                       PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
                                       plan, Wvlt, M, paral)
+
 # update of auxiliary variables
         if rho_spat >0
             tmpx = copy(PDATA.x)
@@ -375,7 +373,7 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
         push!(PDATA.crit1, n1)
         push!(PDATA.crit2, n2)
 # Plot and verbose
-        if aff&&(PDATA.ind - 1)==(PDATA.count * PDATA.CountPlot)
+        if aff&&( (PDATA.ind )==1 || (PDATA.ind )==( (PDATA.count-1) * PDATA.CountPlot) )
             OIDATA.PlotFct(PDATA,OIDATA)
             PDATA.count += 1
         end
@@ -384,6 +382,10 @@ function painteradmm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,nbitermax::Int,af
         end
         @printf("| %02.02f | %02.04e | %02.04e | %04d |\n",toq(), PDATA.crit1[PDATA.ind], PDATA.crit2[PDATA.ind], PDATA.ind)
     end
+    PDATA.x = copy(PDATA.x)
+    PDATA.Fx = copy(PDATA.Fx)
+    PDATA.y_v2 = copy(PDATA.y_v2)
+    PDATA.y_phi = copy(PDATA.y_phi)
     return PDATA
 end
 ###################################################################################
@@ -392,7 +394,7 @@ end
 function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
                  lambda_spec = 1/100, lambda_L1 = 0, epsilon = 1e-6,
                  rho_y = 1, rho_spat = 1, rho_spec = 1, rho_ps = 1, alpha = 1,
-                 dptype = "all", dpprm = 0, pathoptpkpt = string(Pkg.dir("PAINTER"),"/src/optpckpt.jl"),
+                 dptype = "all", dpprm = 0,
                  Wvlt  = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar],
                  beta = 1, eps1 = 1e-6, eps2 = 1e-6, FOV = 4e-2, mask3D = [], xinit3D = [], indfile = [], indwvl = [],
                  PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, paral = true)
@@ -405,7 +407,7 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
     OIDATA = painterinit(OIDATA, Folder, nx, lambda_spat, lambda_spec, lambda_L1, 
                          epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, beta,
                          eps1, eps2, FOV, mask3D, xinit3D, Wvlt, paral, 
-                         dptype, dpprm, PlotFct,pathoptpkpt)
+                         dptype, dpprm, PlotFct)
 # OIFITS-FITS Data Read
     println("")
     OIDATA = readoifits(OIDATA, indfile, indwvl)
@@ -418,6 +420,7 @@ function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
 
 # Main Loop ADMM
     if admm
+        # PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
         PDATA = painteradmm(PDATA, OIDATA, nbitermax, aff)
     end
     return OIDATA, PDATA
@@ -427,4 +430,12 @@ function painter(OIDATA::PAINTER_Input,PDATA::PAINTER_Data,nbitermax::Int,aff::B
     OIDATA.PlotFct = PlotFct
     PDATA = painteradmm(PDATA, OIDATA, nbitermax, aff)
     return OIDATA, PDATA
+end
+
+#########################################
+function painterdemo(;demo=0)
+    path = Pkg.dir();
+    if demo == 0
+        include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemo.jl") )
+    end
 end

@@ -19,12 +19,12 @@ function checkPack()
 
     # OIFITS
     if( Pkg.installed("OIFITS") == nothing )
-        error("HDF5.jl not installed")
+        error("OIFITS.jl not installed")
     end
 
     # HDF5
-    if( Pkg.installed("HDF5") == nothing )
-        error("HDF5.jl not installed")
+    if( Pkg.installed("JLD") == nothing )
+        error("JLD.jl not installed")
     end
 
 end
@@ -212,7 +212,7 @@ end
 # xinit3D       : Initial Estimate: can be a path to a fits file, or to data image (2D or 3D in both case)
 ###################################################################################
 function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lambda_L1,epsilon,rho_y,rho_spat
-  ,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,paral,dptype,dpprm,PlotFct,pathoptpkpt)
+  ,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,paral,dptype,dpprm,PlotFct)
 # check if user parameters are valid parameters, correct them if type is not good or replace by default if parameter are not valid
     if(FOV < 0)
         println("FOV must be non negative (default: 0.04 arcsecond)")
@@ -475,7 +475,6 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     OIDATA.paral = paral
     OIDATA.dptype = dptype
     OIDATA.dpprm = dpprm
-    OIDATA.pathoptpkpt = pathoptpkpt
     return OIDATA
 end
 ###################################################################################
