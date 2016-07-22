@@ -35,7 +35,6 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         "mask3D", OIDATA.mask3D,
         "xinit3D", OIDATA.xinit3D,
         "Wvlt", OIDATA.Wvlt,
-        "paral", OIDATA.paral,
         "T3", OIDATA.T3,
         "T3err", OIDATA.T3err,
         "DP", OIDATA.DP,
@@ -115,7 +114,6 @@ function painterload(loadpath::ASCIIString)
     OIDATA.mask3D = tmp["mask3D"]
     OIDATA.xinit3D = tmp["xinit3D"]
     OIDATA.Wvlt = tmp["Wvlt"]
-    OIDATA.paral = tmp["paral"]
     OIDATA.dptype = tmp["dptype"]
     OIDATA.dpprm = tmp["dpprm"]
     OIDATA.baseNb = tmp["baseNb"]

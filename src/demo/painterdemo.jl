@@ -56,7 +56,6 @@ end
     lambda_spec = 1e-5
     aff = true     # plot is enabled
     nbitermax = 1
-    paral = true     # parallel computing is enabled
     savepath = "data.jld"
     dptype = "sliding"
     dpprm = 5
@@ -66,7 +65,7 @@ end
                             lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,
                             rho_spec = rho_spec, rho_ps = rho_ps, alpha = alpha, beta = beta,
                             eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl, admm=true,
-                            PlotFct = PlotFct, aff = aff, paral = paral, dptype = dptype,
+                            PlotFct = PlotFct, aff = aff, dptype = dptype,
                             dpprm = dpprm, Folder = Folder)
 
 # save data struture in .jld files
@@ -79,6 +78,6 @@ end
 
 # Warm start of the algorithm
     println("PAINTER: Warm Start")
-    OIDATA, PDATA = PAINTER.painter(OIDATA,PDATA,11,true, PlotFct = PlotFct)
+    OIDATA, PDATA = PAINTER.painter(OIDATA,PDATA,100,true, PlotFct = PlotFct)
 
     nothing

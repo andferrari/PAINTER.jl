@@ -24,15 +24,6 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 
 **Execution Variables:**
 
-* ``paral``: if ``paral=true`` the ADMM step which reconstructs the object for each wavelength is computed in parallel, see [2]_. In this case ``julia``must be started with ``nprocs`` process and the module must be loaded on all process:
-
-  .. code:: bash
-
-    $ julia -p nprocs
-    julia> @everywhere using PAINTER
-
-  Default: ``true``.
-
 * ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used after to iterate the ADMM algorithm. Default: ``true``.
 * ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: ``10``.
 * ``PlotFct``: is a user defined function which is called at each ``CountPlot`` iterations. This function must respect the input argument of ``painterplotfct`` function and must call ``PyPlot``, see :ref:`examples-label`  section. Default: ``painterplotfct``.

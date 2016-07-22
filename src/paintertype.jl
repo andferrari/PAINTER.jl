@@ -44,7 +44,6 @@ type PAINTER_Input
     mask3D::Array                   # support constraint array
     xinit3D::Array                  # initial estimate array
     Wvlt::Array                     # list of wavelets basis
-    paral::Bool                     # parallel computing or not
     T3::Array{Float64}              # Matrix of phases closure
     T3err::Array{Float64}           # Matrix of phases closure error
     DP::Array{Float64}              # Matrix of Differential phases
@@ -91,7 +90,7 @@ function painterinputinit()
     return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
                          , [], Dict{}(), Dict{}(), [], 0., 0., 0., 0., 0., 0., 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
-                         , true, [], [], [], [], 0, "", 0, Dict{}(), Dict{}())
+                         , [], [], [], [], 0, "", 0, Dict{}(), Dict{}())
 end
 function painterdatainit()
   return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], []

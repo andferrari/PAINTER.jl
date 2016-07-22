@@ -3,7 +3,7 @@
 ###################################################################################
 # Pre calculus, MATRIX Inversion - Method involving orthogonal matrices
 # ---------------------------------------------------------------------------------
-function invmat_par(F3D::Array,rho_y::Real,eta::Real,nw::Int)#,paral::Bool)
+function invmat_par(F3D::Array,rho_y::Real,eta::Real,nw::Int)
 # step IV of [0]
 # inverse of inner matrix of C^\lambda_n
 # [F F^H + eta/rho I]^-1
@@ -187,7 +187,7 @@ end
 ###################################################################################
 # Tools for NUFFT
 # ---------------------------------------------------------------------------------
-function planarray_par(tab_u::Array,tab_v::Array,nx::Int,nw::Int)#,parral::Bool)
+function planarray_par(tab_u::Array,tab_v::Array,nx::Int,nw::Int)
 # create Array for plan for non uniform fft
 # tab_u and tab_v are spatial frequencies
 # nx is images side size
