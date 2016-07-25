@@ -119,41 +119,94 @@ function checkinit(xinit::Array,nb::Int,nx::Int,nw::Int,plan::Array)
 # nx: side size of images in pixels
 # nw: number of wavelength
 # plan: non uniform fft plan
+    # if isempty(xinit)
+    #     xinit = zeros(nx, nx)
+    #     xinit[round(Int,  (nx / 2) + 1), round(Int, (nx / 2) + 1)] = 1
+    # end
+    #
+    # if ndims(xinit) == 1
+    #     if size(xinit, 1) == (nx * nx)
+    #         yc = inityc(reshape(repmat(reshape(xinit, nx, nx), 1, nw), nx, nx, nw), nb, nx, nw, plan)
+    #
+    #     elseif size(xinit,1) == nb * nw
+    #         yc = reshape(xinit, nb, nw)
+    #     end
+    #
+    # elseif ndims(xinit) == 2
+    #
+    #     if(size(xinit, 1) == nx)&&(size(xinit, 2) == nx)
+    #         println("Gray Initial estimate")
+    #         yc = inityc(reshape(repmat(xinit, 1, nw), nx, nx, nw), nb, nx, nw, plan)
+    #
+    #     elseif(size(xinit, 1) == (nx * nx))&&(size(xinit, 2) == nw)
+    #         println("Colored vectorized Initial estimate")
+    #         yc = inityc(reshape(xinit, nx, nx, nw), nb, nx, nw, plan)
+    #
+    #     elseif(size(xinit, 1) == nb)&&(size(xinit, 2) == nw)
+    #         println("Input is Colored complexe visibilities")
+    #         yc = xinit + im * 0.
+    #     end
+    #
+    # elseif ndims(xinit) == 3
+    #     if (size(xinit, 1) == nx)&&(size(xinit, 2) == nx)&&(size(xinit, 3) == nw)
+    #         println("Colored vectorized Initial estimate")
+    #         yc = inityc(xinit, nb, nx, nw, plan)
+    #     end
+    # end
+    # return yc,xinit
+
     if isempty(xinit)
-        xinit = zeros(nx, nx)
-        xinit[round(Int,  (nx / 2) + 1), round(Int, (nx / 2) + 1)] = 1
+        xinit = zeros(nx, nx, nw)
+        xinit[round(Int,  (nx / 2) + 1), round(Int, (nx / 2) + 1),:] = 1
+        yc = inityc(xinit, nb, nx, nw, plan)
     end
 
     if ndims(xinit) == 1
-        if size(xinit, 1) == (nx * nx)
-            yc = inityc(reshape(repmat(reshape(xinit, nx, nx), 1, nw), nx, nx, nw), nb, nx, nw, plan)
+        if size(xinit, 1) == nx * nx
+            println("Gray vectorized Initial estimate")
+            xinit = reshape(repmat(reshape(xinit, nx, nx), 1, nw), nx, nx, nw)
+            yc = inityc(xinit, nb, nx, nw, plan)
+
+        elseif size(xinit, 1) == nx * nx * nw
+            println("Colored vectorized Initial estimate")
+            xinit = reshape(xinit, nx, nx, nw)
+            yc = inityc(xinit, nb, nx, nw, plan)
 
         elseif size(xinit,1) == nb * nw
-            yc = reshape(xinit, nb, nw)
+            println("Input is vectorized Colored complexe visibilities (warm start will be less good)")
+            xinit = zeros(nx, nx, nw)
+            yc = reshape(xinit, nb, nw) + im * 0.
         end
 
     elseif ndims(xinit) == 2
 
-        if(size(xinit, 1) == nx)&&(size(xinit, 2) == nx)
-            println("Gray Initial estimate")
-            yc = inityc(reshape(repmat(xinit, 1, nw), nx, nx, nw), nb, nx, nw, plan)
+        if (size(xinit, 1) == nx)&&(size(xinit, 2) == nx)
+            println("Gray images Initial estimate")
+            xinit = reshape(repmat(xinit, 1, nw), nx, nx, nw)
+            yc = inityc(xinit, nb, nx, nw, plan)
 
-        elseif(size(xinit, 1) == (nx * nx))&&(size(xinit, 2) == nw)
-            println("Colored vectorized Initial estimate")
-            yc = inityc(reshape(xinit, nx, nx, nw), nb, nx, nw, plan)
+        elseif (size(xinit, 1) == (nx * nx))&&(size(xinit, 2) == nw)
+            println("Colored vectorized images as Initial estimate")
+            xinit = reshape(xinit, nx, nx, nw)
+            yc = inityc(xinit, nb, nx, nw, plan)
 
-        elseif(size(xinit, 1) == nb)&&(size(xinit, 2) == nw)
-            println("Input is Colored complexe visibilities")
+        elseif (size(xinit, 1) == nb)&&(size(xinit, 2) == nw)
+            println("Input is Colored complexe visibilities  (warm start will be less good)")
+            xinit = zeros(nx, nx, nw)
             yc = xinit + im * 0.
         end
 
     elseif ndims(xinit) == 3
+
         if (size(xinit, 1) == nx)&&(size(xinit, 2) == nx)&&(size(xinit, 3) == nw)
-            println("Colored vectorized Initial estimate")
+            println("Colored cube Initial estimate")
             yc = inityc(xinit, nb, nx, nw, plan)
         end
+
     end
+
     return yc,xinit
+
 end
 function checkinit(xinit::ASCIIString,nb::Int,nx::Int,nw::Int,plan::Array)
 # method 2 read initial estimate from fits and use method
@@ -333,6 +386,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     eps2 = eps2 + 0.
 
 # Check mask3d type
+
     if typeof(mask3D) == ASCIIString
         mask3dprint = "3D Mask Initialization from fits file: $mask3D"
         f = FITS(mask3D)
@@ -351,6 +405,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     end
 
 # Check xinit3d type
+
     if typeof(xinit3D) == ASCIIString
         xinit3dprint = "3D Init Initialization from fits file: $xinit3D"
         f = FITS(xinit3D)
@@ -510,6 +565,93 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.z = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw, nwvlt)
     PDATA.v = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
     PDATA.r = zeros(Float64, OIDATA.nx, OIDATA.nx, OIDATA.nw)
+    return PDATA,OIDATA
+end
+###################################################################################
+# Initialise Data and xinit from V2 and flux
+function painterfromv2init(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flux)
+    # adjust flux of V2 from users
+
+    if length(flux)==1 && flux!=(-1|0)
+        println(" flux must be (-1,0) ")
+    end
+    if flux != -1
+        if flux == 0
+            for n in 1:OIDATA.nw
+                factor = sqrt( sum(OIDATA.P[:,n]) ./ sum(abs2(PDATA.yc[:,n])) )
+                OIDATA.xinit3D[:,:,n] = OIDATA.xinit3D[:,:,n]  *  factor
+                PDATA.yc[:,n] = PDATA.yc[:,n] * factor
+            end
+        end
+        return PDATA,OIDATA
+    end
+end
+###################################################################################
+# Initialise Lagrange Multipliers
+function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
+
+    nx = OIDATA.nx
+    nb = OIDATA.nb
+    nw = OIDATA.nw
+    wvl = OIDATA.wvl
+    Wvlt = OIDATA.Wvlt
+    NWvlt = length(Wvlt)
+
+    rho_y = OIDATA.rho_y
+    rho_spat = OIDATA.rho_spat
+    rho_spec = OIDATA.rho_spec
+    rho_ps = OIDATA.rho_ps
+
+    lambda_spat = OIDATA.lambda_spat
+    lambda_spec = OIDATA.lambda_spec
+    lambda_L1 = OIDATA.lambda_L1
+
+    vHt = convert( SharedArray, zeros(nx, nx, nw))
+    Hx = convert( SharedArray, zeros( nx, nx, nw, NWvlt))
+
+    if rho_spat >0
+        tmpx = copy(OIDATA.xinit3D)
+        @sync @parallel for ind in 1:nw*NWvlt
+            n,b = ind2sub((nw,NWvlt),ind)
+            Hx[:, :, n, b] = dwt(tmpx[:, :, n], wavelet(Wvlt[b]))
+        end
+        # update of z
+        PDATA.z = copy(Hx)
+        PDATA.z = max(1 - ((lambda_spat / rho_spat) ./ abs(PDATA.z)), 0.) .* PDATA.z
+    end
+
+    # update of v
+    if rho_spec >0
+
+        PDATA.v = (rho_spec * OIDATA.xinit3D)  / (2 * rho_spec)
+        vecv = permutedims(PDATA.v, [3, 1, 2])
+        @sync @parallel for ind in 1:nx*nx
+            m,n = ind2sub((nx,nx),ind)
+            vHt[m, n, :] = dct(vecv[:, m, n] )
+        end
+        # update of r
+        PDATA.r = copy(vHt)
+        PDATA.r = max(1 - (lambda_spec / rho_spec) ./ abs(PDATA.r), 0) .* PDATA.r
+    end
+
+    # update of w
+    if rho_ps>0
+        PDATA.w = max(max(0.0, OIDATA.xinit3D) .* OIDATA.mask3D - lambda_L1, 0)
+        PDATA.tau_w = rho_ps * OIDATA.xinit3D
+    end
+
+    # update of Lagrange multipliers
+    PDATA.tau_pwc = rho_y * (PDATA.yc - PDATA.y_v2)
+    PDATA.tau_xic = rho_y * (PDATA.yc - PDATA.y_phi)
+
+    if rho_spat >0
+        PDATA.tau_s = rho_spat * (copy(Hx) - PDATA.z)
+    end
+
+    if rho_spec >0
+        PDATA.tau_v = rho_spec * (OIDATA.xinit3D - PDATA.v)
+        PDATA.tau_r = rho_spec * (copy(vHt) - PDATA.r)
+    end
 
     return PDATA,OIDATA
 end

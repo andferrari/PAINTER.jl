@@ -398,7 +398,7 @@
                  dptype = "all", dpprm = 0,
                  Wvlt  = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar],
                  beta = 1, eps1 = 1e-6, eps2 = 1e-6, FOV = 4e-2, mask3D = [], xinit3D = [], indfile = [], indwvl = [],
-                 PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true)
+                 PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, flux = 0)
   # Check if mandatory package are installed
     checkPack()
   # PAINTER Data Type Creation
@@ -417,6 +417,11 @@
     PDATA,OIDATA  = painterarrayinit(PDATA, OIDATA)
   # Check, Create PAINTER object and mask initialisation from data or fits
     OIDATA.mask3D   = checkmask(OIDATA.mask3D, OIDATA.nx, OIDATA.nw)
+  # Initialise Data and xinit from V2 and flux
+    PDATA,OIDATA = painterfromv2init(PDATA,OIDATA,flux)
+  # initialise Lagrange multipliers for warm start from initial estimates
+    PDATA,OIDATA = painterlagrangemultipliersinit(PDATA,OIDATA)
+
     PDATA.CountPlot = CountPlot
 
   # Main Loop ADMM
@@ -449,6 +454,6 @@
     elseif (demo==1)||(demo=="gravity")
         include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemogravity.jl") )
     elseif (demo==1)||(demo=="matiss")
-        include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemomatiss.jl") )        
+        include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemomatiss.jl") )
     end
   end

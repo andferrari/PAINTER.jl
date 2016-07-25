@@ -29,7 +29,7 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
     SubColumn = 5
 
 
-    X3D = x .* max(0, w)
+    X3D = x .* max(0, w) .* max(x,0)
     VMIN = minimum(X3D)
     VMAX = maximum(X3D)
 
@@ -43,19 +43,19 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
     for n in set
         n2+=1
         subplot(SubColumn, SubRow, n2)
-        imshow( sqrt(sqrt( X3D[:, :, n] .* max(X3D[:, :, n],0) )) , origin = "lower",vmin=VMIN,vmax=VMAX)
+        imshow( X3D[:, :, n]  , origin = "lower")#,vmin=VMIN,vmax=VMAX)
         titlestring = @sprintf("%2.4f µm", wvl[n2] * 1e6)
         title(titlestring)
         xticks([])
         yticks([])
 
-        if( n == (nw + 1 - SubRow + count_x) )
-            xticks(collect(pos - 1), round(Int,indpix[pos] * 100000) / 100)
+        if( n2 == (length(set) + 1 - SubRow + count_x) )
+            xticks(collect(pos - 1), round(Int,indpix[pos] * 1000) )
             xlabel("FOV (mas)")
             count_x += 1
         end
-        if(n == (1 + count_y * SubRow))
-            yticks(collect(pos - 1), round(Int,indpix[pos] * 100000) / 100)
+        if( n2 == (1 + count_y * SubRow))
+            yticks(collect(pos - 1), round(Int,indpix[pos] * 1000) )
             ylabel("FOV (mas)")
             count_y += 1
         end
@@ -64,13 +64,13 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
     figure("Projection")
 
     subplot(223); imshow(squeeze(mean(X3D,1),1).',aspect="auto");
-    xticks(collect(pos - 1), round(Int,indpix[pos] * 100000) / 100)
+    xticks(collect(pos - 1), round(Int,indpix[pos] * 1000) )
     xlabel("FOV (mas)")
     ylabel("channels")
     title("spectrum 1")
 
     subplot(221); imshow(squeeze(mean(X3D,3),3), origin = "lower",aspect="auto");
-    yticks(collect(pos - 1), round(Int,indpix[pos] * 100000) / 100)
+    yticks(collect(pos - 1), round(Int,indpix[pos] * 1000) )
     xticks([])
     ylabel("FOV (mas)")
     title("Gray")
@@ -87,7 +87,7 @@ end
     # the plot function is done for 25 wavelengths
     # choose collect(1:10:250) or collect(1:250) or collect(1:25)
     nx = 64
-    indwvl = collect(1:250) # will plot 1/10 
+    indwvl = collect(1:250) # will plot 1/10
 
 
 
@@ -107,17 +107,22 @@ end
 
     FOV = 0.06
 
-    rho_y = 10
-    rho_spat = .5
-    rho_ps = .1
-    rho_spec = .01
+    # rho_y = 10
+    # rho_spat = .5
+    # rho_ps = 0.1
+    # rho_spec = .01
 
-    alpha = 1e1
+    rho_y = 10
+    rho_spat = .1 #.5
+    rho_ps = .1
+    rho_spec = .5
+
+    alpha = 1e3
     beta = 1e5
 
-    lambda_spat =  1e-4
-    lambda_spec = 1e-0
-    lambda_L1 = 1.
+    lambda_spat =  1e-3 #1e-4
+    lambda_spec = 0.1 #0.01
+    lambda_L1 = 0.1
 
     epsilon = 1e-6
 
@@ -132,7 +137,7 @@ end
                             lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,
                             rho_spec = rho_spec, rho_ps = rho_ps, alpha = alpha, beta = beta,
                             eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl, admm = admm,
-                            PlotFct = PlotFct, aff = aff, dptype = dptype,
+                            PlotFct = PlotFct, aff = aff, dptype = dptype, flux = 0,
                             dpprm = dpprm, Folder = Folder, lambda_L1=lambda_L1)
 
 # save data struture in .jld files

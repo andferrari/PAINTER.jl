@@ -53,6 +53,7 @@ type PAINTER_Input
     dpprm::Int                      # horizon for sliding dp or index of reference
     baseNb::Dict
     orderedCluster::Dict
+    flux::Array
 end
 # Structure containing all data which are modified during admm
 # PDATA::PAINTER_Data
@@ -90,7 +91,7 @@ function painterinputinit()
     return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
                          , [], Dict{}(), Dict{}(), [], 0., 0., 0., 0., 0., 0., 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
-                         , [], [], [], [], 0, "", 0, Dict{}(), Dict{}())
+                         , [], [], [], [], 0, "", 0, Dict{}(), Dict{}(),[])
 end
 function painterdatainit()
   return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], []

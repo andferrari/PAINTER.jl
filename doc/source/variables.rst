@@ -28,6 +28,10 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 * ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: ``10``.
 * ``PlotFct``: is a user defined function which is called at each ``CountPlot`` iterations. This function must respect the input argument of ``painterplotfct`` function and must call ``PyPlot``, see :ref:`examples-label`  section. Default: ``painterplotfct``.
 
+**Flux and initial estimate:**
+* ``flux=0``: the flux in each channel of the initial estimate corresponds to the flux given in data. (default)
+* ``flux=-1``: nothing is done, the flux of initial estimate is the one given by the user.
+
 **Data and image related variables:**
 
 * ``Folder``: path to the folder containing OIFITS/FITS files. Default: ``./OIFITS``. If ``./OIFITS`` does not exists ``src/OIFITS`` in ``PAINTER.jl/`` default installation folder, containing FITS files for the demo, is used.
@@ -63,19 +67,25 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 
 **ADMM algorithm parameters:**
 
-* ``Wvlt``: array of wavelets basis for spatial regularization, see [2]_.  See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_ for definitions. Default: first 8 Daubechies wavelets and Haar wavelets. ``Wvlt = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar]``.
-* ``lambda_spat``: Spatial regularization parameter, see Eqs. 29, 31 in [1]_. Default: nx\ :sup:`-2`.
-* ``lambda_spec``: Spectral regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-2``.
-* ``lambda_L1``: regularization parameter for an l\ :sub:`1` constraint on the image. l\ :sub:`1` constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
-* ``epsilon``: Ridge/Tikhonov regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-6``.
-* ``rho_y``: ADMM parameter for data fidelity,see  Eqs. 35, 50-52 in [1]_. Default: ``1``.
-* ``rho_spat``: ADMM parameter for Spatial regularization, see Eqs. 25, 31 in [1]_. Default: ``1``.
-* ``rho_spec``: ADMM parameter for Spectral regularization, see Eqs. 42, 55 in [1]_. Default: ``1``.
-* ``rho_ps``: ADMM parameter for positivity constraint, see Eq. 47, 54 in [1]_. Default: ``1``.
 * ``alpha``: weight for squared visibilities modulus data fidelity term, see Eqs. 25, 31 in [1]_. Default: ``1``.
 * ``beta``: weight for phases (closures and differential) data fidelity term, see Eqs. 25,31 in [1]_. Default: ``1``.
-* ``eps1``: stopping criterium  for primal residual  in ADMM algorithm. Default: ``1e-6``.
-* ``eps2``: stopping criterium for dual residual in ADMM algorithm. Default: ``1e-6``.
+* ``lambda_spat``: Spatial regularization parameter, see Eqs. 29, 31 in [1]_. Default: nx\ :sup:`-2`.
+* ``lambda_spec``: Spectral regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-2``.
+
+* ``rho_y``: ADMM parameter for data fidelity,see  Eqs. 35, 50-52 in [1]_. Default: ``1``.
+* ``rho_spat``: ADMM parameter for Spatial regularization, see Eqs. 25, 31 in [1]_. Default: ``1``, (``0`` to disable).
+* ``rho_spec``: ADMM parameter for Spectral regularization, see Eqs. 42, 55 in [1]_. Default: ``1``, (``0`` to disable).
+* ``rho_ps``: ADMM parameter for positivity constraint, see Eq. 47, 54 in [1]_. Default: ``1``, (``0`` to disable).
+
+Secondary or specific paramaters:
+  The defaults values of these parameteres are tuned for the general cases. Nevertheless, the user may modified them for specific applications.
+
+  * ``lambda_L1``: regularization parameter for an l\ :sub:`1` constraint on the image. l\ :sub:`1` constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
+  * ``Wvlt``: array of wavelets basis for spatial regularization, see [2]_.  See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_ for definitions. Default: first 8 Daubechies wavelets and Haar wavelets. ``Wvlt = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar]``.
+  * ``epsilon``: Ridge/Tikhonov regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-6``.
+  * ``eps1``: stopping criterium  for primal residual  in ADMM algorithm. Default: ``1e-6``.
+  * ``eps2``: stopping criterium for dual residual in ADMM algorithm. Default: ``1e-6``.
+
 
 Constant in ``OIDATA`` structure
 --------------------------------
