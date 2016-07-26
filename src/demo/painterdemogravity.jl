@@ -2,7 +2,7 @@ if(Pkg.installed("PyPlot") == nothing)
     Pkg.add("PyPlot")
 end
 using PyPlot
-
+close("all")
 if !isfile("gravity/gravity_bc2016.oifits")
     if !isdir("gravity")
         mkdir("gravity")
@@ -79,7 +79,6 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
     yticks([])
     xlabel("channels")
     title("Spectrum 2")
-
 end
     # To change size of the simulation
     # nx pixels
@@ -87,7 +86,7 @@ end
     # the plot function is done for 25 wavelengths
     # choose collect(1:10:250) or collect(1:250) or collect(1:25)
     nx = 64
-    indwvl = collect(1:250) # will plot 1/10
+    indwvl = collect(1:10:250) # will plot 1/10
 
 
 
@@ -98,7 +97,7 @@ end
     dpprm =  0
 
     CountPlot = 5
-    nbitermax = 100
+    nbitermax = 30
 
     aff = true
     admm = true
@@ -107,22 +106,28 @@ end
 
     FOV = 0.06
 
-    # rho_y = 10
+    # rho_y = 5
     # rho_spat = .5
     # rho_ps = 0.1
     # rho_spec = .01
 
-    rho_y = 10
-    rho_spat = .1 #.5
-    rho_ps = .1
-    rho_spec = .5
+    rho_y = 10.
+    rho_spat = .5 #.5
+    rho_ps =  .1
+    rho_spec = .01
+
+    # alpha = 1e3
+    # beta = 1e5
 
     alpha = 1e3
     beta = 1e5
 
-    lambda_spat =  1e-3 #1e-4
-    lambda_spec = 0.1 #0.01
-    lambda_L1 = 0.1
+    # lambda_spat =  1e-4
+    # lambda_spec = 0.01
+    # lambda_L1 = 0.1
+    lambda_spat =  1.
+    lambda_spec = 1.
+    lambda_L1 = 0.
 
     epsilon = 1e-6
 
@@ -131,13 +136,13 @@ end
 
     xinit3D = []
     mask3D = PAINTER.mask(nx,round(Int, nx/2 - 2 ))
-
+    xinit3D = PAINTER.mask(nx,round(Int, nx/8 - 2 ), choice="disk")
 # initialize algorithm and run admm
     OIDATA, PDATA = PAINTER.painter(nbitermax = nbitermax, nx = nx, lambda_spat = lambda_spat,
                             lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,
                             rho_spec = rho_spec, rho_ps = rho_ps, alpha = alpha, beta = beta,
                             eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl, admm = admm,
-                            PlotFct = PlotFct, aff = aff, dptype = dptype, flux = 0,
+                            PlotFct = PlotFct, aff = aff, dptype = dptype, flux = 0, xinit3D = xinit3D,
                             dpprm = dpprm, Folder = Folder, lambda_L1=lambda_L1)
 
 # save data struture in .jld files

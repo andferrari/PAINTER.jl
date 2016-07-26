@@ -418,7 +418,7 @@
   # Check, Create PAINTER object and mask initialisation from data or fits
     OIDATA.mask3D   = checkmask(OIDATA.mask3D, OIDATA.nx, OIDATA.nw)
   # Initialise Data and xinit from V2 and flux
-    PDATA,OIDATA = painterfromv2init(PDATA,OIDATA,flux)
+    PDATA,OIDATA = painterautoparametersinit(PDATA,OIDATA,flux)
   # initialise Lagrange multipliers for warm start from initial estimates
     PDATA,OIDATA = painterlagrangemultipliersinit(PDATA,OIDATA)
 

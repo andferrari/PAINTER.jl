@@ -119,7 +119,7 @@ end
 
     xinit3D = []
     mask3D = PAINTER.mask(nx,round(Int, nx/2 - 2 ))
-    
+
 # initialize algorithm and run admm
     OIDATA, PDATA = PAINTER.painter(nbitermax = nbitermax, nx = nx, lambda_spat = lambda_spat,
                             lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,

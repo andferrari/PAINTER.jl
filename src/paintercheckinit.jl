@@ -54,7 +54,7 @@ function checkmask(mask3D::Array,nx::Int,nw::Int)
         a = length(mask3D)
 
         if  a == nx * nx
-          mask3D = reshape(repmat(reshape(mask3D[:], nx, nx), 1, nw), nx, nx, nw)
+          mask3D = reshape(repmat(reshape(vec(mask3D), nx, nx), 1, nw), nx, nx, nw)
 
         else
           error(" dims of mask3D =1, mask3D must be nx*nx (nx: Nb pixels)")
@@ -233,7 +233,7 @@ function mask(nx::Int,side::Int;choice="square")
         mask3D[:, (nx - side2):nx] = 0
 
     elseif(choice == "disk")
-        xg = reshape(repeat([1:nx], outer=[nx]), nx, nx)
+        xg = reshape(repeat(collect(1:nx), outer=[nx]), nx, nx)
         yg = xg'
         rg = sqrt( (xg - .5 - (nx / 2)).^2 + (yg - .5 - (nx / 2)).^2 )
         mask3D = float(abs(rg) .< (side + .5))
@@ -569,22 +569,26 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 end
 ###################################################################################
 # Initialise Data and xinit from V2 and flux
-function painterfromv2init(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flux)
+function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flux)
     # adjust flux of V2 from users
+    nP = sum(OIDATA.P)
+    OIDATA.norm = ones(OIDATA.nw) * nP
+    OIDATA.P = OIDATA.P / nP
+    OIDATA.W = OIDATA.W / nP
 
-    if length(flux)==1 && flux!=(-1|0)
-        println(" flux must be (-1,0) ")
-    end
+    OIDATA.lambda_spat = OIDATA.lambda_spat ./ (OIDATA.nx*OIDATA.nx)
+    OIDATA.lambda_spec = OIDATA.lambda_spec ./ (OIDATA.nw)
+
     if flux != -1
-        if flux == 0
-            for n in 1:OIDATA.nw
-                factor = sqrt( sum(OIDATA.P[:,n]) ./ sum(abs2(PDATA.yc[:,n])) )
-                OIDATA.xinit3D[:,:,n] = OIDATA.xinit3D[:,:,n]  *  factor
-                PDATA.yc[:,n] = PDATA.yc[:,n] * factor
-            end
+    if flux == 0
+        for n in 1:OIDATA.nw
+            factor = sqrt( sum(OIDATA.P[:,n]) ./ sum(abs2(PDATA.yc[:,n])) )
+            OIDATA.xinit3D[:,:,n] = OIDATA.xinit3D[:,:,n]  *  factor
+            PDATA.yc[:,n] = PDATA.yc[:,n] * factor
         end
-        return PDATA,OIDATA
     end
+    end
+    return PDATA,OIDATA
 end
 ###################################################################################
 # Initialise Lagrange Multipliers
@@ -641,8 +645,9 @@ function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Inpu
     end
 
     # update of Lagrange multipliers
-    PDATA.tau_pwc = rho_y * (PDATA.yc - PDATA.y_v2)
-    PDATA.tau_xic = rho_y * (PDATA.yc - PDATA.y_phi)
+    # PDATA.tau_pwc = rho_y * PDATA.yc
+    # PDATA.tau_xic = rho_y * PDATA.yc
+    # PDATA.tau_xc = PDATA.tau_xc + rho_y * (- PDATA.yc)
 
     if rho_spat >0
         PDATA.tau_s = rho_spat * (copy(Hx) - PDATA.z)

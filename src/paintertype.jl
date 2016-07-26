@@ -54,6 +54,7 @@ type PAINTER_Input
     baseNb::Dict
     orderedCluster::Dict
     flux::Array
+    norm::Array
 end
 # Structure containing all data which are modified during admm
 # PDATA::PAINTER_Data
@@ -91,7 +92,7 @@ function painterinputinit()
     return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
                          , [], Dict{}(), Dict{}(), [], 0., 0., 0., 0., 0., 0., 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
-                         , [], [], [], [], 0, "", 0, Dict{}(), Dict{}(),[])
+                         , [], [], [], [], 0, "", 0, Dict{}(), Dict{}(),[],[])
 end
 function painterdatainit()
   return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], []
