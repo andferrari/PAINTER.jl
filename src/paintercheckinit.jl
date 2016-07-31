@@ -19,7 +19,7 @@ function checkPack()
 
     # OIFITS
     if( Pkg.installed("OIFITS") == nothing )
-        error("HDF5.jl not installed")
+        error("OIFITS.jl not installed")
     end
 
     # HDF5
@@ -409,10 +409,8 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
 
 # if pwd/OIFITS does not exits so, search in user/.julia/vx.x/PAINTER/src/OIFITS
     if !isdir(cpath)
-        pkgfol = Pkg.dir()
-        fs = pkgfol[1] # file separator
         cptmp = cpath
-        cpath = string(pkgfol, fs, "PAINTER", fs, "src", fs,"OIFITS")
+        cpath = joinpath(dirname(@__FILE__), "OIFITS")
         println("OIFITS files folder does not exists in $cptmp, replaced by default $cpath")
         println("")
     end
