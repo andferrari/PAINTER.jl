@@ -97,7 +97,7 @@ end
     dpprm =  0
 
     CountPlot = 5
-    nbitermax = 30
+    nbitermax = 100
 
     aff = true
     admm = true
@@ -106,28 +106,27 @@ end
 
     FOV = 0.06
 
-    # rho_y = 5
+    # rho_y = 20 #5
     # rho_spat = .5
     # rho_ps = 0.1
     # rho_spec = .01
-
-    rho_y = 10.
-    rho_spat = .5 #.5
-    rho_ps =  .1
-    rho_spec = .01
-
     # alpha = 1e3
     # beta = 1e5
+    # lambda_spat =  1e-4
+    # lambda_spec = 0.01
+    # lambda_L1 = 0.1
+
+    rho_y = 100.
+    rho_spat = .5
+    rho_ps =  .1
+    rho_spec = .01
 
     alpha = 1e3
     beta = 1e5
 
-    # lambda_spat =  1e-4
-    # lambda_spec = 0.01
-    # lambda_L1 = 0.1
     lambda_spat =  1.
     lambda_spec = 1.
-    lambda_L1 = 0.
+    lambda_L1 = 1e-3
 
     epsilon = 1e-6
 
@@ -136,7 +135,7 @@ end
 
     xinit3D = []
     mask3D = PAINTER.mask(nx,round(Int, nx/2 - 2 ))
-    xinit3D = PAINTER.mask(nx,round(Int, nx/8 - 2 ), choice="disk")
+    xinit3D = PAINTER.mask(nx,round(Int, nx/2 - 2 ), choice="disk")
 # initialize algorithm and run admm
     OIDATA, PDATA = PAINTER.painter(nbitermax = nbitermax, nx = nx, lambda_spat = lambda_spat,
                             lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,
