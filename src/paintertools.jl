@@ -392,7 +392,7 @@ end
 function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
                  lambda_spec = 1/100, lambda_L1 = 0, epsilon = 1e-6,
                  rho_y = 1, rho_spat = 1, rho_spec = 1, rho_ps = 1, alpha = 1,
-                 dptype = "all", dpprm = 0, pathoptpkpt = string(Pkg.dir("PAINTER"),"/src/optpckpt.jl"),
+                 dptype = "all", dpprm = 0, pathoptpkpt = joinpath(dirname(@__FILE__),"optpckpt.jl"),
                  Wvlt  = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar],
                  beta = 1, eps1 = 1e-6, eps2 = 1e-6, FOV = 4e-2, mask3D = [], xinit3D = [], indfile = [], indwvl = [],
                  PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, paral = true)
