@@ -106,26 +106,26 @@ end
 
     FOV = 0.06
 
-    # rho_y = 20 #5
+    # rho_y =  5 #5
     # rho_spat = .5
     # rho_ps = 0.1
     # rho_spec = .01
     # alpha = 1e3
     # beta = 1e5
-    # lambda_spat =  1e-4
+    # lambda_spat =  1e-4 *50
     # lambda_spec = 0.01
-    # lambda_L1 = 0.1
+    # lambda_L1 = 1.1
 
-    rho_y = 100.
-    rho_spat = .5
-    rho_ps =  .1
-    rho_spec = .01
+    rho_y = 100. # 10.#100.
+    rho_spat = 1.# /9 #.5 * 2
+    rho_ps =  rho_spat # .1
+    rho_spec = 1.# 0. # .01
 
-    alpha = 1e3
-    beta = 1e5
+    alpha = 1.# 1e0 #1e3
+    beta = 1.# 1e5
 
-    lambda_spat =  1.
-    lambda_spec = 1.
+    lambda_spat =  1e-3 # 1. #* 10
+    lambda_spec = 1e-3 #1.
     lambda_L1 = 1e-3
 
     epsilon = 1e-6
@@ -139,15 +139,19 @@ end
 # initialize algorithm and run admm
     OIDATA, PDATA = PAINTER.painter(nbitermax = nbitermax, nx = nx, lambda_spat = lambda_spat,
                             lambda_spec = lambda_spec, rho_y = rho_y, rho_spat = rho_spat,
-                            rho_spec = rho_spec, rho_ps = rho_ps, alpha = alpha, beta = beta,
+                            rho_spec = rho_spec, rho_ps = rho_ps, # alpha = alpha, beta = beta,
                             eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl, admm = admm,
                             PlotFct = PlotFct, aff = aff, dptype = dptype, flux = 0, xinit3D = xinit3D,
                             dpprm = dpprm, Folder = Folder, lambda_L1=lambda_L1)
 
+                            println(OIDATA.rho_y_gamma)
+                            println(OIDATA.rho_y_xi)
 # save data struture in .jld files
     println("save results of gravity BC2016 data")
     PAINTER.paintersave(savepath,PDATA,OIDATA)
 
+    println(OIDATA.rho_y_gamma)
+    println(OIDATA.rho_y_xi)
 # load data struture in .jld files
     println("load results of gravity BC2016 data")
     PDATA, OIDATA = PAINTER.painterload(savepath)

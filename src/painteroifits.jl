@@ -162,10 +162,10 @@ function independentT3data(OIDATA::PAINTER_Input)
   K = Dict{}()
   H = Dict{}()
   for n in 1:Nt3indep
-      HDP = phasetophasediff(orderedCluster[n], OIDATA.nw, length(baseNb[n]), 0, 1, OIDATA.dptype, OIDATA.dpprm)
       T3 = OIDATA.T3[rowt3[n],:]
       T3err = OIDATA.T3err[rowt3[n],:]
       if OIDATA.isDP == 1
+          HDP = phasetophasediff(orderedCluster[n], OIDATA.nw, length(baseNb[n]), 0, 1, OIDATA.dptype, OIDATA.dpprm)
           DP = OIDATA.DP[baseNb[n],:]
           DPerr = OIDATA.DPerr[baseNb[n],:]
           Xi[n] = vcat(vec(T3),HDP*vec(DP)  )

@@ -24,6 +24,10 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         "lambda_spec", OIDATA.lambda_spec,
         "lambda_L1", OIDATA.lambda_L1,
         "rho_y", OIDATA.rho_y,
+
+        "rho_y_gamma", OIDATA.rho_y_gamma,
+        "rho_y_xi", OIDATA.rho_y_xi,
+
         "rho_spat", OIDATA.rho_spat,
         "rho_spec", OIDATA.rho_spec,
         "rho_ps", OIDATA.rho_ps,
@@ -102,7 +106,12 @@ function painterload(loadpath::ASCIIString)
     OIDATA.lambda_spat = tmp["lambda_spat"]
     OIDATA.lambda_spec = tmp["lambda_spec"]
     OIDATA.lambda_L1 = tmp["lambda_L1"]
+
     OIDATA.rho_y = tmp["rho_y"]
+        
+    OIDATA.rho_y_gamma = tmp["rho_y_gamma"]
+    OIDATA.rho_y_xi = tmp["rho_y_xi"]
+
     OIDATA.rho_spat = tmp["rho_spat"]
     OIDATA.rho_spec = tmp["rho_spec"]
     OIDATA.rho_ps = tmp["rho_ps"]

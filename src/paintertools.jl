@@ -207,7 +207,8 @@
     yest = gam .* exp(im * x_phi)
     w1 = -sum(K .* cos(dphi))
     w2 = sum(abs(yest - y_t).^2)
-    g_phi[:]= beta .* H' * (sin(dphi) ./ K) - rho_y .* gam .* gam_t .* sin(Ek)
+    # g_phi[:]= beta .* H' * (sin(dphi) ./ K) - rho_y .* gam .* gam_t .* sin(Ek)
+    g_phi[:]= beta .* H' * (sin(dphi) .* K) - rho_y .* gam .* gam_t .* sin(Ek)
     f = ((beta * w1) + (rho_y * w2)) / 2
     return f
   end
@@ -231,6 +232,12 @@
     const lambda_L1 = OIDATA.lambda_L1
     const epsilon = OIDATA.epsilon
     const rho_y = OIDATA.rho_y
+
+    # const rho_y_gamma = OIDATA.rho_y
+    # const rho_y_xi = OIDATA.rho_y
+    const rho_y_gamma = OIDATA.rho_y_gamma
+    const rho_y_xi = OIDATA.rho_y_xi
+
     const rho_spat = OIDATA.rho_spat
     const rho_spec = OIDATA.rho_spec
     const rho_ps = OIDATA.rho_ps
@@ -297,21 +304,29 @@
         PDATA.ind += 1
 
   # update of yc from V2
-        PDATA.y_v2 = PDATA.yc + PDATA.tau_pwc / rho_y
-        proxv2!(PDATA.y_v2, P, W, rho_y, alpha, nb, nw)
+        # PDATA.y_v2 = PDATA.yc + PDATA.tau_pwc / rho_y
+        # proxv2!(PDATA.y_v2, P, W, rho_y, alpha, nb, nw)
+        PDATA.y_v2 = PDATA.yc + PDATA.tau_pwc / rho_y_gamma
+        proxv2!(PDATA.y_v2, P, W, rho_y_gamma, alpha, nb, nw)
 
   # update of yc from phases difference
-        y_phidat = PDATA.yc + PDATA.tau_xic / rho_y
+        # y_phidat = PDATA.yc + PDATA.tau_xic / rho_y
+        # @sync @parallel for n in 1:Nt3indep
+        #     yphidict[baseNb[n],:] = proxphase(y_phidat[baseNb[n],:], Xi[n], K[n]
+        #              , rho_y, beta, length( baseNb[n] ), nw, H[n] )
+        # end
+        y_phidat = PDATA.yc + PDATA.tau_xic / rho_y_xi
         @sync @parallel for n in 1:Nt3indep
             yphidict[baseNb[n],:] = proxphase(y_phidat[baseNb[n],:], Xi[n], K[n]
-                     , rho_y, beta, length( baseNb[n] ), nw, H[n] )
+                     , rho_y_xi, beta, length( baseNb[n] ), nw, H[n] )
         end
         # PDATA.y_phi = copy(yphidict)
         PDATA.y_phi = yphidict
         y_phidat = 0
   # Consensus
         y_tmp = copy(PDATA.yc)
-        PDATA.yc = ( PDATA.y_v2 + PDATA.y_phi + PDATA.Fx + (PDATA.tau_xc - (PDATA.tau_pwc + PDATA.tau_xic)) ./ rho_y ) ./ 3
+        # PDATA.yc = ( PDATA.y_v2 + PDATA.y_phi + PDATA.Fx + (PDATA.tau_xc - (PDATA.tau_pwc + PDATA.tau_xic)) ./ rho_y ) ./ 3
+        PDATA.yc = ( PDATA.y_v2 - PDATA.tau_xic./rho_y_xi + PDATA.y_phi - PDATA.tau_pwc./rho_y_gamma  + PDATA.Fx + PDATA.tau_xc./ rho_y   ) ./ 3
 
   # Object estimation
         x_tmp = copy(PDATA.x)
@@ -358,8 +373,10 @@
             PDATA.tau_w = PDATA.tau_w + rho_ps * (PDATA.x - PDATA.w)
         end
   # update of Lagrange multipliers
-        PDATA.tau_pwc = PDATA.tau_pwc + rho_y * (PDATA.yc - PDATA.y_v2)
-        PDATA.tau_xic = PDATA.tau_xic + rho_y * (PDATA.yc - PDATA.y_phi)
+        # PDATA.tau_pwc = PDATA.tau_pwc + rho_y * (PDATA.yc - PDATA.y_v2)
+        # PDATA.tau_xic = PDATA.tau_xic + rho_y * (PDATA.yc - PDATA.y_phi)
+        PDATA.tau_pwc = PDATA.tau_pwc + rho_y_gamma * (PDATA.yc - PDATA.y_v2)
+        PDATA.tau_xic = PDATA.tau_xic + rho_y_xi * (PDATA.yc - PDATA.y_phi)
         PDATA.tau_xc = PDATA.tau_xc + rho_y * (PDATA.Fx - PDATA.yc)
         if rho_spat >0
             PDATA.tau_s = PDATA.tau_s + rho_spat * (Hx - PDATA.z)
@@ -392,12 +409,12 @@
   ###################################################################################
   # PAINTER MAIN FUNCTION
   ###################################################################################
-  function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1/nx^2,
-                 lambda_spec = 1/100, lambda_L1 = 0, epsilon = 1e-6,
-                 rho_y = 1, rho_spat = 1, rho_spec = 1, rho_ps = 1, alpha = 1,
+  function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1e-3,
+                 lambda_spec = 1e-3, lambda_L1 = 1e-3, epsilon = 1e-6,
+                 rho_y = 10., rho_spat = 1., rho_spec = 1., rho_ps = 1., alpha = 1., beta = 1.,
                  dptype = "all", dpprm = 0,
                  Wvlt  = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar],
-                 beta = 1, eps1 = 1e-6, eps2 = 1e-6, FOV = 4e-2, mask3D = [], xinit3D = [], indfile = [], indwvl = [],
+                 eps1 = 1e-6, eps2 = 1e-6, FOV = 4e-2, mask3D = [], xinit3D = [], indfile = [], indwvl = [],
                  PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, flux = 0)
   # Check if mandatory package are installed
     checkPack()
@@ -424,7 +441,7 @@
 
     PDATA.CountPlot = CountPlot
 
-  # Main Loop ADMM
+    # Main Loop ADMM
     if admm
         # PDATA = painteradmm(PDATA, OIDATA, OPTOPT, nbitermax, aff)
         PDATA = painteradmm(PDATA, OIDATA, nbitermax, aff)
@@ -445,10 +462,7 @@
   end
 
   function painterdemo(demo)
-
-
     path = Pkg.dir();
-    println(demo)
     if demo == 0
         include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemo.jl") )
     elseif (demo==1)||(demo=="gravity")

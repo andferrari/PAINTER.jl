@@ -33,6 +33,10 @@ type PAINTER_Input
     lambda_spec::Real
     lambda_L1::Real
     rho_y::Real
+
+    rho_y_gamma::Real
+    rho_y_xi::Real
+
     rho_spat::Real
     rho_spec::Real
     rho_ps::Real
@@ -91,6 +95,7 @@ end
 function painterinputinit()
     return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
                          , [], Dict{}(), Dict{}(), [], 0., 0., 0., 0., 0., 0., 0., 0.
+                         , 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
                          , [], [], [], [], 0, "", 0, Dict{}(), Dict{}(),[],[])
 end

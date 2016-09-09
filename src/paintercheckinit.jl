@@ -348,7 +348,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     if(rho_ps < 0)
         println("rho_ps must be non negative (default: 0.5)")
         println("initialized to default value")
-        rho_ps = .5
+        rho_ps = 1.
     end
 
     rho_ps = rho_ps + 0.
@@ -544,6 +544,7 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.F3D = nudft3d_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nb, OIDATA.nx, OIDATA.nw)
     PDATA.M  = invmat_par(PDATA.F3D, OIDATA.rho_y, PDATA.eta, OIDATA.nw)
     for n in 1:length(OIDATA.baseNb)
+        OIDATA.K[n] = ItKappa(OIDATA.K[n])
         PDATA.H[n] = phasetophasediff(OIDATA.orderedCluster[n], OIDATA.nw, length(OIDATA.baseNb[n]), 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
     end
 # Array Initialization
@@ -569,14 +570,60 @@ end
 # Initialise Data and xinit from V2 and flux
 function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flux)
     # adjust flux of V2 from users
+
     nP = sum(OIDATA.P)
     OIDATA.norm = ones(OIDATA.nw) * nP
     OIDATA.P = OIDATA.P / nP
     OIDATA.W = OIDATA.W / nP
 
+
+
+    sumKcosxi = zeros( length(OIDATA.K) )
+    for n in 1 : length(OIDATA.K)
+        sumKcosxi[n] = sum( OIDATA.K[n].*cos(OIDATA.Xi[n]) )
+    end
+    OIDATA.alpha = 1./sum(abs2( OIDATA.P./OIDATA.W ))
+    OIDATA.beta = 1./maximum(abs( sumKcosxi ))
+
+    # Calcul Hessian with Initialization
+    # V2
+    # hessV2 = -4 ./ OIDATA.W .* ( OIDATA.P - 3* abs2( PDATA.yc ) )
+    #
+    # Hessphase = zeros(OIDATA.nb*OIDATA.nw)
+    #
+    # for n in 1 : length(OIDATA.K)
+    #   h = PDATA.H[n]
+    #   Hessphase += h'*diagm(OIDATA.K[n])*diagm(cos(h*vec(angle(PDATA.yc)) - PDATA.Xi[n]  ))* h
+    # end
+
+    # # adjust W and P thanks to alpha and beta
+    # println(" ")
+    # println("alpha: ", OIDATA.alpha )
+    # println("beta: ", OIDATA.beta )
+    # println(" ")
+    #
+    # OIDATA.alpha = funfun(OIDATA.W)
+    # beta = []
+    # for n in 1 : length(OIDATA.K)
+    #   beta = vcat(beta, vec(OIDATA.K[n]))
+    # end
+    # beta = convert(Array{Float64,1}, beta)
+    # OIDATA.beta =  1./funfun(beta)
+    # println(" ")
+    # println("auto alpha: ", OIDATA.alpha )
+    # println("auto beta: ", OIDATA.beta )
+    # println(" ")
+
+    # OIDATA.rho_y = 1. # 10.#100.
+    # OIDATA.rho_spat = 1/9 #.5 * 2
+    # OIDATA.rho_ps =  OIDATA.rho_spat # .1
+    # OIDATA.rho_spec = 1. # .01
+
+    # normalise lambda: spatial and spectral
     OIDATA.lambda_spat = OIDATA.lambda_spat ./ (OIDATA.nx*OIDATA.nx)
     OIDATA.lambda_spec = OIDATA.lambda_spec ./ (OIDATA.nw)
 
+    # give to initial estimate the good power in each channel
     if flux != -1
     if flux == 0
         for n in 1:OIDATA.nw
@@ -586,7 +633,32 @@ function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flu
         end
     end
     end
+
+    miniv2, minivp = compute_hessianVP(PDATA, OIDATA)
+
+    OIDATA.rho_y_gamma = OIDATA.alpha * abs(miniv2)*1.01
+    OIDATA.rho_y_xi = OIDATA.beta * abs(minivp)*1.01
+
     return PDATA,OIDATA
+end
+###################################################################################
+# Compute Hessian from initial estimate
+function compute_hessianVP(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
+    diagofhessV2 = (-4 ./ OIDATA.W) .* ( OIDATA.P - 3* abs2( PDATA.yc ) )
+    miniv2 = minimum(diagofhessV2)
+
+    # Hessphase = Dict{}()
+    vp = zeros( length(OIDATA.K) )
+    for n in 1 : length(OIDATA.K)
+
+      H = PDATA.H[n]
+      dK = diagm( OIDATA.K[n] )
+      dX = diagm( cos( H*vec(angle(PDATA.yc[OIDATA.baseNb[n],:])) - OIDATA.Xi[n]  ))
+      hess = H' * dK * dX * H
+      vp[n] = eigs(hess,nev=1,which=:SR)[1][1]
+  end
+    minivp = minimum(vp)
+    return miniv2, minivp
 end
 ###################################################################################
 # Initialise Lagrange Multipliers
