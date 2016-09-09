@@ -93,9 +93,9 @@ end
 # initialize algorithm and run admm
 
     rho_y = 10.
-    rho_spat = 2. #4.
+    rho_spat = 1. #2. #4.
     rho_ps = rho_spat
-    rho_spec = .5 # .5 / 6
+    rho_spec = 1. # .5 # .5 / 6
 
     lambda_L1 = 1e-3
     lambda_spat = 1e-3 # 1e-5 * 4096

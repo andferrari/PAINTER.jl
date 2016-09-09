@@ -54,7 +54,7 @@ end
 #
 #     return Kappa
 # end
-# 
+#
 # function brutalprecalcKappa(K::Array{Float64,1})
 #     costK(Km,kn) = abs2( Km - (1 - besseli(1,kn)./besseli(0,kn) ) )
 #     N = 1000
@@ -78,11 +78,16 @@ function ItKappa(K::Array{Float64,1};pre=1e-9)
    costK(Km,kn) = abs2( Km - (1 - besseli(1,kn)./besseli(0,kn) ) )
     NK = length(K)
     est = zeros(NK)
+    varK = K ./ pi
     for m in 1:NK
-        k,i = IterInKappa(costK,K[m],0.,500.)
-        while sqrt(costK(K[m],k[i]))>pre
-            k,i = IterInKappa(costK,K[m],k[i-1],k[i+1],N=100)
+        k,i = IterInKappa(costK,varK[m],0.,500.)
+        while sqrt(costK(varK[m],k[i]))>pre
+            k,i = IterInKappa(costK,varK[m],k[max(i-1,1)],k[min(i+1,length(k))],N=100)
+            println(minimum(k)," ", maximum(k)," ",i)
         end
+        # while sqrt(costK(varK[m],k[i]))>pre
+        #     k,i = IterInKappa(costK,varK[m],k[i-1],k[i+1],N=100)
+        # end
         est[m] = k[i]
     end
     return est

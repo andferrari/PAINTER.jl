@@ -31,5 +31,4 @@ module PAINTER
     include("paintercheckinit.jl")
     include("painterplot.jl")
     include("optpckpt.jl")
-    include("painteruserdata.jl")
 end

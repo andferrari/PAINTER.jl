@@ -544,7 +544,7 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.F3D = nudft3d_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nb, OIDATA.nx, OIDATA.nw)
     PDATA.M  = invmat_par(PDATA.F3D, OIDATA.rho_y, PDATA.eta, OIDATA.nw)
     for n in 1:length(OIDATA.baseNb)
-        OIDATA.K[n] = ItKappa(OIDATA.K[n])
+        # OIDATA.K[n] = ItKappa(OIDATA.K[n])
         PDATA.H[n] = phasetophasediff(OIDATA.orderedCluster[n], OIDATA.nw, length(OIDATA.baseNb[n]), 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
     end
 # Array Initialization
