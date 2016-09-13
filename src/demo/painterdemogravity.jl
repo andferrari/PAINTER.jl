@@ -43,7 +43,7 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
     for n in set
         n2+=1
         subplot(SubColumn, SubRow, n2)
-        imshow( X3D[:, :, n]  , origin = "lower")#,vmin=VMIN,vmax=VMAX)
+        imshow( sqrt( rotr90(X3D[:, :, n]))  , origin = "lower")#,vmin=VMIN,vmax=VMAX)
         titlestring = @sprintf("%2.4f µm", wvl[n2] * 1e6)
         title(titlestring)
         xticks([])
@@ -65,29 +65,29 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
 
     clf()
 
-    subplot(223); imshow(squeeze(mean(X3D,1),1).',aspect="auto");
-    xticks(collect(pos - 1), round(Int,indpix[pos] * 1000) )
-    xlabel("FOV (mas)")
-    ylabel("channels")
-    title("spectrum 1")
+    subplot(222); imshow(sqrt(squeeze(mean(X3D,1),1)),origin = "lower",aspect="auto");
+    yticks([])
+    xlabel("channels")
+    title("Spectrum 2")
 
-    subplot(221); imshow(squeeze(mean(X3D,3),3), origin = "lower",aspect="auto");
+    subplot(221); imshow(sqrt(rotr90(squeeze(mean(X3D,3),3))),origin = "lower",aspect="auto");
     yticks(collect(pos - 1), round(Int,indpix[pos] * 1000) )
     xticks([])
     ylabel("FOV (mas)")
     title("Gray")
 
-    subplot(222); imshow( squeeze(mean(X3D,2) ,2) , origin = "lower",aspect="auto");
-    yticks([])
-    xlabel("channels")
-    title("Spectrum 2")
+    subplot(223); imshow( sqrt(rotr90(squeeze(mean(X3D,2) ,2))),aspect="auto");
+    xticks(collect(pos - 1), round(Int,indpix[pos] * 1000) )
+    xlabel("FOV (mas)")
+    ylabel("channels")
+    title("spectrum 1")
 
     subplot(224);
     plot(wvl*1e6, vec(sum(abs2(PDATA.Fx),1)))
     plot(wvl*1e6, vec(sum(OIDATA.P,1)))
     yticks([])
     xlabel(L"\mu m")
-    title("Flux")
+    ylabel("Flux")
     xlim((first(wvl*1e6),last(wvl*1e6)))
 
 end
@@ -108,36 +108,19 @@ end
     dpprm =  0
 
     CountPlot = 5
-    nbitermax = 100
+    nbitermax = 2000
 
     aff = true
     admm = true
 
     PlotFct = plotfunction
 
-    FOV = 0.06
+    FOV = 0.05
 
-    # rho_y =  5 #5
-    # rho_spat = .5
-    # rho_ps = 0.1
-    # rho_spec = .01
-    # alpha = 1e3
-    # beta = 1e5
-    # lambda_spat =  1e-4 *50
-    # lambda_spec = 0.01
-    # lambda_L1 = 1.1
-
-    rho_y = 10. # 10.#100.
-    rho_spat = 1.# /9 #.5 * 2
-    rho_ps =  rho_spat # .1
-    rho_spec = 1.# 0. # .01
-
-    # alpha = 1.# 1e0 #1e3
-    # beta = 1.# 1e5
-
-    # lambda_spat =  1e-3 # 1. #* 10
-    # lambda_spec = 1e-3 #1.
-    lambda_L1 = 5e-3
+    rho_y = 10.
+    rho_spat = 4.
+    rho_spec = .5
+    rho_ps =  rho_spat
 
     epsilon = 1e-6
 
@@ -146,26 +129,25 @@ end
 
     xinit3D = []
     mask3D = PAINTER.mask(nx,round(Int, nx/2 - 2 ))
-    xinit3D = PAINTER.mask(nx,round(Int, nx/2 - 2 ), choice="disk")
+    xinit3D = PAINTER.mask(nx,round(Int, nx/2  ), choice="disk")
+
 # initialize algorithm and run admm
     OIDATA, PDATA = PAINTER.painter(nbitermax = nbitermax, nx = nx,
-    # lambda_spat = lambda_spat, lambda_spec = lambda_spec,
-    rho_y = rho_y, rho_spat = rho_spat,
-                            rho_spec = rho_spec, rho_ps = rho_ps, # alpha = alpha, beta = beta,
-                            eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl, admm = admm,
-                            PlotFct = PlotFct, aff = aff, dptype = dptype, flux = 0, xinit3D = xinit3D,
-                            dpprm = dpprm, Folder = Folder, lambda_L1=lambda_L1)
+      rho_y = rho_y, rho_spat = rho_spat,rho_spec = rho_spec, rho_ps = rho_ps,
+      eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl, admm = admm,
+      PlotFct = PlotFct, aff = aff, dptype = dptype, flux = 0, xinit3D = xinit3D,
+      dpprm = dpprm, Folder = Folder, lambda_L1=lambda_L1)
 
+# save data struture in .jld files
+    println("save results of gravity BC2016 data")
+    PAINTER.paintersave(savepath,PDATA,OIDATA)
 
-# # save data struture in .jld files
-#     println("save results of gravity BC2016 data")
-#     PAINTER.paintersave(savepath,PDATA,OIDATA)
-#
-#     println(OIDATA.rho_y_gamma)
-#     println(OIDATA.rho_y_xi)
-# # load data struture in .jld files
-#     println("load results of gravity BC2016 data")
-#     PDATA, OIDATA = PAINTER.painterload(savepath)
+    println(OIDATA.rho_y_gamma)
+    println(OIDATA.rho_y_xi)
+
+# load data struture in .jld files
+    println("load results of gravity BC2016 data")
+    PDATA, OIDATA = PAINTER.painterload(savepath)
 
 
     nothing

@@ -292,7 +292,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
 
         println("lambda_spat must be non negative (default: 1.0)")
         println("initialized to default value")
-        lambda_spat = 1.
+        lambda_spat = 1e-3
     end
 
     lambda_spat = lambda_spat + 0.
@@ -300,7 +300,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     if(lambda_spec < 0)
         println("lambda_spec must be non negative (default: 1.0)")
         println("initialized to default value")
-        lambda_spec = 1.
+        lambda_spec = 1e-3
     end
 
     lambda_spec = lambda_spec + 0.
@@ -308,7 +308,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     if(lambda_L1 < 0)
         println("lambda_L1 must be non negative (default: 1e-20)")
         println("initialized to default value")
-        lambda_L1 = 1e-20
+        lambda_L1 = 1e-3
     end
 
     lambda_L1 = lambda_L1 + 0.
@@ -340,7 +340,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     if(rho_spec < 0)
         println("rho_spec must be non negative (default: 1.0)")
         println("initialized to default value")
-        rho_spec = 1.
+        rho_spec = 4.
     end
 
     rho_spec = rho_spec + 0.
@@ -348,7 +348,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     if(rho_ps < 0)
         println("rho_ps must be non negative (default: 0.5)")
         println("initialized to default value")
-        rho_ps = 1.
+        rho_ps = .5
     end
 
     rho_ps = rho_ps + 0.
@@ -578,12 +578,21 @@ function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flu
 
 
 
-    sumKcosxi = zeros( length(OIDATA.K) )
+    # sumKcosxi = zeros( length(OIDATA.K) )
+    # for n in 1 : length(OIDATA.K)
+    #     # sumKcosxi[n] = sum( OIDATA.K[n].*cos(OIDATA.Xi[n]) )
+    #     sumKcosxi[n] = sum( OIDATA.K[n] )
+    # end
+    AllK = Float64{}[]
     for n in 1 : length(OIDATA.K)
-        sumKcosxi[n] = sum( OIDATA.K[n].*cos(OIDATA.Xi[n]) )
+        for m in 1 : length(OIDATA.K[n])
+        push!(AllK,OIDATA.K[n][m])
+      end
     end
-    OIDATA.alpha = 1./sum(abs2( OIDATA.P./OIDATA.W ))
-    OIDATA.beta = 1./maximum(abs( sumKcosxi ))
+    # OIDATA.alpha = 1./sum(abs2( OIDATA.P./OIDATA.W ))
+    # OIDATA.alpha = 1./maximum( 1./OIDATA.W )
+    OIDATA.alpha = 1./maximum( OIDATA.W )
+    OIDATA.beta = 1./maximum(abs( AllK ))
 
     # Calcul Hessian with Initialization
     # V2
