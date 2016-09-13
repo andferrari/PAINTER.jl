@@ -706,7 +706,7 @@ function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Inpu
     # update of v
     if rho_spec >0
 
-        PDATA.v = (rho_spec * OIDATA.xinit3D)  / (2 * rho_spec)
+        PDATA.v = OIDATA.xinit3D  / 2.
         vecv = permutedims(PDATA.v, [3, 1, 2])
         @sync @parallel for ind in 1:nx*nx
             m,n = ind2sub((nx,nx),ind)
@@ -723,17 +723,12 @@ function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Inpu
         PDATA.tau_w = rho_ps * OIDATA.xinit3D
     end
 
-    # update of Lagrange multipliers
-    # PDATA.tau_pwc = rho_y * PDATA.yc
-    # PDATA.tau_xic = rho_y * PDATA.yc
-    # PDATA.tau_xc = PDATA.tau_xc + rho_y * (- PDATA.yc)
-
     if rho_spat >0
         PDATA.tau_s = rho_spat * (copy(Hx) - PDATA.z)
     end
 
     if rho_spec >0
-        PDATA.tau_v = rho_spec * (OIDATA.xinit3D - PDATA.v)
+        PDATA.tau_v = rho_spec * OIDATA.xinit3D /2
         PDATA.tau_r = rho_spec * (copy(vHt) - PDATA.r)
     end
 

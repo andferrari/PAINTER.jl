@@ -38,6 +38,8 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
       set = collect(1:10:250)
     elseif nw == 25
       set = collect(1:25)
+    elseif nw == 50
+      set = collect(1:2:50)
     end
     n2 = 0
     for n in set
@@ -97,7 +99,7 @@ end
     # the plot function is done for 25 wavelengths
     # choose collect(1:10:250) or collect(1:250) or collect(1:25)
     nx = 64
-    indwvl = collect(1:10:250) # will plot 1/10
+    indwvl = collect(1:5:250) # will plot 1/10
 
 
 
@@ -105,10 +107,9 @@ end
     savepath = "gravity_bc2016.jld"
 
     dptype = "phase"
-    dpprm =  0
 
-    CountPlot = 5
-    nbitermax = 2000
+    CountPlot = 10
+    nbitermax = 1000
 
     aff = true
     admm = true
@@ -127,23 +128,19 @@ end
     eps1 = 1e-3
     eps2 = 1e-3
 
-    xinit3D = []
     mask3D = PAINTER.mask(nx,round(Int, nx/2 - 2 ))
-    xinit3D = PAINTER.mask(nx,round(Int, nx/2  ), choice="disk")
+    xinit3D = PAINTER.mask(nx,round(Int, nx/2  )) #, choice="disk")
 
 # initialize algorithm and run admm
     OIDATA, PDATA = PAINTER.painter(nbitermax = nbitermax, nx = nx,
       rho_y = rho_y, rho_spat = rho_spat,rho_spec = rho_spec, rho_ps = rho_ps,
-      eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl, admm = admm,
-      PlotFct = PlotFct, aff = aff, dptype = dptype, flux = 0, xinit3D = xinit3D,
-      dpprm = dpprm, Folder = Folder, lambda_L1=lambda_L1)
+      eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl,
+      PlotFct = PlotFct, aff = aff, dptype = dptype, admm = admm,
+      xinit3D = xinit3D, mask3D = mask3D, Folder = Folder)
 
 # save data struture in .jld files
     println("save results of gravity BC2016 data")
     PAINTER.paintersave(savepath,PDATA,OIDATA)
-
-    println(OIDATA.rho_y_gamma)
-    println(OIDATA.rho_y_xi)
 
 # load data struture in .jld files
     println("load results of gravity BC2016 data")
