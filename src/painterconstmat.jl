@@ -81,9 +81,10 @@ function ItKappa(K::Array{Float64,1};pre=1e-9)
     varK = K ./ pi
     for m in 1:NK
         k,i = IterInKappa(costK,varK[m],0.,500.)
-        while sqrt(costK(varK[m],k[i]))>pre
+        it = 0
+        while (sqrt(costK(varK[m],k[i]))>pre)&&(it<10)
+            it+=1
             k,i = IterInKappa(costK,varK[m],k[max(i-1,1)],k[min(i+1,length(k))],N=100)
-            println(minimum(k)," ", maximum(k)," ",i)
         end
         # while sqrt(costK(varK[m],k[i]))>pre
         #     k,i = IterInKappa(costK,varK[m],k[i-1],k[i+1],N=100)

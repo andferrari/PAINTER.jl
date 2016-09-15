@@ -543,8 +543,9 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.plan = planarray_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nx, OIDATA.nw)
     PDATA.F3D = nudft3d_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nb, OIDATA.nx, OIDATA.nw)
     PDATA.M  = invmat_par(PDATA.F3D, OIDATA.rho_y, PDATA.eta, OIDATA.nw)
+    println("process independent Cluster")
     for n in 1:length(OIDATA.baseNb)
-        # OIDATA.K[n] = ItKappa(OIDATA.K[n])
+        OIDATA.K[n] = ItKappa(OIDATA.K[n])
         PDATA.H[n] = phasetophasediff(OIDATA.orderedCluster[n], OIDATA.nw, length(OIDATA.baseNb[n]), 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
     end
 # Array Initialization
@@ -591,42 +592,8 @@ function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flu
     end
     # OIDATA.alpha = 1./sum(abs2( OIDATA.P./OIDATA.W ))
     # OIDATA.alpha = 1./maximum( 1./OIDATA.W )
-    OIDATA.alpha = 1./maximum( OIDATA.W )
-    OIDATA.beta = 1./maximum(abs( AllK ))
-
-    # Calcul Hessian with Initialization
-    # V2
-    # hessV2 = -4 ./ OIDATA.W .* ( OIDATA.P - 3* abs2( PDATA.yc ) )
-    #
-    # Hessphase = zeros(OIDATA.nb*OIDATA.nw)
-    #
-    # for n in 1 : length(OIDATA.K)
-    #   h = PDATA.H[n]
-    #   Hessphase += h'*diagm(OIDATA.K[n])*diagm(cos(h*vec(angle(PDATA.yc)) - PDATA.Xi[n]  ))* h
-    # end
-
-    # # adjust W and P thanks to alpha and beta
-    # println(" ")
-    # println("alpha: ", OIDATA.alpha )
-    # println("beta: ", OIDATA.beta )
-    # println(" ")
-    #
-    # OIDATA.alpha = funfun(OIDATA.W)
-    # beta = []
-    # for n in 1 : length(OIDATA.K)
-    #   beta = vcat(beta, vec(OIDATA.K[n]))
-    # end
-    # beta = convert(Array{Float64,1}, beta)
-    # OIDATA.beta =  1./funfun(beta)
-    # println(" ")
-    # println("auto alpha: ", OIDATA.alpha )
-    # println("auto beta: ", OIDATA.beta )
-    # println(" ")
-
-    # OIDATA.rho_y = 1. # 10.#100.
-    # OIDATA.rho_spat = 1/9 #.5 * 2
-    # OIDATA.rho_ps =  OIDATA.rho_spat # .1
-    # OIDATA.rho_spec = 1. # .01
+    OIDATA.alpha = OIDATA.alpha.*maximum( OIDATA.W )
+    OIDATA.beta = OIDATA.beta./maximum(abs( AllK ))
 
     # normalise lambda: spatial and spectral
     OIDATA.lambda_spat = OIDATA.lambda_spat ./ (OIDATA.nx*OIDATA.nx)

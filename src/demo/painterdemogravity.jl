@@ -84,13 +84,13 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
     ylabel("channels")
     title("spectrum 1")
 
-    subplot(224);
-    plot(wvl*1e6, vec(sum(abs2(PDATA.Fx),1)))
-    plot(wvl*1e6, vec(sum(OIDATA.P,1)))
-    yticks([])
-    xlabel(L"\mu m")
-    ylabel("Flux")
-    xlim((first(wvl*1e6),last(wvl*1e6)))
+    # subplot(224);
+    # plot(wvl*1e6, vec(sum(abs2(PDATA.Fx),1)))
+    # plot(wvl*1e6, vec(sum(OIDATA.P,1)))
+    # yticks([])
+    # xlabel(L"\mu m")
+    # ylabel("Flux")
+    # xlim((first(wvl*1e6),last(wvl*1e6)))
 
 end
     # To change size of the simulation
