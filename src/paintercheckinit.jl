@@ -590,6 +590,7 @@ function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flu
         push!(AllK,OIDATA.K[n][m])
       end
     end
+    
     # OIDATA.alpha = 1./sum(abs2( OIDATA.P./OIDATA.W ))
     # OIDATA.alpha = 1./maximum( 1./OIDATA.W )
     OIDATA.alpha = OIDATA.alpha.*maximum( OIDATA.W )
@@ -626,13 +627,12 @@ function compute_hessianVP(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     # Hessphase = Dict{}()
     vp = zeros( length(OIDATA.K) )
     for n in 1 : length(OIDATA.K)
-
       H = PDATA.H[n]
       dK = diagm( OIDATA.K[n] )
       dX = diagm( cos( H*vec(angle(PDATA.yc[OIDATA.baseNb[n],:])) - OIDATA.Xi[n]  ))
       hess = H' * dK * dX * H
       vp[n] = eigs(hess,nev=1,which=:SR)[1][1]
-  end
+    end
     minivp = minimum(vp)
     return miniv2, minivp
 end
@@ -672,7 +672,6 @@ function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Inpu
 
     # update of v
     if rho_spec >0
-
         PDATA.v = OIDATA.xinit3D  / 2.
         vecv = permutedims(PDATA.v, [3, 1, 2])
         @sync @parallel for ind in 1:nx*nx
