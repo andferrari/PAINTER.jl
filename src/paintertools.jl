@@ -212,7 +212,20 @@
     f = ((beta * w1) + (rho_y * w2)) / 2
     return f
   end
-
+  ###################################################################################
+  # Renorm the solution as if it converged to true solution
+  # Assume that:
+  # Positivity constraint converged
+  # gives the flux of data to the solution and good noramlisation
+  function painterrenorm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
+      X3D = PDATA.x .* max(0, PDATA.w) .* max(PDATA.x,0)
+      for n in 1:OIDATA.nw
+          Fx  = nfft(PDATA.plan[n], 0.*im + X3D[:,:,n]) / OIDATA.nx
+          factor = OIDATA.norm[n] .* sum(OIDATA.P[:,n]) ./ sum(abs2( Fx ))
+          X3D[:,:,n] = X3D[:,:,n] * sqrt(factor)
+      end
+      return X3D
+  end
   ###################################################################################
   # MAIN ADMM LOOP
   ###################################################################################
@@ -385,11 +398,13 @@
             PDATA.tau_v = PDATA.tau_v + rho_spec * (PDATA.x - PDATA.v)
             PDATA.tau_r = PDATA.tau_r + rho_spec * (vHt- PDATA.r)
         end
+
   # stopping criteria
         n1 = norm(vec(PDATA.x -x_tmp))
         n2 = norm(vec(PDATA.yc-y_tmp))
         push!(PDATA.crit1, n1)
         push!(PDATA.crit2, n2)
+
   # Plot and verbose
         if aff&&( (PDATA.ind )==1 || (PDATA.ind )==( (PDATA.count-1) * PDATA.CountPlot) )
             OIDATA.PlotFct(PDATA,OIDATA)

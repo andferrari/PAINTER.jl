@@ -575,24 +575,15 @@ function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flu
     nP = sum(OIDATA.P)
     OIDATA.norm = ones(OIDATA.nw) * nP
     OIDATA.P = OIDATA.P / nP
-    OIDATA.W = OIDATA.W / nP
+    OIDATA.W = OIDATA.W / nP^2
 
-
-
-    # sumKcosxi = zeros( length(OIDATA.K) )
-    # for n in 1 : length(OIDATA.K)
-    #     # sumKcosxi[n] = sum( OIDATA.K[n].*cos(OIDATA.Xi[n]) )
-    #     sumKcosxi[n] = sum( OIDATA.K[n] )
-    # end
     AllK = Float64{}[]
     for n in 1 : length(OIDATA.K)
         for m in 1 : length(OIDATA.K[n])
         push!(AllK,OIDATA.K[n][m])
       end
     end
-    
-    # OIDATA.alpha = 1./sum(abs2( OIDATA.P./OIDATA.W ))
-    # OIDATA.alpha = 1./maximum( 1./OIDATA.W )
+
     OIDATA.alpha = OIDATA.alpha.*maximum( OIDATA.W )
     OIDATA.beta = OIDATA.beta./maximum(abs( AllK ))
 
@@ -601,20 +592,20 @@ function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flu
     OIDATA.lambda_spec = OIDATA.lambda_spec ./ (OIDATA.nw)
 
     # give to initial estimate the good power in each channel
-    if flux != -1
-    if flux == 0
+    # if flux != -1
+    # if flux == 0
         for n in 1:OIDATA.nw
             factor = sqrt( sum(OIDATA.P[:,n]) ./ sum(abs2(PDATA.yc[:,n])) )
             OIDATA.xinit3D[:,:,n] = OIDATA.xinit3D[:,:,n]  *  factor
             PDATA.yc[:,n] = PDATA.yc[:,n] * factor
         end
-    end
-    end
+    # end
+    # end
 
     miniv2, minivp = compute_hessianVP(PDATA, OIDATA)
 
-    OIDATA.rho_y_gamma = OIDATA.alpha * abs(miniv2)*1.01
-    OIDATA.rho_y_xi = OIDATA.beta * abs(minivp)*1.01
+    OIDATA.rho_y_gamma = max( OIDATA.alpha * abs(miniv2)*1.01 , 1e-6)
+    OIDATA.rho_y_xi    = max( OIDATA.beta  * abs(minivp)*1.01 , 1e-6)
 
     return PDATA,OIDATA
 end
@@ -686,7 +677,7 @@ function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Inpu
     # update of w
     if rho_ps>0
         PDATA.w = max(max(0.0, OIDATA.xinit3D) .* OIDATA.mask3D - lambda_L1, 0)
-        PDATA.tau_w = rho_ps * OIDATA.xinit3D
+        PDATA.tau_w = rho_ps * (OIDATA.xinit3D - PDATA.w)
     end
 
     if rho_spat >0
