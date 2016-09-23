@@ -103,17 +103,17 @@ end
                             PlotFct = PlotFct, aff = aff, dptype = dptype,
                             dpprm = dpprm, Folder = Folder, xinit3D = xinit3D)
 
-# save data struture in .jld files
-    println("save data")
-    PAINTER.paintersave(savepath,PDATA,OIDATA)
-
-# load data struture in .jld files
-    println("load data")
-    PDATA, OIDATA = PAINTER.painterload(savepath)
-
-# Warm start of the algorithm to Iteration 100
-    nbitermax = 100
-    println("PAINTER: Warm Start")
-    OIDATA, PDATA = PAINTER.painter(OIDATA,PDATA,nbitermax,true, PlotFct = PlotFct)
+# # save data struture in .jld files
+#     println("save data")
+#     PAINTER.paintersave(savepath,PDATA,OIDATA)
+#
+# # load data struture in .jld files
+#     println("load data")
+#     PDATA, OIDATA = PAINTER.painterload(savepath)
+#
+# # Warm start of the algorithm to Iteration 100
+#     nbitermax = 100
+#     println("PAINTER: Warm Start")
+#     OIDATA, PDATA = PAINTER.painter(OIDATA,PDATA,nbitermax,true, PlotFct = PlotFct)
 
     nothing

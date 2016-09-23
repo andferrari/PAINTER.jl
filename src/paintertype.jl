@@ -59,6 +59,7 @@ type PAINTER_Input
     orderedCluster::Dict
     flux::Array
     norm::Array
+    Kbefore::Dict
 end
 # Structure containing all data which are modified during admm
 # PDATA::PAINTER_Data
@@ -97,7 +98,7 @@ function painterinputinit()
                          , [], Dict{}(), Dict{}(), [], 0., 0., 0., 0., 0., 0., 0., 0.
                          , 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
-                         , [], [], [], [], 0, "", 0, Dict{}(), Dict{}(),[],[])
+                         , [], [], [], [], 0, "", 0, Dict{}(), Dict{}(),[],[],Dict{}())
 end
 function painterdatainit()
   return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], []

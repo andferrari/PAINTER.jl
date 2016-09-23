@@ -545,6 +545,7 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.M  = invmat_par(PDATA.F3D, OIDATA.rho_y, PDATA.eta, OIDATA.nw)
     println("process independent Cluster")
     for n in 1:length(OIDATA.baseNb)
+        OIDATA.Kbefore[n] = copy(OIDATA.K[n])
         OIDATA.K[n] = ItKappa(OIDATA.K[n])
         PDATA.H[n] = phasetophasediff(OIDATA.orderedCluster[n], OIDATA.nw, length(OIDATA.baseNb[n]), 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
     end
@@ -584,9 +585,11 @@ function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flu
       end
     end
 
-    OIDATA.alpha = OIDATA.alpha.*maximum( OIDATA.W )
-    OIDATA.beta = OIDATA.beta./maximum(abs( AllK ))
-
+    # OIDATA.alpha = OIDATA.alpha .*maximum( OIDATA.W )
+    # OIDATA.beta = OIDATA.beta./maximum(abs( AllK ))
+    OIDATA.alpha = OIDATA.alpha ./ length(OIDATA.P)
+    OIDATA.beta = OIDATA.beta./sum( AllK .* besseli(1,AllK) ./ besseli(0,AllK)   )
+    
     # normalise lambda: spatial and spectral
     OIDATA.lambda_spat = OIDATA.lambda_spat ./ (OIDATA.nx*OIDATA.nx)
     OIDATA.lambda_spec = OIDATA.lambda_spec ./ (OIDATA.nw)
