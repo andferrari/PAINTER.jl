@@ -479,7 +479,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
         error("Wavelets list must be a vector of orthogonal wavelets")
     end
 
-    if typeof(PlotFct) != Function
+    if !(typeof(PlotFct) <: Function)
         error("PlotFct must be a Function, default plot function: painterplotfct() will be used")
         PlotFct = painterplotfct
     end
@@ -589,7 +589,7 @@ function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flu
     # OIDATA.beta = OIDATA.beta./maximum(abs( AllK ))
     OIDATA.alpha = OIDATA.alpha ./ length(OIDATA.P)
     OIDATA.beta = OIDATA.beta./sum( AllK .* besseli(1,AllK) ./ besseli(0,AllK)   )
-    
+
     # normalise lambda: spatial and spectral
     OIDATA.lambda_spat = OIDATA.lambda_spat ./ (OIDATA.nx*OIDATA.nx)
     OIDATA.lambda_spec = OIDATA.lambda_spec ./ (OIDATA.nw)
