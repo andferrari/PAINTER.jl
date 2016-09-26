@@ -484,5 +484,7 @@
         include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemogravity.jl") )
     elseif (demo==1)||(demo=="matiss")
         include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemomatiss.jl") )
+      elseif (demo==1)||(demo=="bc04")
+          include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemobc04.jl") )        
     end
   end

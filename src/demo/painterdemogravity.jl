@@ -98,6 +98,13 @@ end
     # files contains 250 wavelength, the set can be reduced to collect(1:10:250)
     # the plot function is done for 25 wavelengths
     # choose collect(1:10:250) or collect(1:250) or collect(1:25)
+
+    println("")
+    println("-----------------------------------------")
+    println("| Gravity - DEMO - Beauty Constest 2016 |")
+    println("-----------------------------------------")
+    println("")
+
     nx = 64
     indwvl = collect(1:5:250) # will plot 1/10
 
