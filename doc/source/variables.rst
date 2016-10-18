@@ -24,18 +24,13 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 
 **Execution Variables:**
 
-* ``paral``: if ``paral=true`` the ADMM step which reconstructs the object for each wavelength is computed in parallel, see [2]_. In this case ``julia``must be started with ``nprocs`` process and the module must be loaded on all process:
-
-  .. code:: bash
-
-    $ julia -p nprocs
-    julia> @everywhere using PAINTER
-
-  Default: ``true``.
-
 * ``admm``: if ``admm=false`` the function only initializes the structures. The function ``painter`` can be used after to iterate the ADMM algorithm. Default: ``true``.
 * ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: ``10``.
 * ``PlotFct``: is a user defined function which is called at each ``CountPlot`` iterations. This function must respect the input argument of ``painterplotfct`` function and must call ``PyPlot``, see :ref:`examples-label`  section. Default: ``painterplotfct``.
+
+**Flux and initial estimate:**
+* ``flux=0``: the flux in each channel of the initial estimate corresponds to the flux given in data. (default)
+* ``flux=-1``: nothing is done, the flux of initial estimate is the one given by the user.
 
 **Data and image related variables:**
 
@@ -72,19 +67,25 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 
 **ADMM algorithm parameters:**
 
-* ``Wvlt``: array of wavelets basis for spatial regularization, see [2]_.  See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_ for definitions. Default: first 8 Daubechies wavelets and Haar wavelets. ``Wvlt = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar]``.
-* ``lambda_spat``: Spatial regularization parameter, see Eqs. 29, 31 in [1]_. Default: nx\ :sup:`-2`.
-* ``lambda_spec``: Spectral regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-2``.
-* ``lambda_L1``: regularization parameter for an l\ :sub:`1` constraint on the image. l\ :sub:`1` constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
-* ``epsilon``: Ridge/Tikhonov regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-6``.
-* ``rho_y``: ADMM parameter for data fidelity,see  Eqs. 35, 50-52 in [1]_. Default: ``1``.
-* ``rho_spat``: ADMM parameter for Spatial regularization, see Eqs. 25, 31 in [1]_. Default: ``1``.
-* ``rho_spec``: ADMM parameter for Spectral regularization, see Eqs. 42, 55 in [1]_. Default: ``1``.
-* ``rho_ps``: ADMM parameter for positivity constraint, see Eq. 47, 54 in [1]_. Default: ``1``.
 * ``alpha``: weight for squared visibilities modulus data fidelity term, see Eqs. 25, 31 in [1]_. Default: ``1``.
 * ``beta``: weight for phases (closures and differential) data fidelity term, see Eqs. 25,31 in [1]_. Default: ``1``.
-* ``eps1``: stopping criterium  for primal residual  in ADMM algorithm. Default: ``1e-6``.
-* ``eps2``: stopping criterium for dual residual in ADMM algorithm. Default: ``1e-6``.
+* ``lambda_spat``: Spatial regularization parameter, see Eqs. 29, 31 in [1]_. Default: nx\ :sup:`-2`.
+* ``lambda_spec``: Spectral regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-2``.
+
+* ``rho_y``: ADMM parameter for data fidelity,see  Eqs. 35, 50-52 in [1]_. Default: ``10``.
+* ``rho_spat``: ADMM parameter for Spatial regularization, see Eqs. 25, 31 in [1]_. Default: ``1``, (``0`` to disable).
+* ``rho_spec``: ADMM parameter for Spectral regularization, see Eqs. 42, 55 in [1]_. Default: ``1``, (``0`` to disable).
+* ``rho_ps``: ADMM parameter for positivity constraint, see Eq. 47, 54 in [1]_. Default: ``1``, (``0`` to disable).
+
+Secondary or specific paramaters:
+  The defaults values of these parameteres are tuned for the general cases. Nevertheless, the user may modified them for specific applications.
+
+  * ``lambda_L1``: regularization parameter for an l\ :sub:`1` constraint on the image. l\ :sub:`1` constraint emphasizes sparsity of objects (e.g. stars field). Default: ``0``.
+  * ``Wvlt``: array of wavelets basis for spatial regularization, see [2]_.  See `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_ for definitions. Default: first 8 Daubechies wavelets and Haar wavelets. ``Wvlt = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar]``.
+  * ``epsilon``: Ridge/Tikhonov regularization parameter, see Eqs. 29, 31 in [1]_. Default: ``1e-6``.
+  * ``eps1``: stopping criterium  for primal residual  in ADMM algorithm. Default: ``1e-6``.
+  * ``eps2``: stopping criterium for dual residual in ADMM algorithm. Default: ``1e-6``.
+
 
 Constant in ``OIDATA`` structure
 --------------------------------
@@ -106,30 +107,6 @@ extracted from OIFITS files.
 * ``K``: dictionary of phases difference variance vector.
 
 For matrices, the column index is associated to the wavelength index.
-
-Path to ``OptimPack`` options
------------------------------
-
-The variable ``pathoptpkpt`` determines the path to the file for the VMLM options configuration: contains all OptimPack parameters for the phases proximal operator.
-
-* ``ls``, ``scl``, ``gat``, ``grt``, ``vt``, ``memsize``, ``mxvl``, ``mxtr``, ``stpmn``, ``stpmx``. See  `OptimPack <https://github.com/emmt/OptimPack>`_ for details.
-
-  Default values are:
-
-  .. code:: julia
-
-    ls=OptimPack.MoreThuenteLineSearch(ftol=1e-8,gtol=0.95)
-    scl=OptimPack.SCALING\_OREN\_SPEDICATO
-    gat=0
-    grt=0
-    vt=false
-    memsize=100
-    mxvl=1000
-    mxtr=1000
-    stpmn=1E-20
-    stpmx=1E+20
-
-And the default configuration files is ``optpckpt.jl`` located in the ``src`` folder of PAINTER (../.julia/Vx.x/PAINTER/src/). Default value: ``pathoptpkpt = string(Pkg.dir("PAINTER"),"/src/optpckpt.jl")``
 
 Variables in ``PDATA`` structure
 --------------------------------

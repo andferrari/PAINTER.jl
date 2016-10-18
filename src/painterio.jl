@@ -4,14 +4,50 @@
 ## PAINTER Save and Load utilities
 function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input) #,OPTOPT::OptOptions)
     JLD.save(string("OIDATA_",savepath),
-        "Folder", OIDATA.Folder, "FilesName", OIDATA.FilesName, "indfile", OIDATA.indfile, "indwvl", OIDATA.indwvl, "wvl", OIDATA.wvl, "U",
-        OIDATA.U, "V",OIDATA.V, "P", OIDATA.P, "W", OIDATA.W, "Xi", OIDATA.Xi, "K", OIDATA.K, "Closure_index", OIDATA.Closure_index,
-        "nb", OIDATA.nb, "nw",OIDATA.nw, "nx",OIDATA.nx, "FOV", OIDATA.FOV, "lambda_spat", OIDATA.lambda_spat, "lambda_spec",
-        OIDATA.lambda_spec, "lambda_L1", OIDATA.lambda_L1, "rho_y", OIDATA.rho_y, "rho_spat", OIDATA.rho_spat, "rho_spec",
-        OIDATA.rho_spec, "rho_ps", OIDATA.rho_ps, "alpha", OIDATA.alpha, "beta", OIDATA.beta, "eps1", OIDATA.eps1, "eps2",
-        OIDATA.eps2, "epsilon", OIDATA.epsilon, "mask3D", OIDATA.mask3D, "xinit3D", OIDATA.xinit3D, "Wvlt", OIDATA.Wvlt, "paral",
-        OIDATA.paral, "T3", OIDATA.T3, "T3err", OIDATA.T3err, "DP", OIDATA.DP, "DPerr", OIDATA.DPerr,
-        "dptype", OIDATA.dptype , "dpprm", OIDATA.dpprm, "baseNb", OIDATA.baseNb, "orderedCluster", OIDATA.orderedCluster)
+        "Folder", OIDATA.Folder,
+        "FilesName", OIDATA.FilesName,
+        "indfile", OIDATA.indfile,
+        "indwvl", OIDATA.indwvl,
+        "wvl", OIDATA.wvl,
+        "U", OIDATA.U,
+        "V",OIDATA.V,
+        "P", OIDATA.P,
+        "W", OIDATA.W,
+        "Xi", OIDATA.Xi,
+        "K", OIDATA.K,
+        "Closure_index", OIDATA.Closure_index,
+        "nb", OIDATA.nb,
+        "nw",OIDATA.nw,
+        "nx",OIDATA.nx,
+        "FOV", OIDATA.FOV,
+        "lambda_spat", OIDATA.lambda_spat,
+        "lambda_spec", OIDATA.lambda_spec,
+        "lambda_L1", OIDATA.lambda_L1,
+        "rho_y", OIDATA.rho_y,
+
+        "rho_y_gamma", OIDATA.rho_y_gamma,
+        "rho_y_xi", OIDATA.rho_y_xi,
+
+        "rho_spat", OIDATA.rho_spat,
+        "rho_spec", OIDATA.rho_spec,
+        "rho_ps", OIDATA.rho_ps,
+        "alpha", OIDATA.alpha,
+        "beta", OIDATA.beta,
+        "eps1", OIDATA.eps1,
+        "eps2", OIDATA.eps2,
+        "epsilon", OIDATA.epsilon,
+        "mask3D", OIDATA.mask3D,
+        "xinit3D", OIDATA.xinit3D,
+        "Wvlt", OIDATA.Wvlt,
+        "T3", OIDATA.T3,
+        "T3err", OIDATA.T3err,
+        "DP", OIDATA.DP,
+        "DPerr", OIDATA.DPerr,
+        "dptype", OIDATA.dptype ,
+        "dpprm", OIDATA.dpprm,
+        "baseNb", OIDATA.baseNb,
+        "orderedCluster", OIDATA.orderedCluster
+        )
 
     JLD.save(string("PDATA_",savepath),
         "eta", PDATA.eta,
@@ -70,7 +106,12 @@ function painterload(loadpath::ASCIIString)
     OIDATA.lambda_spat = tmp["lambda_spat"]
     OIDATA.lambda_spec = tmp["lambda_spec"]
     OIDATA.lambda_L1 = tmp["lambda_L1"]
+
     OIDATA.rho_y = tmp["rho_y"]
+        
+    OIDATA.rho_y_gamma = tmp["rho_y_gamma"]
+    OIDATA.rho_y_xi = tmp["rho_y_xi"]
+
     OIDATA.rho_spat = tmp["rho_spat"]
     OIDATA.rho_spec = tmp["rho_spec"]
     OIDATA.rho_ps = tmp["rho_ps"]
@@ -82,7 +123,6 @@ function painterload(loadpath::ASCIIString)
     OIDATA.mask3D = tmp["mask3D"]
     OIDATA.xinit3D = tmp["xinit3D"]
     OIDATA.Wvlt = tmp["Wvlt"]
-    OIDATA.paral = tmp["paral"]
     OIDATA.dptype = tmp["dptype"]
     OIDATA.dpprm = tmp["dpprm"]
     OIDATA.baseNb = tmp["baseNb"]
