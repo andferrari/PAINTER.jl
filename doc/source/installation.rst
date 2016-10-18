@@ -10,7 +10,7 @@ Installation
 * `OIFITS.jl <https://github.com/emmt/OIFITS.jl>`_: Julia support for OI-FITS (optical interferometry data format).
 * `NFFT.jl <https://github.com/tknopp/NFFT.jl>`_: Julia implementation of the Non-equidistant Fast Fourier Transform (NFFT).
 * `Wavelets.jl <https://github.com/JuliaDSP/Wavelets.jl>`_: A Julia package for fast wavelet transforms.
-* `JLD.jl <https://github.com/JuliaIO/JLD.jl>`_: to write JLD ("Julia data") variables.
+* `HDF5.jl <https://github.com/timholy/HDF5.jl>`_: for writing JLD ("Julia data") variables.
 
 They will be *automaticaly* installed during ``PAINTER.jl`` installation.
 Note that they require development tools included for example for
@@ -46,4 +46,26 @@ and load the module on all process:
 .. code:: julia
 
     $ julia -p nprocs
-    julia> @everywhere using PAINTER
+    julia> using PAINTER
+
+Path to ``OptimPack`` options
+-----------------------------
+
+The file ``optpckpt.jl`` located in source file of ``PAINTER`` contains all OptimPack parameters for the phases proximal operator.
+
+  * ``ls``, ``scl``, ``gat``, ``grt``, ``vt``, ``memsize``, ``mxvl``, ``mxtr``, ``stpmn``, ``stpmx``. See  `OptimPack <https://github.com/emmt/OptimPack>`_ for details.
+
+  Default values are:
+
+  .. code:: julia
+
+    ls=OptimPack.MoreThuenteLineSearch(ftol=1e-8,gtol=0.95)
+    scl=OptimPack.SCALING\_OREN\_SPEDICATO
+    gat=0
+    grt=0
+    vt=false
+    memsize=100
+    mxvl=1000
+    mxtr=1000
+    stpmn=1E-20
+    stpmx=1E+20

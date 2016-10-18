@@ -3,7 +3,7 @@
 ###################################################################################
 # Pre calculus, MATRIX Inversion - Method involving orthogonal matrices
 # ---------------------------------------------------------------------------------
-function invmat_par(F3D::Array,rho_y::Real,eta::Real,nw::Int)#,paral::Bool)
+function invmat_par(F3D::Array,rho_y::Real,eta::Real,nw::Int)
 # step IV of [0]
 # inverse of inner matrix of C^\lambda_n
 # [F F^H + eta/rho I]^-1
@@ -20,6 +20,90 @@ end
 function toinv(mat2inv)
    return inv((mat2inv[2] * mat2inv[1] * mat2inv[1]') + speye(size(mat2inv[1], 1)))
 end
+# ---------------------------------------------------------------------------------
+# Von Mises Weight estimation
+# ---------------------------------------------------------------------------------
+# function Kappacost!(Kappa::Array{Float64,1}, g_Kappa::Array{Float64,1}, varxi::Array{Float64,1})
+#     g_Kappa[:] = -(2.*(Kappa.*besseli(1, Kappa).^2 - Kappa.*besseli(0, Kappa).^2 + besseli(0, Kappa).*besseli(1, Kappa)).*(varxi.*besseli(0, Kappa) - besseli(0, Kappa) + besseli(1, Kappa)))./(Kappa.*besseli(0, Kappa).^3)
+#     return sum(abs2( varxi - (1 - besseli(1,Kappa)./besseli(0,Kappa) ) ))
+# end
+#
+# function estKappa(K::Array{Float64,1})
+# # K is in radian, to estimate Kappa it must be normalized by pi ( -1 < Kappa < 1 )
+#     varxi = K ./ pi
+#     indinf = find(varxi.<=1e-3)
+#     indsup = find(varxi.>1e-3)
+#     Kappa = zeros(K)
+#     Kappa[indinf] = 500
+#     varxi = varxi[indsup]
+#
+#     if length(varxi)>1
+#
+#     function Kcost!(Kappa::Array{Float64,1}, g_Kappa::Array{Float64,1})
+#     return Kappacost!(Kappa::Array{Float64,1}, g_Kappa::Array{Float64,1}, varxi::Array{Float64,1})
+#     end
+#
+#     Kappa_0 = brutalprecalcKappa(varxi)
+#     Kappa[indsup] = OptimPack.vmlm(Kcost!, Kappa_0)
+#
+#     else
+#
+#     Kappa = 500*ones(K)
+#
+#     end
+#
+#     return Kappa
+# end
+#
+# function brutalprecalcKappa(K::Array{Float64,1})
+#     costK(Km,kn) = abs2( Km - (1 - besseli(1,kn)./besseli(0,kn) ) )
+#     N = 1000
+#     Kappa = collect(linspace(0,500,N))
+#     est = zeros(length(K))
+#     tmp = zeros(N,length(K))
+#     for m in 1:length(K)
+#       if K[m]>1e-3
+#         for n in 1 : N
+#           tmp[n,m] = costK(K[m],Kappa[n])
+#         end
+#         est[m] = Kappa[indmin(tmp[:,m])]
+#       else
+#         est[m] = 500.
+#       end
+#     end
+#     return est
+# end
+
+function ItKappa(K::Array{Float64,1};pre=1e-9)
+   costK(Km,kn) = abs2( Km - (1 - besseli(1,kn)./besseli(0,kn) ) )
+    NK = length(K)
+    est = zeros(NK)
+    varK = K ./ pi
+    for m in 1:NK
+        k,i = IterInKappa(costK,varK[m],0.,500.)
+        it = 0
+        while (sqrt(costK(varK[m],k[i]))>pre)&&(it<10)
+            it+=1
+            k,i = IterInKappa(costK,varK[m],k[max(i-1,1)],k[min(i+1,length(k))],N=100)
+        end
+        # while sqrt(costK(varK[m],k[i]))>pre
+        #     k,i = IterInKappa(costK,varK[m],k[i-1],k[i+1],N=100)
+        # end
+        est[m] = k[i]
+    end
+    return est
+end
+function IterInKappa(cost::Function, K::Float64,a::Float64,b::Float64;N=1000)
+
+    Kappa = collect(linspace(a,b,N))
+    est = 0.
+    tmp = zeros(N)
+    for n in 1 : N
+        tmp[n] = cost(K,Kappa[n])
+    end
+    return Kappa, indmin(tmp)
+end
+
 # ---------------------------------------------------------------------------------
 # Phases To Phases difference Matrix
 # ---------------------------------------------------------------------------------
@@ -187,7 +271,7 @@ end
 ###################################################################################
 # Tools for NUFFT
 # ---------------------------------------------------------------------------------
-function planarray_par(tab_u::Array,tab_v::Array,nx::Int,nw::Int)#,parral::Bool)
+function planarray_par(tab_u::Array,tab_v::Array,nx::Int,nw::Int)
 # create Array for plan for non uniform fft
 # tab_u and tab_v are spatial frequencies
 # nx is images side size

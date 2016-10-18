@@ -33,6 +33,10 @@ type PAINTER_Input
     lambda_spec::Real
     lambda_L1::Real
     rho_y::Real
+
+    rho_y_gamma::Real
+    rho_y_xi::Real
+
     rho_spat::Real
     rho_spec::Real
     rho_ps::Real
@@ -44,7 +48,6 @@ type PAINTER_Input
     mask3D::Array                   # support constraint array
     xinit3D::Array                  # initial estimate array
     Wvlt::Array                     # list of wavelets basis
-    paral::Bool                     # parallel computing or not
     T3::Array{Float64}              # Matrix of phases closure
     T3err::Array{Float64}           # Matrix of phases closure error
     DP::Array{Float64}              # Matrix of Differential phases
@@ -54,7 +57,9 @@ type PAINTER_Input
     dpprm::Int                      # horizon for sliding dp or index of reference
     baseNb::Dict
     orderedCluster::Dict
-    pathoptpkpt::ASCIIString        # OPTIMPACK VMLM configuration files full path
+    flux::Array
+    norm::Array
+    Kbefore::Dict
 end
 # Structure containing all data which are modified during admm
 # PDATA::PAINTER_Data
@@ -91,11 +96,12 @@ end
 function painterinputinit()
     return PAINTER_Input( painterplotfct, "", [], [], [], [], [], [], []
                          , [], Dict{}(), Dict{}(), [], 0., 0., 0., 0., 0., 0., 0., 0.
+                         , 0., 0.
                          , 0., 0., 0., 0., 0., 0., 0., 0., [], [], []
-                         , true, [], [], [], [], 0, "", 0, Dict{}(), Dict{}(),"")
+                         , [], [], [], [], 0, "", 0, Dict{}(), Dict{}(),[],[],Dict{}())
 end
 function painterdatainit()
-    return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], []
-                        , [], [], [], [], [], [], [], [], [], []
-                        , [], Float64[], Float64[], 0, 0, 0)
+  return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], []
+                      , [], [], [], [], [], [], [], [], [], []
+                      , [], Float64[], Float64[], 0, 0, 1)
 end

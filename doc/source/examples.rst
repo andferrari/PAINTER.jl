@@ -13,13 +13,20 @@ To run the demo type:
 .. code:: julia
 
   using PAINTER
-  demo = string(Pkg.dir("PAINTER"),"/src/painterdemo.jl")
-  include(demo);
+  painterdemo()
 
+``painterdemo()`` run a simation with data generated with ASPRO with AMBER configuration and a gray object.
 The demo includes warm start, save and load of structures, a custom plot function (require PyPLot), ...
 
-User parameters and single execution
-------------------------------------
+``painterdemo("gravity")`` run simulation with data from the beauty contest 2016 (http://www.opticalinterferometry.com/beauty2016).
+Data contains ``matiss`` simuation and PAINTER uses the phases of the complexe visibities and the closure phases for the phases estimation.
+The demo includes save and load of structures, a custom plot function (require PyPLot), ...
+
+``painterdemo("matiss")`` run simulation with data from the beauty contest 2016 (http://www.opticalinterferometry.com/beauty2016).
+Data contains ``matiss`` simuation. The demo includes save and load of structures, a custom plot function (require PyPLot), ...
+
+User parameters and single execution for ``painterdemo()``
+----------------------------------------------------------
 
 * The folowing parameters are set by the user:
 
@@ -27,7 +34,7 @@ User parameters and single execution
 
     path        = '../OifitsFolder'
     FOV         = 0.01
-    indwvl      = 1:29
+    indwvl      = 1:30
     nx          = 64
     eps1        = 1e-4
     eps2        = 1e-4
@@ -39,9 +46,9 @@ User parameters and single execution
     lambda_spat = 1e-5
     rho_spec    = 1/2
     lambda_spec = 1e-5
+    dptype      = "sliding" # type of differential phases
     aff         = true      # plot is enabled
     nbitermax   = 100
-    paral       = false     # parallel computing is disabled
 
   ``PAINTER.jl`` will extract OIFITS informations from all files in the folder ``../OifitsFolder`` and will restrict the analysis to the first 29 wavelengths.
 
@@ -58,7 +65,7 @@ User parameters and single execution
 
 .. code:: julia
 
-  OIDATA, PDATA = painter(Folder=Folder, nbitermax=nbitermax, nx=nx, lambda_spat=lambda_spat=lambda_spat, lambda_spec=lambda_spec, rho_y= rho_y, rho_spat= rho_spat, rho_spec= rho_spec, rho_ps= rho_ps, alpha= alpha, beta=beta, eps1=eps1, eps2=eps2, FOV= FOV, indwvl=indwvl, paral=paral)
+  OIDATA, PDATA = painter(Folder=Folder, nbitermax=nbitermax, nx=nx, lambda_spat=lambda_spat=lambda_spat, lambda_spec=lambda_spec, rho_y= rho_y, rho_spat= rho_spat, rho_spec= rho_spec, rho_ps= rho_ps, alpha= alpha, beta=beta, eps1=eps1, eps2=eps2, FOV= FOV, indwvl=indwvl)
 
 Algorithm warm start
 --------------------

@@ -162,10 +162,10 @@ function independentT3data(OIDATA::PAINTER_Input)
   K = Dict{}()
   H = Dict{}()
   for n in 1:Nt3indep
-      HDP = phasetophasediff(orderedCluster[n], OIDATA.nw, length(baseNb[n]), 0, 1, OIDATA.dptype, OIDATA.dpprm)
       T3 = OIDATA.T3[rowt3[n],:]
       T3err = OIDATA.T3err[rowt3[n],:]
       if OIDATA.isDP == 1
+          HDP = phasetophasediff(orderedCluster[n], OIDATA.nw, length(baseNb[n]), 0, 1, OIDATA.dptype, OIDATA.dpprm)
           DP = OIDATA.DP[baseNb[n],:]
           DPerr = OIDATA.DPerr[baseNb[n],:]
           Xi[n] = vcat(vec(T3),HDP*vec(DP)  )
@@ -249,7 +249,7 @@ function independentT3(Closure_index::Matrix)
     while sum(Index)>0
         m+=1
         idxinit = find(Index.>0)[1]
-        Cluster[m] = Closure_index[Index[idxinit],:]
+        Cluster[m] = reshape(Closure_index[Index[idxinit],:],1,3)
         Index[idxinit] = 0
         nn = 0
         while true
@@ -271,7 +271,7 @@ function searchfromclusterinlist(Cluster::Matrix,init::Vector,Index::Vector,Clos
         if( !isempty( find( init[1] .== Closure_index[n,:] ) )
           ||!isempty( find( init[2] .== Closure_index[n,:] ) )
           ||!isempty( find( init[3] .== Closure_index[n,:] ) ) )
-            Cluster = vcat( Cluster , Closure_index[n,:] )
+            Cluster = vcat( Cluster , reshape(Closure_index[n,:],1,3) )
             Index[n] = 0
         end
       end
@@ -324,7 +324,7 @@ function t3row(Closure_index::Matrix,Cluster::Dict)
       lc = size(thecluster,1)
       rowt3[n] = zeros(lc)
       for m in 1:lc
-          rowt3[n][m] = find( prod(Closure_index .== thecluster[m,:],2))[1]
+          rowt3[n][m] = find( prod(Closure_index .== reshape(thecluster[m,:],1,3),2))[1]
       end
       rowt3[n] = round(Int,rowt3[n])
   end
