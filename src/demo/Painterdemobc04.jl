@@ -27,9 +27,7 @@ end
 
 # To change size of the simulation
 # nx pixels
-# files contains 250 wavelength, the set can be reduced to collect(1:10:250)
-# the plot function is done for 25 wavelengths
-# choose collect(1:10:250) or collect(1:250) or collect(1:25)
+
 println("")
 println(" -----------------------------------------")
 println("| 1 Wavelength DEMO Beauty Constest 2004 |")
@@ -53,8 +51,8 @@ rho_y    = .01
 rho_spat = .001
 rho_ps=rho_spat
 
-lambda_spat=  1e-3 /2 # 1e-3
-lambda_L1 = 1e-3 * 2 # 2*1e-3
+lambda_spat=  .5 * 1e-4
+lambda_L1 = 1e-3 * 2
 
 rho_spec=0 # 1 wavelength -> No spectral regularization
 epsilon=1e-6 # enough for the pb

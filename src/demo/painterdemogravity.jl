@@ -116,7 +116,7 @@ end
     dptype = "phase"
 
     CountPlot = 10
-    nbitermax = 1000
+    nbitermax = 300
 
     aff = true
     admm = true
@@ -129,6 +129,8 @@ end
     rho_spat = 4.
     rho_spec = .5
     rho_ps =  rho_spat
+    lambda_L1 = 1e-1
+    lambda_spat = 1e-4
 
     epsilon = 1e-6
 
@@ -142,6 +144,7 @@ end
     OIDATA, PDATA = PAINTER.painter(nbitermax = nbitermax, nx = nx,
       rho_y = rho_y, rho_spat = rho_spat,rho_spec = rho_spec, rho_ps = rho_ps,
       eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl,
+      lambda_L1=lambda_L1, lambda_spat=lambda_spat,
       PlotFct = PlotFct, aff = aff, dptype = dptype, admm = admm,
       xinit3D = xinit3D, mask3D = mask3D, Folder = Folder)
 

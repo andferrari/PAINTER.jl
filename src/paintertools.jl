@@ -346,6 +346,8 @@
         PDATA.x,PDATA.Fx = estimx_par(rho_y, rho_spat, rho_spec, rho_ps,eta ,PDATA.yc, PDATA.z, PDATA.v, PDATA.w,
                                       PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
                                       plan, Wvlt, M)
+  # Cube of flux
+        flux_cube = vec(sum(sum(PDATA.x,1),2))
 
   # update of auxiliary variables
         if rho_spat >0
@@ -357,7 +359,9 @@
             tmpx = 0
   # update of z
             PDATA.z = Hx + (PDATA.tau_s / rho_spat)
-            PDATA.z = max(1 - ((lambda_spat / rho_spat) ./ abs(PDATA.z)), 0.) .* PDATA.z
+            for n in 1:OIDATA.nw
+                PDATA.z[:,:,n,:] = max(1 - ((flux_cube[n].*lambda_spat / rho_spat) ./ abs(PDATA.z[:,:,n,:])), 0.) .* PDATA.z[:,:,n,:]
+            end
         end
   # update of v
         if rho_spec >0
@@ -382,7 +386,9 @@
   # update of w
         if rho_ps>0
             u = PDATA.x + PDATA.tau_w ./ rho_ps
-            PDATA.w = max(max(0.0, u) .* mask3D - lambda_L1, 0)
+            for n in 1:OIDATA.nw
+                PDATA.w[:,:,n] = max(max(0.0,u[:,:,n]) .* mask3D[:,:,n] - flux_cube[n].*lambda_L1, 0)
+            end
             PDATA.tau_w = PDATA.tau_w + rho_ps * (PDATA.x - PDATA.w)
         end
   # update of Lagrange multipliers
@@ -447,11 +453,11 @@
     OIDATA = readoifits(OIDATA, indfile, indwvl)
   ## PAINTER Matrices creation, Array Initialization
     println("")
-    PDATA,OIDATA  = painterarrayinit(PDATA, OIDATA)
+    PDATA,OIDATA = painterarrayinit(PDATA, OIDATA)
   # Check, Create PAINTER object and mask initialisation from data or fits
-    OIDATA.mask3D   = checkmask(OIDATA.mask3D, OIDATA.nx, OIDATA.nw)
+    OIDATA.mask3D = checkmask(OIDATA.mask3D, OIDATA.nx, OIDATA.nw)
   # Initialise Data and xinit from V2 and flux
-    PDATA,OIDATA = painterautoparametersinit(PDATA,OIDATA,flux)
+    PDATA,OIDATA = painterautoparametersinit(PDATA,OIDATA)
   # initialise Lagrange multipliers for warm start from initial estimates
     PDATA,OIDATA = painterlagrangemultipliersinit(PDATA,OIDATA)
 
