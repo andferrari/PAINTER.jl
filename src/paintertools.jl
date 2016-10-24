@@ -409,7 +409,7 @@
                  dptype = "all", dpprm = 0, rho_y_gamma = 10., rho_y_xi = 10.,
                  Wvlt  = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar],
                  eps1 = 1e-6, eps2 = 1e-6, FOV = 4e-2, mask3D = [], xinit3D = [], indfile = [], indwvl = [],
-                 PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, flux = 0, autoinit="auto")
+                 PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, flux = 0, autoinit="true")
   # Check if mandatory package are installed
     checkPack()
   # PAINTER Data Type Creation
@@ -430,7 +430,7 @@
   # Check, Create PAINTER object and mask initialisation from data or fits
     OIDATA.mask3D = checkmask(OIDATA.mask3D, OIDATA.nx, OIDATA.nw)
   # Initialise Data and xinit from V2 and flux
-    if init == "autoinit"
+    if autoinit == "true"
         PDATA,OIDATA = painterautoparametersinit(PDATA,OIDATA)
     end
   # initialise Lagrange multipliers for warm start from initial estimates
