@@ -29,7 +29,7 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 * ``PlotFct``: is a user defined function which is called at each ``CountPlot`` iterations. This function must respect the input argument of ``painterplotfct`` function and must call ``PyPlot``, see :ref:`examples-label`  section. Default: ``painterplotfct``.
 
 **Initialization and initial estimate:**
-* ``init``: if ``aff=true`` some parameters are automatically set or rescaled. Default: ``true``.
+* ``autoinit``: if ``autoinit=true`` some parameters are automatically set or rescaled. Default: ``true``.
 
 The parameters which are automaticaly initialized are ``alpha``, ``beta``, ``rho_y_xi`` and ``rho_y_gamma``.
 They corresponds to parameters related to proximal operator for squared visibilities and for phases differences.
