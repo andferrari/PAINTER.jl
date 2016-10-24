@@ -17,8 +17,8 @@
 function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
 
 # Check for DP and T3 must be in data at least
-    OIDATA.isDP = 1
-
+    OIDATA.isDP = !(length(indwvl)==1)
+    indwvl = collect(indwvl)
 # Read Directory
     Folder    = OIDATA.Folder
     CDir      = readdir(Folder)
@@ -77,17 +77,18 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
             OIDATA.wvl = vcat(OIDATA.wvl,OIFITS.get_eff_wave(db)')
         end
 # # # OI VIS
-        if isempty(OIFITS.select(master, "OI_VIS"))
-            println("OI_VIS field is missing, PAINTER needs differential visibilities")
-            println(" --- will try to work only with closure phases ")
-            OIDATA.isDP = 0
-        else
+        if OIDATA.isDP == 1
+            if isempty(OIFITS.select(master, "OI_VIS"))
+                println("OI_VIS field is missing, PAINTER needs differential visibilities")
+                println(" --- will try to work only with closure phases ")
+                OIDATA.isDP = 0
+            else
 
-            for dbvis1 in OIFITS.select(master, "OI_VIS")
-                OIDATA.DP = vcat(OIDATA.DP, OIFITS.get_visphi(dbvis1)')
-                OIDATA.DPerr = vcat(OIDATA.DPerr, OIFITS.get_visphierr(dbvis1)')
+                for dbvis1 in OIFITS.select(master, "OI_VIS")
+                    OIDATA.DP = vcat(OIDATA.DP, OIFITS.get_visphi(dbvis1)')
+                    OIDATA.DPerr = vcat(OIDATA.DPerr, OIFITS.get_visphierr(dbvis1)')
+                end
             end
-
         end
 
 # # OI VIS 2

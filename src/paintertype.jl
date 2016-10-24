@@ -101,6 +101,7 @@ function painterinputinit()
                          , [], [], [], [], 0, "", 0, Dict{}(), Dict{}(),[],0) # [],Dict{}())
 end
 function painterdatainit()
+
   return PAINTER_Data(0., [], [], Dict{}(), [], [], [], [], [], []
                       , [], [], [], [], [], [], [], [], [], []
                       , [], Float64[], Float64[], 0, 0, 1)

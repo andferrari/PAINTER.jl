@@ -1,4 +1,4 @@
-# using PAINTER
+using PAINTER
 using Base.Test
 
 FOV = 0.01
@@ -25,5 +25,4 @@ OIDATA, PDATA = painter(nbitermax = nbitermax, nx = nx, lambda_spat = lambda_spa
                             eps1 = eps1, eps2 = eps2, FOV = FOV, indwvl = indwvl,
                             dptype = dptype, dpprm = dpprm, aff=aff)
 
-
-@test_approx_eq_eps PDATA.crit1[1] 1.92717 1E-4
+@test_approx_eq_eps PDATA.crit1[1] 6.25337 1E-4

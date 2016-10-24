@@ -3,7 +3,6 @@
 ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95)
 scl = OptimPack.SCALING_OREN_SPEDICATO
 gat = 0
-# grt = 1e-3
 grt = 1e-6
 vt = false
 memsize = 100

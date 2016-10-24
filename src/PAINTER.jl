@@ -18,7 +18,7 @@ module PAINTER
     using NFFT
     using Wavelets
 
-    export painter, painterdemo, mask, paintersave, painterload, painterfitsexport, painterplotfct, WT, optiminit, painterrenorm
+    export painter, painterdemo, mask, paintersave, painterload, painterfitsexport, painterplotfct, WT, optiminit
 
     include("paintertype.jl")
 

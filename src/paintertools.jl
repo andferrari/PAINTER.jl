@@ -98,7 +98,6 @@
         mod_y[m,n] = sol[b]
     end
     y_v2[:] = mod_y .* exp(im .* ang_y)
-    # y_v2[:] = copy(mod_y) .* exp(im .* ang_y)
   end
   # ---------------------------------------------------------------------------------
   # ----- Cardano's formula
@@ -174,7 +173,6 @@
         return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
     end
 
-    # ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx = optiminit()
     phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
                         , grtol = grt, gatol = gat, maxeval = mxvl
                         , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
@@ -207,24 +205,9 @@
     yest = gam .* exp(im * x_phi)
     w1 = -sum(K .* cos(dphi))
     w2 = sum(abs(yest - y_t).^2)
-    # g_phi[:]= beta .* H' * (sin(dphi) ./ K) - rho_y .* gam .* gam_t .* sin(Ek)
     g_phi[:]= beta .* H' * (sin(dphi) .* K) - rho_y .* gam .* gam_t .* sin(Ek)
     f = ((beta * w1) + (rho_y * w2)) / 2
     return f
-  end
-  ###################################################################################
-  # Renorm the solution as if it converged to true solution
-  # Assume that:
-  # Positivity constraint converged
-  # gives the flux of data to the solution and good noramlisation
-  function painterrenorm(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
-      X3D = PDATA.x .* max(0, PDATA.w) .* max(PDATA.x,0)
-      for n in 1:OIDATA.nw
-          Fx  = nfft(PDATA.plan[n], 0.*im + X3D[:,:,n]) / OIDATA.nx
-          factor = OIDATA.norm[n] .* sum(OIDATA.P[:,n]) ./ sum(abs2( Fx ))
-          X3D[:,:,n] = X3D[:,:,n] * sqrt(factor)
-      end
-      return X3D
   end
   ###################################################################################
   # MAIN ADMM LOOP
@@ -246,8 +229,6 @@
     const epsilon = OIDATA.epsilon
     const rho_y = OIDATA.rho_y
 
-    # const rho_y_gamma = OIDATA.rho_y
-    # const rho_y_xi = OIDATA.rho_y
     const rho_y_gamma = OIDATA.rho_y_gamma
     const rho_y_xi = OIDATA.rho_y_xi
 
@@ -288,7 +269,6 @@
         end
     end
   # ----------------------------------
-        # ls,scl,gat,grt,vt,memsize,mxvl,mxtr,stpmn,stpmx = optiminit()
         println(" ")
         println("------------------------ ")
         println(" Nb phases Cluster: " , Nt3indep)
@@ -317,28 +297,19 @@
         PDATA.ind += 1
 
   # update of yc from V2
-        # PDATA.y_v2 = PDATA.yc + PDATA.tau_pwc / rho_y
-        # proxv2!(PDATA.y_v2, P, W, rho_y, alpha, nb, nw)
         PDATA.y_v2 = PDATA.yc + PDATA.tau_pwc / rho_y_gamma
         proxv2!(PDATA.y_v2, P, W, rho_y_gamma, alpha, nb, nw)
 
   # update of yc from phases difference
-        # y_phidat = PDATA.yc + PDATA.tau_xic / rho_y
-        # @sync @parallel for n in 1:Nt3indep
-        #     yphidict[baseNb[n],:] = proxphase(y_phidat[baseNb[n],:], Xi[n], K[n]
-        #              , rho_y, beta, length( baseNb[n] ), nw, H[n] )
-        # end
         y_phidat = PDATA.yc + PDATA.tau_xic / rho_y_xi
         @sync @parallel for n in 1:Nt3indep
             yphidict[baseNb[n],:] = proxphase(y_phidat[baseNb[n],:], Xi[n], K[n]
                      , rho_y_xi, beta, length( baseNb[n] ), nw, H[n] )
         end
-        # PDATA.y_phi = copy(yphidict)
         PDATA.y_phi = yphidict
         y_phidat = 0
   # Consensus
         y_tmp = copy(PDATA.yc)
-        # PDATA.yc = ( PDATA.y_v2 + PDATA.y_phi + PDATA.Fx + (PDATA.tau_xc - (PDATA.tau_pwc + PDATA.tau_xic)) ./ rho_y ) ./ 3
         PDATA.yc = ( PDATA.y_v2 - PDATA.tau_xic./rho_y_xi + PDATA.y_phi - PDATA.tau_pwc./rho_y_gamma  + PDATA.Fx + PDATA.tau_xc./ rho_y   ) ./ 3
 
   # Object estimation
@@ -347,7 +318,7 @@
                                       PDATA.tau_xc, PDATA.tau_s, PDATA.tau_v, PDATA.tau_w, nb, nw, nx, NWvlt,
                                       plan, Wvlt, M)
   # Cube of flux
-        flux_cube = vec(sum(sum(PDATA.x,1),2))
+        flux_cube = 1. # vec(sum(OIDATA.P,1))
 
   # update of auxiliary variables
         if rho_spat >0
@@ -359,9 +330,11 @@
             tmpx = 0
   # update of z
             PDATA.z = Hx + (PDATA.tau_s / rho_spat)
-            for n in 1:OIDATA.nw
-                PDATA.z[:,:,n,:] = max(1 - ((flux_cube[n].*lambda_spat / rho_spat) ./ abs(PDATA.z[:,:,n,:])), 0.) .* PDATA.z[:,:,n,:]
-            end
+            PDATA.z = max(1 - ((lambda_spat / rho_spat) ./ abs(PDATA.z)), 0.) .* PDATA.z
+
+            # for n in 1:OIDATA.nw
+            #     PDATA.z[:,:,n,:] = max(1 - ((flux_cube[n].*lambda_spat / rho_spat) ./ abs(PDATA.z[:,:,n,:])), 0.) .* PDATA.z[:,:,n,:]
+            # end
         end
   # update of v
         if rho_spec >0
@@ -386,14 +359,13 @@
   # update of w
         if rho_ps>0
             u = PDATA.x + PDATA.tau_w ./ rho_ps
-            for n in 1:OIDATA.nw
-                PDATA.w[:,:,n] = max(max(0.0,u[:,:,n]) .* mask3D[:,:,n] - flux_cube[n].*lambda_L1, 0)
-            end
+            PDATA.w = max(max(0.0,u) .* mask3D - lambda_L1, 0)
+            # for n in 1:OIDATA.nw
+            #     PDATA.w[:,:,n] = max(max(0.0,u[:,:,n]) .* mask3D[:,:,n] - flux_cube[n].*lambda_L1, 0)
+            # end
             PDATA.tau_w = PDATA.tau_w + rho_ps * (PDATA.x - PDATA.w)
         end
   # update of Lagrange multipliers
-        # PDATA.tau_pwc = PDATA.tau_pwc + rho_y * (PDATA.yc - PDATA.y_v2)
-        # PDATA.tau_xic = PDATA.tau_xic + rho_y * (PDATA.yc - PDATA.y_phi)
         PDATA.tau_pwc = PDATA.tau_pwc + rho_y_gamma * (PDATA.yc - PDATA.y_v2)
         PDATA.tau_xic = PDATA.tau_xic + rho_y_xi * (PDATA.yc - PDATA.y_phi)
         PDATA.tau_xc = PDATA.tau_xc + rho_y * (PDATA.Fx - PDATA.yc)
@@ -434,10 +406,10 @@
   function painter(;Folder = "", nbitermax = 1000, nx = 64, lambda_spat = 1e-3,
                  lambda_spec = 1e-3, lambda_L1 = 1e-3, epsilon = 1e-6,
                  rho_y = 10., rho_spat = 1., rho_spec = 1., rho_ps = 1., alpha = 1., beta = 1.,
-                 dptype = "all", dpprm = 0,
+                 dptype = "all", dpprm = 0, rho_y_gamma = 10., rho_y_xi = 10.,
                  Wvlt  = [WT.db1, WT.db2, WT.db3, WT.db4, WT.db5, WT.db6, WT.db7, WT.db8, WT.haar],
                  eps1 = 1e-6, eps2 = 1e-6, FOV = 4e-2, mask3D = [], xinit3D = [], indfile = [], indwvl = [],
-                 PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, flux = 0)
+                 PlotFct = painterplotfct, aff = false, CountPlot = 10, admm = true, flux = 0, autoinit="auto")
   # Check if mandatory package are installed
     checkPack()
   # PAINTER Data Type Creation
@@ -445,9 +417,10 @@
     PDATA  = painterdatainit()
   # PAINTER User parameter validation
     OIDATA = painterinit(OIDATA, Folder, nx, lambda_spat, lambda_spec, lambda_L1, 
-                         epsilon, rho_y, rho_spat, rho_spec, rho_ps, alpha, beta,
+                         epsilon, rho_y, rho_y_gamma, rho_y_xi, rho_spat, rho_spec, rho_ps, alpha, beta,
                          eps1, eps2, FOV, mask3D, xinit3D, Wvlt,  
-                         dptype, dpprm, PlotFct)
+                         dptype, dpprm, indwvl, PlotFct)
+
   # OIFITS-FITS Data Read
     println("")
     OIDATA = readoifits(OIDATA, indfile, indwvl)
@@ -457,7 +430,9 @@
   # Check, Create PAINTER object and mask initialisation from data or fits
     OIDATA.mask3D = checkmask(OIDATA.mask3D, OIDATA.nx, OIDATA.nw)
   # Initialise Data and xinit from V2 and flux
-    PDATA,OIDATA = painterautoparametersinit(PDATA,OIDATA)
+    if init == "autoinit"
+        PDATA,OIDATA = painterautoparametersinit(PDATA,OIDATA)
+    end
   # initialise Lagrange multipliers for warm start from initial estimates
     PDATA,OIDATA = painterlagrangemultipliersinit(PDATA,OIDATA)
 
