@@ -119,42 +119,6 @@ function checkinit(xinit::Array,nb::Int,nx::Int,nw::Int,plan::Array)
 # nx: side size of images in pixels
 # nw: number of wavelength
 # plan: non uniform fft plan
-    # if isempty(xinit)
-    #     xinit = zeros(nx, nx)
-    #     xinit[round(Int,  (nx / 2) + 1), round(Int, (nx / 2) + 1)] = 1
-    # end
-    #
-    # if ndims(xinit) == 1
-    #     if size(xinit, 1) == (nx * nx)
-    #         yc = inityc(reshape(repmat(reshape(xinit, nx, nx), 1, nw), nx, nx, nw), nb, nx, nw, plan)
-    #
-    #     elseif size(xinit,1) == nb * nw
-    #         yc = reshape(xinit, nb, nw)
-    #     end
-    #
-    # elseif ndims(xinit) == 2
-    #
-    #     if(size(xinit, 1) == nx)&&(size(xinit, 2) == nx)
-    #         println("Gray Initial estimate")
-    #         yc = inityc(reshape(repmat(xinit, 1, nw), nx, nx, nw), nb, nx, nw, plan)
-    #
-    #     elseif(size(xinit, 1) == (nx * nx))&&(size(xinit, 2) == nw)
-    #         println("Colored vectorized Initial estimate")
-    #         yc = inityc(reshape(xinit, nx, nx, nw), nb, nx, nw, plan)
-    #
-    #     elseif(size(xinit, 1) == nb)&&(size(xinit, 2) == nw)
-    #         println("Input is Colored complexe visibilities")
-    #         yc = xinit + im * 0.
-    #     end
-    #
-    # elseif ndims(xinit) == 3
-    #     if (size(xinit, 1) == nx)&&(size(xinit, 2) == nx)&&(size(xinit, 3) == nw)
-    #         println("Colored vectorized Initial estimate")
-    #         yc = inityc(xinit, nb, nx, nw, plan)
-    #     end
-    # end
-    # return yc,xinit
-
     if isempty(xinit)
         xinit = zeros(nx, nx, nw)
         xinit[round(Int,  (nx / 2) + 1), round(Int, (nx / 2) + 1),:] = 1
@@ -264,9 +228,13 @@ end
 # mask3D	      : Support constraint: can be a path to a fits file, or to data image (2D or 3D in both case)
 # xinit3D       : Initial Estimate: can be a path to a fits file, or to data image (2D or 3D in both case)
 ###################################################################################
-function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lambda_L1,epsilon,rho_y,rho_spat
-  ,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,dptype,dpprm,PlotFct)
+function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lambda_L1,epsilon,rho_y, rho_y_gamma, rho_y_xi,
+  rho_spat,rho_spec,rho_ps,alpha,beta,eps1,eps2,FOV,mask3D,xinit3D,Wvlt,dptype,dpprm,indwvl,PlotFct)
 # check if user parameters are valid parameters, correct them if type is not good or replace by default if parameter are not valid
+
+# if only 1 wavelength, no spectral regularization
+    OIDATA.rho_spec = !(length(indwvl)==1) * OIDATA.rho_spec
+
     if(FOV < 0)
         println("FOV must be non negative (default: 0.04 arcsecond)")
         println("initialized to default value")
@@ -328,6 +296,22 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     end
 
     rho_y = rho_y + 0.
+
+    if(rho_y_gamma < 0)
+        println("rho_y_gamma must be non negative (default: rho_y)")
+        println("initialized to default value")
+        rho_y_gamma = rho_y
+    end
+
+    rho_y_gamma = rho_y_gamma + 0.
+
+    if(rho_y_xi < 0)
+        println("rho_y_xi must be non negative (default: rho_y)")
+        println("initialized to default value")
+        rho_y_xi = rho_y
+    end
+
+    rho_y_xi = rho_y_xi + 0.
 
     if(rho_spat < 0)
         println("rho_spat must be non negative (default: 1.0)")
@@ -451,7 +435,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
 # Check data path
     if isempty(Folder)
         tmp = pwd()
-        Folder = string(tmp, tmp[1], "OIFITS")
+        Folder = joinpath(dirname(@__FILE__), "OIFITS")
         println(Folder)
     end
 
@@ -545,7 +529,6 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     PDATA.M  = invmat_par(PDATA.F3D, OIDATA.rho_y, PDATA.eta, OIDATA.nw)
     println("process independent Cluster")
     for n in 1:length(OIDATA.baseNb)
-        OIDATA.Kbefore[n] = copy(OIDATA.K[n])
         OIDATA.K[n] = ItKappa(OIDATA.K[n])
         PDATA.H[n] = phasetophasediff(OIDATA.orderedCluster[n], OIDATA.nw, length(OIDATA.baseNb[n]), 1, OIDATA.isDP, OIDATA.dptype, OIDATA.dpprm)
     end
@@ -570,45 +553,41 @@ function painterarrayinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 end
 ###################################################################################
 # Initialise Data and xinit from V2 and flux
-function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input,flux)
-    # adjust flux of V2 from users
-
+function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     nP = sum(OIDATA.P)
-    OIDATA.norm = ones(OIDATA.nw) * nP
+    OIDATA.norm = nP
     OIDATA.P = OIDATA.P / nP
     OIDATA.W = OIDATA.W / nP^2
 
-    AllK = Float64{}[]
-    for n in 1 : length(OIDATA.K)
-        for m in 1 : length(OIDATA.K[n])
-        push!(AllK,OIDATA.K[n][m])
-      end
-    end
 
+    # AllK = Float64{}[]
+    # for n in 1 : length(OIDATA.K)
+    #     for m in 1 : length(OIDATA.K[n])
+    #         push!(AllK,OIDATA.K[n][m])
+    #     end
+    # end
+    #
     # OIDATA.alpha = OIDATA.alpha .*maximum( OIDATA.W )
     # OIDATA.beta = OIDATA.beta./maximum(abs( AllK ))
-    OIDATA.alpha = OIDATA.alpha ./ length(OIDATA.P)
-    OIDATA.beta = OIDATA.beta./sum( AllK .* besseli(1,AllK) ./ besseli(0,AllK)   )
+
+    OIDATA.alpha = 1
+    OIDATA.beta = 1
 
     # normalise lambda: spatial and spectral
     OIDATA.lambda_spat = OIDATA.lambda_spat ./ (OIDATA.nx*OIDATA.nx)
     OIDATA.lambda_spec = OIDATA.lambda_spec ./ (OIDATA.nw)
 
     # give to initial estimate the good power in each channel
-    # if flux != -1
-    # if flux == 0
-        for n in 1:OIDATA.nw
-            factor = sqrt( sum(OIDATA.P[:,n]) ./ sum(abs2(PDATA.yc[:,n])) )
-            OIDATA.xinit3D[:,:,n] = OIDATA.xinit3D[:,:,n]  *  factor
-            PDATA.yc[:,n] = PDATA.yc[:,n] * factor
-        end
-    # end
-    # end
+    for n in 1:OIDATA.nw
+        factor = sqrt( sum(OIDATA.P[:,n]) ./ sum(abs2(PDATA.yc[:,n])) )
+        OIDATA.xinit3D[:,:,n] = OIDATA.xinit3D[:,:,n]  *  factor
+        PDATA.yc[:,n] = PDATA.yc[:,n] * factor
+    end
 
     miniv2, minivp = compute_hessianVP(PDATA, OIDATA)
 
-    OIDATA.rho_y_gamma = max( OIDATA.alpha * abs(miniv2)*1.01 , 1e-6)
-    OIDATA.rho_y_xi    = max( OIDATA.beta  * abs(minivp)*1.01 , 1e-6)
+    OIDATA.rho_y_gamma = max( OIDATA.alpha * (-miniv2)*1.01 , 1e-6)
+    OIDATA.rho_y_xi    = max( OIDATA.beta  * (-minivp)*1.01 , 1e-6)
 
     return PDATA,OIDATA
 end
@@ -618,7 +597,6 @@ function compute_hessianVP(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
     diagofhessV2 = (-4 ./ OIDATA.W) .* ( OIDATA.P - 3* abs2( PDATA.yc ) )
     miniv2 = minimum(diagofhessV2)
 
-    # Hessphase = Dict{}()
     vp = zeros( length(OIDATA.K) )
     for n in 1 : length(OIDATA.K)
       H = PDATA.H[n]
@@ -653,6 +631,9 @@ function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Inpu
     vHt = convert( SharedArray, zeros(nx, nx, nw))
     Hx = convert( SharedArray, zeros( nx, nx, nw, NWvlt))
 
+    # Cube of flux
+    flux_cube = 1. # vec(sum(OIDATA.P,1))
+
     if rho_spat >0
         tmpx = copy(OIDATA.xinit3D)
         @sync @parallel for ind in 1:nw*NWvlt
@@ -661,7 +642,7 @@ function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Inpu
         end
         # update of z
         PDATA.z = copy(Hx)
-        PDATA.z = max(1 - ((lambda_spat / rho_spat) ./ abs(PDATA.z)), 0.) .* PDATA.z
+        PDATA.z = max(1 - ((flux_cube.*lambda_spat / rho_spat) ./ abs(PDATA.z)), 0.) .* PDATA.z
     end
 
     # update of v
@@ -679,7 +660,7 @@ function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Inpu
 
     # update of w
     if rho_ps>0
-        PDATA.w = max(max(0.0, OIDATA.xinit3D) .* OIDATA.mask3D - lambda_L1, 0)
+        PDATA.w = max(max(0.0, OIDATA.xinit3D) .* OIDATA.mask3D - flux_cube.*lambda_L1, 0)
         PDATA.tau_w = rho_ps * (OIDATA.xinit3D - PDATA.w)
     end
 

@@ -28,9 +28,15 @@ The structure ``OIDATA`` contains all OIFITS information and user defined parame
 * ``CountPlot``: draw plot at each ``CountPlot`` iterations. Default: ``10``.
 * ``PlotFct``: is a user defined function which is called at each ``CountPlot`` iterations. This function must respect the input argument of ``painterplotfct`` function and must call ``PyPlot``, see :ref:`examples-label`  section. Default: ``painterplotfct``.
 
-**Flux and initial estimate:**
-* ``flux=0``: the flux in each channel of the initial estimate corresponds to the flux given in data. (default)
-* ``flux=-1``: nothing is done, the flux of initial estimate is the one given by the user.
+**Initialization and initial estimate:**
+* ``autoinit``: if ``autoinit=true`` some parameters are automatically set or rescaled. Default: ``true``.
+
+The parameters which are automaticaly initialized are ``alpha``, ``beta``, ``rho_y_xi`` and ``rho_y_gamma``.
+They corresponds to parameters related to proximal operator for squared visibilities and for phases differences.
+Regularization parameters ``lambda_spat`` and ``lambda_spec`` are rescaled to be invariant with user parameters.
+``lambda_spat`` is divided by the number of pixels and ``lambda_spec`` by the number of wavelength.
+The total flux is also normalized to allow the use of almost predefined parameters.
+The initial estimate is rescaled by the flux of the data.
 
 **Data and image related variables:**
 

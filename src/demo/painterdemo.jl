@@ -93,7 +93,7 @@ end
     rho_spat = 4.
     rho_ps = rho_spat
     rho_spec = .5
-    lambda_L1 = 1e-3
+    lambda_L1 = 5*1e-3
     nbitermax = 1
 
     OIDATA, PDATA = PAINTER.painter(nbitermax = nbitermax, nx = nx, rho_y = rho_y,
@@ -103,17 +103,17 @@ end
                             PlotFct = PlotFct, aff = aff, dptype = dptype,
                             dpprm = dpprm, Folder = Folder, xinit3D = xinit3D)
 
-# # save data struture in .jld files
-#     println("save data")
-#     PAINTER.paintersave(savepath,PDATA,OIDATA)
-#
-# # load data struture in .jld files
-#     println("load data")
-#     PDATA, OIDATA = PAINTER.painterload(savepath)
-#
-# # Warm start of the algorithm to Iteration 100
-#     nbitermax = 100
-#     println("PAINTER: Warm Start")
-#     OIDATA, PDATA = PAINTER.painter(OIDATA,PDATA,nbitermax,true, PlotFct = PlotFct)
+# save data struture in .jld files
+    println("save data")
+    PAINTER.paintersave(savepath,PDATA,OIDATA)
+
+# load data struture in .jld files
+    println("load data")
+    PDATA, OIDATA = PAINTER.painterload(savepath)
+
+# Warm start of the algorithm to Iteration 100
+    nbitermax = 100
+    println("PAINTER: Warm Start")
+    OIDATA, PDATA = PAINTER.painter(OIDATA,PDATA,nbitermax,true, PlotFct = PlotFct)
 
     nothing

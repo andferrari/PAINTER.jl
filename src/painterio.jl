@@ -24,7 +24,6 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         "lambda_spec", OIDATA.lambda_spec,
         "lambda_L1", OIDATA.lambda_L1,
         "rho_y", OIDATA.rho_y,
-
         "rho_y_gamma", OIDATA.rho_y_gamma,
         "rho_y_xi", OIDATA.rho_y_xi,
 
@@ -46,7 +45,8 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         "dptype", OIDATA.dptype ,
         "dpprm", OIDATA.dpprm,
         "baseNb", OIDATA.baseNb,
-        "orderedCluster", OIDATA.orderedCluster
+        "orderedCluster", OIDATA.orderedCluster,
+        "norm", OIDATA.norm
         )
 
     JLD.save(string("PDATA_",savepath),
@@ -108,7 +108,7 @@ function painterload(loadpath::ASCIIString)
     OIDATA.lambda_L1 = tmp["lambda_L1"]
 
     OIDATA.rho_y = tmp["rho_y"]
-        
+
     OIDATA.rho_y_gamma = tmp["rho_y_gamma"]
     OIDATA.rho_y_xi = tmp["rho_y_xi"]
 
@@ -127,6 +127,7 @@ function painterload(loadpath::ASCIIString)
     OIDATA.dpprm = tmp["dpprm"]
     OIDATA.baseNb = tmp["baseNb"]
     OIDATA.orderedCluster = tmp["orderedCluster"]
+    OIDATA.norm = tmp["norm"]
 # PDATA
     PDATA  = painterdatainit()
     tmp = JLD.load(string("PDATA_",loadpath))

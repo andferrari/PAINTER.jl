@@ -19,11 +19,12 @@ To run the demo type:
 The demo includes warm start, save and load of structures, a custom plot function (require PyPLot), ...
 
 ``painterdemo("gravity")`` run simulation with data from the beauty contest 2016 (http://www.opticalinterferometry.com/beauty2016).
-Data contains ``matiss`` simuation and PAINTER uses the phases of the complexe visibities and the closure phases for the phases estimation.
+Data will be downloaded in current folder and contains ``gravity`` simulation.
+In this case PAINTER uses the phases of the complexe visibities and the closure phases for the phases estimation.
 The demo includes save and load of structures, a custom plot function (require PyPLot), ...
 
-``painterdemo("matiss")`` run simulation with data from the beauty contest 2016 (http://www.opticalinterferometry.com/beauty2016).
-Data contains ``matiss`` simuation. The demo includes save and load of structures, a custom plot function (require PyPLot), ...
+``painterdemo("bc04")`` run simulation with data from the beauty contest 2004.
+Data are monochromatic. The demo includes save and load of structures, a custom plot function (require PyPLot), ...
 
 User parameters and single execution for ``painterdemo()``
 ----------------------------------------------------------

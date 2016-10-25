@@ -45,7 +45,7 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
     for n in set
         n2+=1
         subplot(SubColumn, SubRow, n2)
-        imshow( sqrt( rotr90(X3D[:, :, n]))  , origin = "lower")#,vmin=VMIN,vmax=VMAX)
+        imshow( sqrt( rotr90(X3D[:, :, n]))  , origin = "lower")
         titlestring = @sprintf("%2.4f µm", wvl[n2] * 1e6)
         title(titlestring)
         xticks([])
@@ -84,14 +84,6 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
     ylabel("channels")
     title("spectrum 1")
 
-    # subplot(224);
-    # plot(wvl*1e6, vec(sum(abs2(PDATA.Fx),1)))
-    # plot(wvl*1e6, vec(sum(OIDATA.P,1)))
-    # yticks([])
-    # xlabel(L"\mu m")
-    # ylabel("Flux")
-    # xlim((first(wvl*1e6),last(wvl*1e6)))
-
 end
     # To change size of the simulation
     # nx pixels
@@ -106,7 +98,7 @@ end
     println("")
 
     nx = 64
-    indwvl = collect(1:5:250) # will plot 1/10
+    indwvl = 1:5:250 # will plot 1/10
 
 
 
@@ -116,7 +108,7 @@ end
     dptype = "phase"
 
     CountPlot = 10
-    nbitermax = 1000
+    nbitermax = 400
 
     aff = true
     admm = true
@@ -136,7 +128,7 @@ end
     eps2 = 1e-3
 
     mask3D = PAINTER.mask(nx,round(Int, nx/2 - 2 ))
-    xinit3D = PAINTER.mask(nx,round(Int, nx/2  )) #, choice="disk")
+    xinit3D = PAINTER.mask(nx,round(Int, nx/2  ))
 
 # initialize algorithm and run admm
     OIDATA, PDATA = PAINTER.painter(nbitermax = nbitermax, nx = nx,
@@ -152,6 +144,4 @@ end
 # load data struture in .jld files
     println("load results of gravity BC2016 data")
     PDATA, OIDATA = PAINTER.painterload(savepath)
-
-
     nothing
