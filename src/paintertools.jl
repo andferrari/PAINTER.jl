@@ -459,14 +459,13 @@
   end
 
   function painterdemo(demo)
-    path = Pkg.dir();
     if demo == 0
-        include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemo.jl") )
+        include( joinpath(dirname(@__FILE__), "demo", "painterdemo.jl") )
     elseif (demo==1)||(demo=="gravity")
-        include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemogravity.jl") )
+        include( joinpath(dirname(@__FILE__), "demo", "painterdemogravity.jl") )
     elseif (demo==1)||(demo=="matiss")
-        include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemomatiss.jl") )
+        include( joinpath(dirname(@__FILE__), "demo", "painterdemomatiss.jl") )
       elseif (demo==1)||(demo=="bc04")
-          include( string(path, path[1], "PAINTER", path[1], "src", path[1], "demo", path[1], "painterdemobc04.jl") )
+          include( joinpath(dirname(@__FILE__), "demo", "painterdemobc04.jl") )
     end
   end
