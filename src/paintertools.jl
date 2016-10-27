@@ -463,9 +463,9 @@
         include( joinpath(dirname(@__FILE__), "demo", "painterdemo.jl") )
     elseif (demo==1)||(demo=="gravity")
         include( joinpath(dirname(@__FILE__), "demo", "painterdemogravity.jl") )
-    elseif (demo==1)||(demo=="matiss")
+    elseif (demo==3)||(demo=="matiss")
         include( joinpath(dirname(@__FILE__), "demo", "painterdemomatiss.jl") )
-      elseif (demo==1)||(demo=="bc04")
+      elseif (demo==2)||(demo=="bc04")
           include( joinpath(dirname(@__FILE__), "demo", "painterdemobc04.jl") )
     end
   end
