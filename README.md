@@ -9,3 +9,5 @@ opticAl INTErferometric Reconstruction algorithm.
 #### Resources
 
 * **Documentation**: <http://painterjl.readthedocs.org/en/latest/>
+* Note that the current version of ``PAINTER.jl`` will not run in parallel with Julia 0.5.
+See tknopp/NFFT.jl#17
