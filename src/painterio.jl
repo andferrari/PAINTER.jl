@@ -51,7 +51,7 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
 
     JLD.save(string("PDATA_",savepath),
         "eta", PDATA.eta,
-        "plan", PDATA.plan,
+        # "plan", PDATA.plan,
         "F3D", PDATA.F3D,
         "H", PDATA.H,
         "M", PDATA.M,
@@ -129,10 +129,15 @@ function painterload(loadpath::ASCIIString)
     OIDATA.orderedCluster = tmp["orderedCluster"]
     OIDATA.norm = tmp["norm"]
 # PDATA
+    DegRd = 2.0 * pi / 360.0
+    RadAs = 3600.0 / DegRd
+    coef = OIDATA.FOV / RadAs
+
     PDATA  = painterdatainit()
     tmp = JLD.load(string("PDATA_",loadpath))
     PDATA.eta = tmp["eta"]
-    PDATA.plan = tmp["plan"]
+    # PDATA.plan = tmp["plan"]
+    PDATA.plan = planarray_par(OIDATA.U * coef, OIDATA.V * coef, OIDATA.nx, OIDATA.nw)
     PDATA.F3D = tmp["F3D"]
     PDATA.H = tmp["H"]
     PDATA.M = tmp["M"]
