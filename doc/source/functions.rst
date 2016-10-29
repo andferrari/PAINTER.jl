@@ -34,7 +34,7 @@ Main function
 Auxiliary functions
 -------------------
 
-.. function:: paintersave(filename::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
+.. function:: paintersave(filename::String,PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 
   Saves the structures ``OIDATA``, ``PDATA`` into ``*.jld`` julia data files. The prefix of these structures is added before the "filename" base when writing the output files. See `HDF5 <https://github.com/timholy/HDF5.jl>`_ package for details on the format.
 
@@ -44,7 +44,7 @@ Auxiliary functions
     cd("~/path/to/saved/data") # move to a different directory if necessary
     paintersave(filename,PDATA,OIDATA)
 
-.. function:: painterload(filename::ASCIIString)
+.. function:: painterload(filename::String)
 
 
   Loads the structures from ``*.jld`` files. The files to be loaded must start with OIDATA_ and PDATA_ prefixes, but the filename entered as an argument should not have a prefix, since they are internally added by this function. Therefore, the filename of ``painterload`` is compatible with the one of ``paintersave``.
@@ -55,7 +55,7 @@ Auxiliary functions
 
   The current version of the save function doesn't save the pointer to the user defined plot function. To warmstart the algorithm, the user must call the ``painter(...)`` with the personalized plot function as argument otherwise the default plot function is used.
 
-.. function:: painterfitsexport(filename::ASCIIString,PDATA::PAINTER_Data, OIDATA::PAINTER_Input)
+.. function:: painterfitsexport(filename::String,PDATA::PAINTER_Data, OIDATA::PAINTER_Input)
 
   Saves the relevant information from  ``PDATA`` (output data cube and associated criteria, reconstructed complex visibilities,...) and from  ``OIDATA`` (wavelengths, input reconstruction parameters,...) into a FITS file "filename", which possibly includes a full path. The resulting FITS file has three HDUs : "Primary" is the reconstructed image cube, "INFO" contains the reconstruction parameters and criteria, and "VIS" contains the complex visibilities of the reconstruction, with the associated wavelengths and (U,V) points.
 
@@ -77,7 +77,7 @@ Auxiliary functions
 * The second figure shows the primal and dual residuals (``crit1`` and ``crit2``) as a function of the iteration.
 
 
-.. function:: mask(nx::Int,param::Int,choice::ASCIIString)
+.. function:: mask(nx::Int,param::Int,choice::String)
 
   Creates a binary mask of size nx\ :sup:`2`:
 

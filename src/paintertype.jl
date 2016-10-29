@@ -13,8 +13,8 @@
 ###################################################################################
 type PAINTER_Input
     PlotFct::Function               # user defined plot function
-    Folder::ASCIIString             # Folder of OIFITS/FITS Files
-    FilesName::Array{ASCIIString}   # name of the files present in Folder
+    Folder::String             # Folder of OIFITS/FITS Files
+    FilesName::Array{String}   # name of the files present in Folder
     indfile::Array{Int,1}           # index of file used
     indwvl::Array{Int,1}            # index of wavelength used
     wvl::Array{Float64}             # mean value of anayzed wavelength
@@ -53,7 +53,7 @@ type PAINTER_Input
     DP::Array{Float64}              # Matrix of Differential phases
     DPerr::Array{Float64}           # Matrix of Differential phases error
     isDP::Int                       # To know if there is DP in data
-    dptype::ASCIIString             # way to construct diff phases
+    dptype::String             # way to construct diff phases
     dpprm::Int                      # horizon for sliding dp or index of reference
     baseNb::Dict
     orderedCluster::Dict
