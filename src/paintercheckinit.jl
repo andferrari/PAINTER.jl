@@ -172,7 +172,7 @@ function checkinit(xinit::Array,nb::Int,nx::Int,nw::Int,plan::Array)
     return yc,xinit
 
 end
-function checkinit(xinit::ASCIIString,nb::Int,nx::Int,nw::Int,plan::Array)
+function checkinit(xinit::String,nb::Int,nx::Int,nw::Int,plan::Array)
 # method 2 read initial estimate from fits and use method
     xfits = read(FITS(xinit))
     return checkinit(xfits, nb, nx, nw, plan)
@@ -371,7 +371,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
 
 # Check mask3d type
 
-    if typeof(mask3D) == ASCIIString
+    if typeof(mask3D) == String
         mask3dprint = "3D Mask Initialization from fits file: $mask3D"
         f = FITS(mask3D)
         mask3D = read(f[1])
@@ -390,7 +390,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
 
 # Check xinit3d type
 
-    if typeof(xinit3D) == ASCIIString
+    if typeof(xinit3D) == String
         xinit3dprint = "3D Init Initialization from fits file: $xinit3D"
         f = FITS(xinit3D)
         xinit3D = read(f[1])
@@ -408,7 +408,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
     end
 
     # Check Differential phases matrix parameters
-    if typeof(dptype) == ASCIIString
+    if typeof(dptype) == String
         if (dptype!="all") && (dptype!="ref") && (dptype!="frame")&& (dptype!="sliding")&& (dptype!="diag")&& (dptype!="phase")
               println("dptype: all (default), ref, diag, frame, sliding ")
               println("dptype: can be 'phase' for phases of complexe visibilities")
@@ -439,7 +439,7 @@ function painterinit(OIDATA::PAINTER_Input,Folder,nx,lambda_spat,lambda_spec,lam
         println(Folder)
     end
 
-    if (typeof(Folder) == ASCIIString)||(typeof(Folder) == UTF8String)
+    if (typeof(Folder) == String)||(typeof(Folder) == UTF8String)
         cpath = Folder
 
     else

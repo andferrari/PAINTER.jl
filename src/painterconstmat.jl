@@ -54,7 +54,7 @@ end
 # Phases To Phases difference Matrix
 # ---------------------------------------------------------------------------------
 # Method 1
-function phasetophasediff(Closure_index::Matrix,nw::Integer,nb::Integer,T3::Integer,DP::Integer,dptype::ASCIIString,dpprm::Integer)
+function phasetophasediff(Closure_index::Matrix,nw::Integer,nb::Integer,T3::Integer,DP::Integer,dptype::String,dpprm::Integer)
 # create the matrix which link the phases to the phases difference
 # Eq. 20 of [1] , 8 of [0]
 # Closure phase and differential phase to phase matrix

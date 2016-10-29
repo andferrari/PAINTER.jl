@@ -2,7 +2,7 @@
 # Antony Schutz 2015, ANR - POLCA - 2016
 ###################################################################################
 ## PAINTER Save and Load utilities
-function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_Input) #,OPTOPT::OptOptions)
+function paintersave(savepath::String,PDATA::PAINTER_Data,OIDATA::PAINTER_Input) #,OPTOPT::OptOptions)
     JLD.save(string("OIDATA_",savepath),
         "Folder", OIDATA.Folder,
         "FilesName", OIDATA.FilesName,
@@ -79,7 +79,7 @@ function paintersave(savepath::ASCIIString,PDATA::PAINTER_Data,OIDATA::PAINTER_I
         )
 end
 
-function painterload(loadpath::ASCIIString)
+function painterload(loadpath::String)
 # OIDATA
     OIDATA = painterinputinit()
     tmp = JLD.load(string("OIDATA_",loadpath))
@@ -169,7 +169,7 @@ end
 # Added by M. Vannier, 10 Apr. 2015, modified by J. Kluska, may 2015
 # ################################################################
 
-function painterfitsexport(savepath::ASCIIString, PDATA::PAINTER_Data, OIDATA::PAINTER_Input; forceWvlExt = false)
+function painterfitsexport(savepath::String, PDATA::PAINTER_Data, OIDATA::PAINTER_Input; forceWvlExt = false)
     #  savepath : path + name of ouput file, including ".fits" extension
     # OIDATA :  structure which contains all OIFITS information and user defined parameters.
     # PDATA :  structure which contains output results and diagnostics
