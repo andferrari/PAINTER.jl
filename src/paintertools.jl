@@ -173,10 +173,9 @@
         return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
     end
 
-    phi = OptimPack.vmlm(cost!, phi_0, memsize, verb = vt
-                        , grtol = grt, gatol = gat, maxeval = mxvl
-                        , maxiter = mxtr, stpmin = stpmn, stpmax = stpmx
-                        , scaling = scl, lnsrch = ls)
+    phi = OptimPack.vmlmb(cost!, phi_0, mem = memsize, verb = vt
+                          , gtol = (gat, grt), maxeval = mxvl
+                          , maxiter = mxtr, lnsrch = ls)
 
     if phi!=nothing
         Ek = phi_t - phi
