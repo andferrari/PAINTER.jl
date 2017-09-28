@@ -279,5 +279,5 @@ function non_uniform_dft_par(UVMAT)
     k2m 	= repmat((vec(k1')' / UVMAT[3]), UVMAT[4], 1)
     um 		= repmat(vec(UVMAT[1]), 1, (UVMAT[3] * UVMAT[3]))
     vm 		= repmat(vec(UVMAT[2]), 1, (UVMAT[3] * UVMAT[3]))
-    return exp(-2 * im * pi * ((k1m .* um) + (k2m .* vm) )) ./ UVMAT[3]
+    return exp.(-2 * im * pi * ((k1m .* um) + (k2m .* vm) )) ./ UVMAT[3]
 end

@@ -17,6 +17,7 @@ module PAINTER
     using OptimPack
     using NFFT
     using Wavelets
+    using SpecialFunctions
 
     export painter, painterdemo, mask, paintersave, painterload, painterfitsexport, painterplotfct, WT, optiminit
 

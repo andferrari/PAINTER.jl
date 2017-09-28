@@ -60,16 +60,16 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
                 OIDATA.indwvl = 1:nw
             end
 # Initialisation of "empty" array
-            OIDATA.Closure_index = Array(Int, 0, 3)
-            OIDATA.U = Array(Float64, 0, nw)
-            OIDATA.V = Array(Float64, 0, nw)
-            OIDATA.P = Array(Float64, 0, nw)
-            OIDATA.W = Array(Float64, 0, nw)
-            OIDATA.T3 = Array(Float64, 0, nw)
-            OIDATA.T3err = Array(Float64, 0, nw)
-            OIDATA.DP = Array(Float64, 0, nw)
-            OIDATA.DPerr = Array(Float64, 0, nw)
-            OIDATA.wvl = Array(Float64, 0, nw)
+            OIDATA.Closure_index = Array{Int}(0, 3)
+            OIDATA.U = Array{Float64}(0, nw)
+            OIDATA.V = Array{Float64}(0, nw)
+            OIDATA.P = Array{Float64}(0, nw)
+            OIDATA.W = Array{Float64}(0, nw)
+            OIDATA.T3 = Array{Float64}(0, nw)
+            OIDATA.T3err = Array{Float64}(0, nw)
+            OIDATA.DP = Array{Float64}(0, nw)
+            OIDATA.DPerr = Array{Float64}(0, nw)
+            OIDATA.wvl = Array{Float64}(0, nw)
         end
 
 # # # OI wavelength
@@ -96,7 +96,7 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
             error("OI_VIS2 field is missing, PAINTER needs squared visibilities")
 
         else
-            U_v21 = Array(Float64, 0)
+            U_v21 = Array{Float64}(0)
 
             for dbvis2 in OIFITS.select(master,  "OI_VIS2")
                 U,V  = spatialfrequencies(OIFITS.get_ucoord(dbvis2), OIFITS.get_vcoord(dbvis2), OIFITS.get_eff_wave(dbvis2))
@@ -113,8 +113,8 @@ function readoifits(OIDATA::PAINTER_Input,indfile=[],indwvl=[])
             error("OI_T3 field is missing, PAINTER needs closure phases")
 
         else
-            U_t31 = Array(Float64, 0)
-            U_t32 = Array(Float64, 0)
+            U_t31 = Array{Float64}(0)
+            U_t32 = Array{Float64}(0)
             for dbvis3 in OIFITS.select(master, "OI_T3")
                 OIDATA.T3 = vcat(OIDATA.T3, OIFITS.get_t3phi(dbvis3)')
                 OIDATA.T3err = vcat(OIDATA.T3err, OIFITS.get_t3phierr(dbvis3)')
@@ -170,7 +170,7 @@ function independentT3data(OIDATA::PAINTER_Input)
           DP = OIDATA.DP[baseNb[n],:]
           DPerr = OIDATA.DPerr[baseNb[n],:]
           Xi[n] = vcat(vec(T3),HDP*vec(DP)  )
-          K[n] = vcat(vec(T3err),abs(HDP)*vec(DPerr)  )
+          K[n] = vcat(vec(T3err),abs.(HDP)*vec(DPerr)  )
       else
           Xi[n] = vec(T3)
           K[n] = vec(T3err)
@@ -210,10 +210,10 @@ function findclosureindex(V2_U_Coord::Vector,T3_U1_Coord::Vector,T3_U2_Coord::Ve
 # U3 is given by default
 # LT3 and LFil are used to increment correctly information from several files
 # Closure_index: index in tabs of associated visibilities
-    utmp = round(1000 * V2_U_Coord )
-    U1 = round(1000 * T3_U1_Coord)
-    U2 = round(1000 * T3_U2_Coord)
-    U3 = round(1000 * (T3_U1_Coord + T3_U2_Coord))
+    utmp = round.(1000 * V2_U_Coord )
+    U1 = round.(1000 * T3_U1_Coord)
+    U2 = round.(1000 * T3_U2_Coord)
+    U3 = round.(1000 * (T3_U1_Coord + T3_U2_Coord))
     for k in 1:length(U1)
         pos1 = LT3 + find(x->(x == U1[k]), utmp)
         pos2 = LT3 + find(x->(x == U2[k]), utmp)
@@ -288,7 +288,7 @@ function basesincluster(Cluster::Dict)
     for n in 1:Nc
         vecclust = sort( vec( Cluster[n] ) )
         indpos = vcat(1, diff( vecclust ).>0)
-        basenb[n] = round(Int, vecclust[ (vecclust.*indpos).>0 ])
+        basenb[n] = round.(Int, vecclust[ (vecclust.*indpos).>0 ])
     end
     return basenb
 end
@@ -327,7 +327,7 @@ function t3row(Closure_index::Matrix,Cluster::Dict)
       for m in 1:lc
           rowt3[n][m] = find( prod(Closure_index .== reshape(thecluster[m,:],1,3),2))[1]
       end
-      rowt3[n] = round(Int,rowt3[n])
+      rowt3[n] = round.(Int,rowt3[n])
   end
   return rowt3
 end

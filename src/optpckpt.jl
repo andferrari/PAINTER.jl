@@ -1,6 +1,6 @@
 # Structure for VMLM of OptimPack, see OptimPack.jl
 # https://github.com/emmt/OptimPack.jl
-ls = OptimPack.LineSearches.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95)
+ls = OptimPack.MoreThuenteLineSearch(ftol = 1e-8, gtol = 0.95)
 gat = 0
 grt = 1e-6
 vt = false

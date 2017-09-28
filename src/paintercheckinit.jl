@@ -579,7 +579,7 @@ function painterautoparametersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
 
     # give to initial estimate the good power in each channel
     for n in 1:OIDATA.nw
-        factor = sqrt( sum(OIDATA.P[:,n]) ./ sum(abs2(PDATA.yc[:,n])) )
+        factor = sqrt( sum(OIDATA.P[:,n]) ./ sum(abs2.(PDATA.yc[:,n])) )
         OIDATA.xinit3D[:,:,n] = OIDATA.xinit3D[:,:,n]  *  factor
         PDATA.yc[:,n] = PDATA.yc[:,n] * factor
     end
@@ -594,14 +594,14 @@ end
 ###################################################################################
 # Compute Hessian from initial estimate
 function compute_hessianVP(PDATA::PAINTER_Data,OIDATA::PAINTER_Input)
-    diagofhessV2 = (-4 ./ OIDATA.W) .* ( OIDATA.P - 3* abs2( PDATA.yc ) )
+    diagofhessV2 = (-4 ./ OIDATA.W) .* ( OIDATA.P - 3* abs2.( PDATA.yc ) )
     miniv2 = minimum(diagofhessV2)
 
     vp = zeros( length(OIDATA.K) )
     for n in 1 : length(OIDATA.K)
       H = PDATA.H[n]
       dK = diagm( OIDATA.K[n] )
-      dX = diagm( cos( H*vec(angle(PDATA.yc[OIDATA.baseNb[n],:])) - OIDATA.Xi[n]  ))
+      dX = diagm( cos.( H*vec(angle.(PDATA.yc[OIDATA.baseNb[n],:])) - OIDATA.Xi[n]  ))
       hess = H' * dK * dX * H
       vp[n] = eigs(hess,nev=1,which=:SR)[1][1]
     end
@@ -642,7 +642,7 @@ function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Inpu
         end
         # update of z
         PDATA.z = copy(Hx)
-        PDATA.z = max(1 - ((flux_cube.*lambda_spat / rho_spat) ./ abs(PDATA.z)), 0.) .* PDATA.z
+        PDATA.z = max.(1 - ((flux_cube.*lambda_spat / rho_spat) ./ abs.(PDATA.z)), 0.) .* PDATA.z
     end
 
     # update of v
@@ -655,12 +655,12 @@ function painterlagrangemultipliersinit(PDATA::PAINTER_Data,OIDATA::PAINTER_Inpu
         end
         # update of r
         PDATA.r = copy(vHt)
-        PDATA.r = max(1 - (lambda_spec / rho_spec) ./ abs(PDATA.r), 0) .* PDATA.r
+        PDATA.r = max.(1 - (lambda_spec / rho_spec) ./ abs.(PDATA.r), 0) .* PDATA.r
     end
 
     # update of w
     if rho_ps>0
-        PDATA.w = max(max(0.0, OIDATA.xinit3D) .* OIDATA.mask3D - flux_cube.*lambda_L1, 0)
+        PDATA.w = max.(max.(0.0, OIDATA.xinit3D) .* OIDATA.mask3D - flux_cube.*lambda_L1, 0)
         PDATA.tau_w = rho_ps * (OIDATA.xinit3D - PDATA.w)
     end
 

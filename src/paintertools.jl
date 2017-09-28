@@ -86,8 +86,8 @@
   #
   # Equation 58-59 of PAINTER
   function proxv2!(y_v2::Array,P::Array,W::Array,rho_y::Real,alpha::Real,nb::Int,nw::Int)
-    mod_y = convert(SharedArray,abs(y_v2))
-    ang_y = angle(y_v2)
+    mod_y = convert(SharedArray,abs.(y_v2))
+    ang_y = angle.(y_v2)
     tmp1 = W.*rho_y /(4 * alpha)
     tmp2 = alpha ./ W
     @sync @parallel for z in 1:nb*nw
@@ -97,7 +97,7 @@
         (a,b) = findmin(cst)
         mod_y[m,n] = sol[b]
     end
-    y_v2[:] = mod_y .* exp(im .* ang_y)
+    y_v2[:] = mod_y .* exp.(im .* ang_y)
   end
   # ---------------------------------------------------------------------------------
   # ----- Cardano's formula
@@ -165,9 +165,9 @@
   # H: Phases difference to Phases matrix (function Ph2PhDiff)
   # OPTOPT: structure of OptimPack vmlm option, see optimpack
     y_t = vec(y_phi)
-    gam_t = abs(y_t)
-    phi_t = angle(y_t)
-    phi_0 = angle(y_t)
+    gam_t = abs.(y_t)
+    phi_t = angle.(y_t)
+    phi_0 = angle.(y_t)
 
     function cost!{T<:Real}(x_phi::Array{T,1}, g_phi::Array{T,1})
         return costgradphi!(x_phi, g_phi, gam_t, phi_t, y_t, Xi, K, beta, rho_y, H)
@@ -252,7 +252,7 @@
     const H = PDATA.H
     const baseNb = OIDATA.baseNb
     const Nt3indep = length(OIDATA.baseNb)
-    yphidict = SharedArray( Complex128, (nb,nw) )
+    yphidict = SharedArray{Complex128}((nb,nw))
     Spcdct = convert( SharedArray, zeros( nx, nx, nw))
     vHt = convert( SharedArray, zeros(nx, nx, nw))
     Hx = convert( SharedArray, zeros( nx, nx, nw, NWvlt))
@@ -280,9 +280,9 @@
         println("gatol: ", gat )
         println("maxeval: ", mxvl )
         println("maxiter: ", mxtr )
-        println("stpmin: ", stpmn )
-        println("stpmax: ", stpmx )
-        println("scaling: ", scl )
+        #println("stpmin: ", stpmn )
+        #println("stpmax: ", stpmx )
+        #println("scaling: ", scl )
         println("lnsrch: ", ls )
   # ----------------------------------
     println("")
