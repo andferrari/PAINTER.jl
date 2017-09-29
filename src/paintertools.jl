@@ -179,10 +179,10 @@
 
     if phi!=nothing
         Ek = phi_t - phi
-        gam = max(0.0, gam_t .* cos(Ek))
-        y_phi[:] = reshape(gam .* exp(im * phi), nb, nw)
+        gam = max.(0.0, gam_t .* cos.(Ek))
+        y_phi[:] = reshape(gam .* exp.(im * phi), nb, nw)
     else
-        y_phi[:] = reshape(gam_t .* exp(im * phi_t), nb, nw)
+        y_phi[:] = reshape(gam_t .* exp.(im * phi_t), nb, nw)
     end
   end
 
@@ -199,12 +199,12 @@
   # (Global Cost) = alpha * (cost of V2) + Beta * (Cost of Phases diffrence)
   # H: Phases difference to Phases matrix (function Ph2PhDiff)
     Ek = phi_t - x_phi
-    gam = max(0.0, gam_t .* cos(Ek))
+    gam = max.(0.0, gam_t .* cos.(Ek))
     dphi = H * x_phi - Xi;
-    yest = gam .* exp(im * x_phi)
-    w1 = -sum(K .* cos(dphi))
-    w2 = sum(abs(yest - y_t).^2)
-    g_phi[:]= beta .* H' * (sin(dphi) .* K) - rho_y .* gam .* gam_t .* sin(Ek)
+    yest = gam .* exp.(im * x_phi)
+    w1 = -sum(K .* cos.(dphi))
+    w2 = sum(abs.(yest - y_t).^2)
+    g_phi[:]= beta .* H' * (sin.(dphi) .* K) - rho_y .* gam .* gam_t .* sin.(Ek)
     f = ((beta * w1) + (rho_y * w2)) / 2
     return f
   end
