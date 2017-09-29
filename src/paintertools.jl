@@ -174,7 +174,7 @@
     end
 
     phi = OptimPack.vmlmb(cost!, phi_0, mem = memsize, verb = vt
-                          , gtol = (gat, grt), maxeval = mxvl
+                          , gatol = gat, grtol = grt, maxeval = mxvl
                           , maxiter = mxtr, lnsrch = ls)
 
     if phi!=nothing
