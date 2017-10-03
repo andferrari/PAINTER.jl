@@ -26,11 +26,11 @@
   # Object Estimation - Orthognal matrix - wavelet
   # ---------------------------------------------------------------------------------
   # function estimx_par{Tw<:WT.OrthoWaveletClass}(x::SharedArray{Float64,3},Fx::SharedArray{Complex{Float64},2},
-  function estimx_par{Tw<:WT.OrthoWaveletClass}(
+    function estimx_par{Tw<:WT.OrthoWaveletClass}(
     rho_y::Float64,rho_spat::Float64,rho_spec::Float64,rho_ps::Float64,eta::Float64,
     yc::Array{Complex{Float64},2},z::Array{Float64,4},v::Array{Float64,3},w::Array{Float64,3},
     tau_xc::Array{Complex{Float64},2},tau_s::Array{Float64,4},tau_v::Array{Float64,3},tau_w::Array{Float64,3},
-    nb::Int,nw::Int,nx::Int,NWvlt::Int,plan::Array{Any,1},Wvlt::Array{Tw,1},M::Array{Any,1})
+    nb::Int,nw::Int,nx::Int,NWvlt::Int,plan::Array{NFFT.NFFTPlan{2,0,Float64},1},Wvlt::Array{Tw,1},M::Array{Array{Complex{Float64},2},1})
   # Estimate the constrained, regularized 3D images from complexe visibilities
   # step IV of PAINTER [0,1]
   #
@@ -48,7 +48,7 @@
     matv = 0
     matw = 0
   # parallel sum of wavelet basis
-    wvd = SharedArray( Float64, (nx,nx,nw,NWvlt))
+    wvd = SharedArray{Float64}(nx,nx,nw,NWvlt)
     @sync @parallel for ind in 1:nw*NWvlt
         n,b = ind2sub((nw,NWvlt),ind)
         wvd[:,:,n,b] = idwt(matz[:, :, n, b] , wavelet(Wvlt[b]) )
@@ -56,8 +56,8 @@
     matz = 0
     wvd = sum(wvd,4)
   # parallel image reconstruction
-    x = SharedArray( Float64, (nx,nx,nw))
-    Fx = SharedArray( Complex{Float64}, (nb, nw))
+    x = SharedArray{Float64}(nx,nx,nw)
+    Fx = SharedArray{Complex{Float64}}(nb, nw)
     @sync @parallel for n in 1:nw
         xtmp = (nfft_adjoint(plan[n], maty[:, n]) / nx) + Reg[:, :, n] + wvd[:, :, n] #+ wvd[n]
         xfst = nfft_adjoint(plan[n], M[n] * (nfft(plan[n], xtmp) / nx)) / nx
@@ -92,7 +92,7 @@
     tmp2 = alpha ./ W
     @sync @parallel for z in 1:nb*nw
         m,n = ind2sub((nb,nw),z)
-        sol = max(0., paintercubicroots( tmp1[m,n] - P[m,n], tmp1[m,n] .* mod_y[m,n]))
+        sol = max.(0., paintercubicroots( tmp1[m,n] - P[m,n], tmp1[m,n] .* mod_y[m,n]))
         cst = tmp2[m,n] .* (P[m,n] - sol.^2).^2 + .5 .* rho_y * (sol - mod_y[m,n] ).^2
         (a,b) = findmin(cst)
         mod_y[m,n] = sol[b]
@@ -252,7 +252,7 @@
     const H = PDATA.H
     const baseNb = OIDATA.baseNb
     const Nt3indep = length(OIDATA.baseNb)
-    yphidict = SharedArray{Complex128}((nb,nw))
+    yphidict = SharedArray{Complex128}(nb,nw)
     Spcdct = convert( SharedArray, zeros( nx, nx, nw))
     vHt = convert( SharedArray, zeros(nx, nx, nw))
     Hx = convert( SharedArray, zeros( nx, nx, nw, NWvlt))
@@ -329,7 +329,7 @@
             tmpx = 0
   # update of z
             PDATA.z = Hx + (PDATA.tau_s / rho_spat)
-            PDATA.z = max(1 - ((lambda_spat / rho_spat) ./ abs(PDATA.z)), 0.) .* PDATA.z
+            PDATA.z = max.(1 - ((lambda_spat / rho_spat) ./ abs.(PDATA.z)), 0.) .* PDATA.z
 
             # for n in 1:OIDATA.nw
             #     PDATA.z[:,:,n,:] = max(1 - ((flux_cube[n].*lambda_spat / rho_spat) ./ abs(PDATA.z[:,:,n,:])), 0.) .* PDATA.z[:,:,n,:]
@@ -353,12 +353,12 @@
             vecv = 0
   # update of r
             PDATA.r = vHt + PDATA.tau_r / rho_spec
-            PDATA.r = max(1 - (lambda_spec / rho_spec) ./ abs(PDATA.r), 0) .* PDATA.r
+            PDATA.r = max.(1 - (lambda_spec / rho_spec) ./ abs.(PDATA.r), 0) .* PDATA.r
         end
   # update of w
         if rho_ps>0
             u = PDATA.x + PDATA.tau_w ./ rho_ps
-            PDATA.w = max(max(0.0,u) .* mask3D - lambda_L1, 0)
+            PDATA.w = max.(max.(0.0,u) .* mask3D - lambda_L1, 0)
             # for n in 1:OIDATA.nw
             #     PDATA.w[:,:,n] = max(max(0.0,u[:,:,n]) .* mask3D[:,:,n] - flux_cube[n].*lambda_L1, 0)
             # end

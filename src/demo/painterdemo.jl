@@ -14,7 +14,7 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
     w = PDATA.w .> 0.
 
     indpix = linspace(-(FOV / 2), (FOV / 2), nx)
-    pos = round(Int, [1, round(Int,nx / 4), round(Int,nx / 2), round(Int,nx * 3 / 4), nx])
+    pos = round.(Int, [1, round(Int,nx / 4), round(Int,nx / 2), round(Int,nx * 3 / 4), nx])
 
     count_y = 0
     count_x = 0
@@ -25,18 +25,18 @@ function plotfunction(PDATA::PAINTER.PAINTER_Data,OIDATA::PAINTER.PAINTER_Input)
 
     for n in 1:nw
         subplot(SubColumn, SubRow, n)
-        imshow(x[:, :, n] .* max(0, w[:, :, n]), origin = "lower")
+        imshow(x[:, :, n] .* max.(0, w[:, :, n]), origin = "lower")
         titlestring = @sprintf("%2.4f µm", wvl[n] * 1e6)
         title(titlestring)
         xticks([])
         yticks([])
         if( n == (nw + 1 - SubRow + count_x) )
-            xticks(collect(pos - 1), round(Int,indpix[pos] * 100000) / 100)
+            xticks(collect(pos - 1), round.(Int,indpix[pos] * 100000) / 100)
             xlabel("FOV (mas)")
             count_x += 1
         end
         if(n == (1 + count_y * SubRow))
-            yticks(collect(pos - 1), round(Int,indpix[pos] * 100000) / 100)
+            yticks(collect(pos - 1), round.(Int,indpix[pos] * 100000) / 100)
             ylabel("FOV (mas)")
             count_y += 1
         end
